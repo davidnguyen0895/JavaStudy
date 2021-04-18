@@ -1,0 +1,49 @@
+@charset "UTF-8";
+
+body {
+	width: 100%;
+}
+
+table {
+	border: 1px solid #a9a9a9;
+	width: 90%;
+	padding: 0px;
+	margin: 0px;
+	border-collapse: collapse;
+}
+
+tr {
+	width: 12%;
+	border-top: 1px solid #a9a9a9;
+	border-left: 1px solid #a9a9a9;
+	vertical-align: top;
+	margin: 0px;
+	padding: 2px;
+}
+
+td {
+	width: 12%;
+	border-top: 1px solid #a9a9a9;
+	border-left: 1px solid #a9a9a9;
+	vertical-align: top;
+	margin: 0px;
+	padding: 2px;
+}
+
+th {
+	width: 12%;
+	border-top: 1px solid #a9a9a9;
+	border-left: 1px solid #a9a9a9;
+	vertical-align: top;
+	margin: 0px;
+	padding: 2px;
+	background-color: #f0f8ff;
+}
+
+img {
+	border: 0px;
+}
+
+p {
+	font-size: 0.75em;
+}

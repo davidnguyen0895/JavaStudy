@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="spring.schedule.repository.SelectScheduleMapper">
+	<select id="selectAll"
+		resultType="spring.schedule.entity.Schedule">
+		SELECT * FROM java_study.schedule
+	</select>
+	<select id="selectById"
+		resultType="spring.schedule.entity.Schedule">
+		SELECT * FROM java_study.schedule WHERE id = #{id}
+	</select>
+	<select id="selectByDate"
+		resultType="spring.schedule.entity.Schedule">
+		SELECT s.schedule FROM java_study.schedule s WHERE
+		s.scheduledate = #{scheduledate}
+	</select>
+</mapper>

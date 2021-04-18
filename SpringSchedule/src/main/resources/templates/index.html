@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>ホームページ</title>
+<link href="/css/list.css" rel="stylesheet"></link>
+<meta charset="utf-8" />
+</head>
+<body>
+	<h1>スケジュール管理</h1>
+	<div>
+		<a th:href="@{selectById}">ID検索</a>
+	</div>
+	<div>
+		<a th:href="@{selectAll}">全件検索</a>
+	</div>
+	<div>
+		<a th:href="@{calendar}">カレンダー</a>
+	</div>
+</body>
+</html>

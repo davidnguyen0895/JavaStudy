@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>スケジュール管理</title>
+<link href="/css/list.css" rel="stylesheet"></link>
+<meta charset="utf-8" />
+</head>
+<body>
+	<h1>スケジュール情報一覧</h1>
+	<div>
+		<a th:href="@{index}">ホームページ</a>
+	</div>
+	<form th:action="@{/selectByDateInfo}" th:object="${scheduledate}"
+		th:method="post"></form>
+
+	<div th:if="${selectByDateInfo}">
+		<table th:object="${selectByDateInfo}">
+			<tr>
+				<th class="cell_title">ID</th>
+				<td th:text="*{id}"></td>
+			</tr>
+			<tr>
+				<th class="cell_title">ユーザID</th>
+				<td th:text="*{userid}"></td>
+			</tr>
+			<tr>
+				<th class="cell_title">スケジュール日付</th>
+				<td
+					th:text="${#dates.format(selectByDateInfo.scheduledate,'YYYY/MM/DD')}"></td>
+			</tr>
+			<tr>
+				<th class="cell_title">開始時間</th>
+				<td th:text="*{starttime}"></td>
+			</tr>
+			<tr>
+				<th class="cell_title">終了時間</th>
+				<td th:text="*{endtime}"></td>
+			</tr>
+			<tr>
+				<th class="cell_title">スケジュール内容</th>
+				<td th:text="*{schedule}"></td>
+			</tr>
+			<tr>
+				<th class="cell_title">メモ</th>
+				<td th:text="*{schedulememo}"></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

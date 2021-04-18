@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link href="/css/calendarStyle.css" rel="stylesheet"></link>
+<title>スケジュール管理</title>
+</head>
+<body>
+	<div th:object="${output}">
+		<p>
+			<a href="calendar.html"
+				th:href="@{/calendar/month(year=*{yearOfPrevMonth}, month=*{monthOfPrevMonth})}">&larr;先月</a>
+			<a href="calendar.html"
+				th:href="@{/calendar/month(year=*{yearOfNextMonth}, month=*{monthOfNextMonth})}">来月&rarr;</a>
+			<br> <span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span>
+		</p>
+		<table border=1>
+			<tr>
+				<th>月</th>
+				<th>火</th>
+				<th>水</th>
+				<th>木</th>
+				<th>金</th>
+				<th>土</th>
+				<th>日</th>
+			</tr>
+			<tr th:each="week : *{calendar}">
+				<td th:each="day : ${week}">
+					<div th:if="${day != null}">
+						<span th:text="${day.getDay()}"></span>
+						<p th:text="${day.getSchedule()}"></p>
+						<!-- <a href="showSchedule.html" th:href="@{/calendar/schedule(scheduledate=*{scheduledate})}">スケジュール</a> -->
+					</div>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
