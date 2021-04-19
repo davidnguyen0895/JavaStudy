@@ -37,10 +37,18 @@ public class ScheduleService {
 	}
 	/**
 	 *
-	 * @param scheduleSearchRequest
+	 * @param scheduledate
 	 * @return
 	 */
 	public List<Schedule> selectByDate(String scheduledate) {
 		return selectScheduleMapper.selectByDate(scheduledate);
+	}
+	/**
+	 *
+	 * @param scheduledate
+	 * @return
+	 */
+	public List<Schedule> selectAllByDate(String scheduledate) {
+		return selectScheduleMapper.selectAllByDate(scheduledate);
 	}
 }

@@ -17,4 +17,9 @@
 		SELECT s.schedule FROM java_study.schedule s WHERE
 		s.scheduledate = #{scheduledate}
 	</select>
+	<select id="selectAllByDate"
+		resultType="spring.schedule.entity.Schedule">
+		SELECT * FROM java_study.schedule s WHERE
+		s.scheduledate = #{scheduledate}
+	</select>
 </mapper>

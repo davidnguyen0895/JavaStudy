@@ -27,9 +27,12 @@
 			<tr th:each="week : *{calendar}">
 				<td th:each="day : ${week}">
 					<div th:if="${day != null}">
-						<span th:text="${day.getDay()}"></span>
+						<span th:text="${day.getDay().substring(8,10)}"></span>
 						<p th:text="${day.getSchedule()}"></p>
-						<!-- <a href="showSchedule.html" th:href="@{/calendar/schedule(scheduledate=*{scheduledate})}">スケジュール</a> -->
+<!-- 						<p>
+							<a href="showSchedule.html"
+								th:href="@{/calendar/schedule(scheduledate=*{day.getDay()})}">スケジュール</a>
+						</p> -->
 					</div>
 			</tr>
 		</table>

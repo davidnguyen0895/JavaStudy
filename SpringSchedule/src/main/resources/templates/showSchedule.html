@@ -11,11 +11,10 @@
 	<div>
 		<a th:href="@{index}">ホームページ</a>
 	</div>
-	<form th:action="@{/selectByDateInfo}" th:object="${scheduledate}"
+	<form th:action="@{/selectAllByDate}" th:object="${schedule}"
 		th:method="post"></form>
-
-	<div th:if="${selectByDateInfo}">
-		<table th:object="${selectByDateInfo}">
+	<div th:if="${selectAllByDateInfo}">
+		<table th:object="${selectAllByDateInfo}">
 			<tr>
 				<th class="cell_title">ID</th>
 				<td th:text="*{id}"></td>

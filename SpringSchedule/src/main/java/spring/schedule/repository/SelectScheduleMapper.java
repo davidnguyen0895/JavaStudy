@@ -1,9 +1,7 @@
 package spring.schedule.repository;
 
 import java.util.List;
-
 import org.apache.ibatis.annotations.Mapper;
-
 import spring.schedule.dto.ScheduleSearchRequest;
 import spring.schedule.entity.Schedule;
 
@@ -11,19 +9,25 @@ import spring.schedule.entity.Schedule;
 public interface SelectScheduleMapper{
 /**
  *
- * @return
+ * @return 全件検索結果
  */
 	List<Schedule> selectAll();
 	/**
 	 *
 	 * @param scheduleSearchRequest
-	 * @return
+	 * @return IDで参照したスケジュールの情報
 	 */
 	Schedule selectById(ScheduleSearchRequest scheduleSearchRequest) ;
 	/**
 	 *
 	 * @param scheduleSearchRequest
-	 * @return
+	 * @return 日付で参照したスケジュールの情報
 	 */
 	List<Schedule> selectByDate(String scheduledate) ;
+	/**
+	 *
+	 * @param scheduledate
+	 * @return
+	 */
+	List<Schedule> selectAllByDate(String scheduledate) ;
 }
