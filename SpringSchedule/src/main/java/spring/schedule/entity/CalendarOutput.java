@@ -16,10 +16,11 @@ public class CalendarOutput implements Serializable{
 	/**
 	 * 1週間の日付
 	 */
-	private List<DayEntity> weekList;
+	/* private List<DayEntity> weekList; */
 	private LocalDate firstDayOfMonth;
 	private int yearOfNextMonth;
 	private int monthOfNextMonth;
 	private int yearOfPrevMonth;
 	private int monthOfPrevMonth;
+	private String scheduledate;
 }

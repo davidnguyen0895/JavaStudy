@@ -9,9 +9,9 @@
 	<div th:object="${output}">
 		<p>
 			<a href="calendar.html"
-				th:href="@{/calendar/month(year=*{yearOfPrevMonth}, month=*{monthOfPrevMonth})}">&larr;先月</a>
+				th:href="@{/calendar/date(year=*{yearOfPrevMonth}, month=*{monthOfPrevMonth})}">&larr;先月</a>
 			<a href="calendar.html"
-				th:href="@{/calendar/month(year=*{yearOfNextMonth}, month=*{monthOfNextMonth})}">来月&rarr;</a>
+				th:href="@{/calendar/date(year=*{yearOfNextMonth}, month=*{monthOfNextMonth})}">来月&rarr;</a>
 			<br> <span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span>
 		</p>
 		<table border=1>
@@ -26,13 +26,11 @@
 			</tr>
 			<tr th:each="week : *{calendar}">
 				<td th:each="day : ${week}">
-					<div th:if="${day != null}">
-						<span th:text="${day.getDay().substring(8,10)}"></span>
-						<p th:text="${day.getSchedule()}"></p>
-<!-- 						<p>
-							<a href="showSchedule.html"
-								th:href="@{/calendar/schedule(scheduledate=*{day.getDay()})}">スケジュール</a>
-						</p> -->
+				<span th:text="${day.getDay().substring(8,10)}"></span>
+					<div th:if="${day.getSchedule() != null}">
+						<a href="showSchedule.html"
+							th:href="@{/calendar/schedule(scheduledate=${day.getScheduledate()})}">
+							<img src="/images/calendar.png" /></a><p th:text="${day.getSchedule()}"></p>
 					</div>
 			</tr>
 		</table>

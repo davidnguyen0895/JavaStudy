@@ -10,16 +10,35 @@
 	</select>
 	<select id="selectById"
 		resultType="spring.schedule.entity.Schedule">
-		SELECT * FROM java_study.schedule WHERE id = #{id}
+		SELECT
+		s.id AS id
+		, s.userid AS userid
+		, s.scheduledate AS scheduledate
+		, s.starttime AS starttime
+		, s.endtime AS endtime
+		,s.schedule AS schedule
+		, s.schedulememo AS schedulememo
+		FROM
+		java_study.schedule s
+		where
+		s.id = #{id}
 	</select>
-	<select id="selectByDate"
+<!-- 	<select id="selectByDate"
 		resultType="spring.schedule.entity.Schedule">
 		SELECT s.schedule FROM java_study.schedule s WHERE
 		s.scheduledate = #{scheduledate}
-	</select>
+	</select> -->
 	<select id="selectAllByDate"
 		resultType="spring.schedule.entity.Schedule">
-		SELECT * FROM java_study.schedule s WHERE
+		SELECT
+		s.id AS id
+		, s.userid AS userid
+		, s.scheduledate AS scheduledate
+		,s.starttime AS starttime
+		, s.endtime AS endtime
+		, s.schedule AS schedule
+		, s.schedulememo AS schedulememo
+		FROM java_study.schedule s WHERE
 		s.scheduledate = #{scheduledate}
 	</select>
 </mapper>
