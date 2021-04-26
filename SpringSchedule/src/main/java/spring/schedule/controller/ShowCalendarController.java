@@ -24,7 +24,11 @@ public class ShowCalendarController {
 	 */
 	@Autowired
 	CalendarService calendarService;
-
+	/**
+	 *	本日の日付を取得
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping
 	public String today(Model model) {
 		LocalDate today = new LocalDate();
@@ -32,17 +36,28 @@ public class ShowCalendarController {
 		int month = today.getMonthOfYear();
 		return date(year, month, model);
 	}
-
+	/**
+	 *
+	 * @param year
+	 * @param month
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = "date")
 	public String date(@RequestParam("year") int year,@RequestParam("month") int month, Model model) {
 		//一日
 		LocalDate firstDayOfMonth =new LocalDate(year, month, 1);
 		//カレンダーを格納Model
-		 CalendarOutput output = calendarService.getCalendarOutput(firstDayOfMonth);
+		CalendarOutput output = calendarService.getCalendarOutput(firstDayOfMonth);
 		model.addAttribute("output", output);
 		return "calendar";
 	}
-
+	/**
+	 *
+	 * @param scheduledate
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping(value = "schedule")
 	public String schedule(@RequestParam("scheduledate") String scheduledate, Model model) {
 		List<Schedule> scheduleList = calendarService.selectAllByDate(scheduledate);

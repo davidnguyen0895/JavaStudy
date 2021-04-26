@@ -23,11 +23,6 @@
 		where
 		s.id = #{id}
 	</select>
-<!-- 	<select id="selectByDate"
-		resultType="spring.schedule.entity.Schedule">
-		SELECT s.schedule FROM java_study.schedule s WHERE
-		s.scheduledate = #{scheduledate}
-	</select> -->
 	<select id="selectAllByDate"
 		resultType="spring.schedule.entity.Schedule">
 		SELECT

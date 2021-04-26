@@ -7,10 +7,10 @@ import spring.schedule.entity.Schedule;
 
 @Mapper
 public interface SelectScheduleMapper{
-/**
- *
- * @return 全件検索結果
- */
+	/**
+	 *
+	 * @return 全件検索結果
+	 */
 	List<Schedule> selectAll();
 	/**
 	 *
@@ -19,13 +19,7 @@ public interface SelectScheduleMapper{
 	 */
 	Schedule selectById(ScheduleSearchRequest scheduleSearchRequest) ;
 	/**
-	 *
-	 * @param scheduleSearchRequest
-	 * @return 日付で参照したスケジュールの情報
-	 */
-	List<Schedule> selectByDate(String scheduledate) ;
-	/**
-	 *
+	 *日付で参照したスケジュールの情報
 	 * @param scheduledate
 	 * @return
 	 */
