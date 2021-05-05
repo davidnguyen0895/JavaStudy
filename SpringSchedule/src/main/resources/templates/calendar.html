@@ -16,22 +16,25 @@
 		</p>
 		<table border=1>
 			<tr>
+				<th>日</th>
 				<th>月</th>
 				<th>火</th>
 				<th>水</th>
 				<th>木</th>
 				<th>金</th>
 				<th>土</th>
-				<th>日</th>
 			</tr>
 			<tr th:each="week : *{calendar}">
-				<td th:each="day : ${week}">
-				<span th:text="${day.getDay().substring(8,10)}"></span>
-					<div th:if="${day.getSchedule() != null}">
-						<a href="showSchedule.html"
-							th:href="@{/calendar/schedule(scheduledate=${day.getScheduledate()})}">
-							<img src="/images/calendar.png" /></a><p th:text="${day.getSchedule()}"></p>
+				<td th:each="day : ${week}"><span th:text="${day.getDay()}"></span>
+					<div th:if="${day.getIdList() != null}">
+						<div th:each="id : ${day.getIdList()}">
+							<a href="showSchedule.html"
+								th:href="@{/calendar/schedule(id=${id})}">
+								<img src="/images/calendar.png" />
+							</a>
+						</div>
 					</div>
+				</td>
 			</tr>
 		</table>
 	</div>

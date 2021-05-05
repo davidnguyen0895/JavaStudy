@@ -1,10 +1,8 @@
 package spring.schedule.service;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
-import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,56 +21,46 @@ public class CalendarService {
 	@Autowired
 	private SelectScheduleMapper selectScheduleMapper;
 
-	public CalendarOutput getCalendarOutput(LocalDate firstDayOfMonth) {
+	public CalendarOutput getCalendarOutput(int year, int month) {
+		//一日
+		LocalDate firstDayOfMonth =new LocalDate(year, month, 1);
 		// 当月の最後の日
 		LocalDate lastDayOfMonth = firstDayOfMonth.dayOfMonth().withMaximumValue();
 		// カレンダーの一日目
-		LocalDate firstDayOfCalendar = firstDayOfMonth.dayOfWeek().withMinimumValue();
+		LocalDate firstDayOfCalendar = firstDayOfMonth.dayOfWeek().withMinimumValue().minusDays(1);
 		// カレンダーの最後の日
-		LocalDate lastDayOfCalendar = lastDayOfMonth.dayOfWeek().withMaximumValue();
+		/*
+		 * LocalDate lastDayOfCalendar =
+		 * lastDayOfMonth.dayOfWeek().withMaximumValue().minusDays(1);
+		 */
 		// カレンダーを格納Model
 		CalendarOutput output = new CalendarOutput();
-		// 一週間の日付
-		List<DayEntity> weekList = null;
-		// 4週間の日付
+		// 5週間の日付
+		List<DayEntity> firstWeekList = new ArrayList<DayEntity>();
+		List<DayEntity> secondWeekList = new ArrayList<DayEntity>();
+		List<DayEntity> thirdWeekList = new ArrayList<DayEntity>();
+		List<DayEntity> fourthWeekList = new ArrayList<DayEntity>();
+		List<DayEntity> fifthWeekList = new ArrayList<DayEntity>();
+		List<DayEntity> sixthWeekList = new ArrayList<DayEntity>();
 		List<List<DayEntity>> calendar = new ArrayList<List<DayEntity>>();
-		// スケジュール日付
-		String scheduledate = "";
-		int count = 0;
-		//DayFormat
-		SimpleDateFormat dayFormat = new SimpleDateFormat("yyyy/MM/dd");
 
-		while (true) {
-			// カレンダーの一日目からカウントアップ
-			LocalDate currentDay = firstDayOfCalendar.plusDays(count);
-			scheduledate = currentDay.toString();
-			// 現在の日付のスケジュールリストを取得
-			List<Schedule> scheduleList = selectAllByDate(scheduledate);
-			// 日付Model
-			DayEntity day = new DayEntity();
-			day.setDay(scheduledate);
-			// スケジュールリストをfor文で，それぞれの日付のスケジュールを日付Modelに格納
-			if(scheduleList != null) {
-				for (Schedule schedule : scheduleList) {
-					day.setSchedule(schedule.getSchedule());
-					day.setScheduledate(dayFormat.format(schedule.getScheduledate()));
-				}
-			}
-			if (currentDay.isAfter(lastDayOfCalendar)) {
-				break;
-			}
-			if (weekList == null) {
-				weekList = new ArrayList<DayEntity>();
-				calendar.add(weekList);
-			}
-			weekList.add(day);
+		//DateTimeFormatter
+		/* DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd"); */
 
-			int week = currentDay.getDayOfWeek();
-			if (week == DateTimeConstants.SUNDAY) {
-				weekList = null;
-			}
-			count++;
-		}
+		generateWeekList(0, 6, firstDayOfCalendar, firstWeekList, output);
+		generateWeekList(7, 13, firstDayOfCalendar, secondWeekList, output);
+		generateWeekList(14, 20, firstDayOfCalendar, thirdWeekList, output);
+		generateWeekList(21, 27, firstDayOfCalendar, fourthWeekList, output);
+		generateWeekList(28, 34, firstDayOfCalendar, fifthWeekList, output);
+		generateWeekList(35, 41, firstDayOfCalendar, sixthWeekList, output);
+
+		calendar.add(firstWeekList);
+		calendar.add(secondWeekList);
+		calendar.add(thirdWeekList);
+		calendar.add(fourthWeekList);
+		calendar.add(fifthWeekList);
+		calendar.add(sixthWeekList);
+
 		LocalDate nextMonth = firstDayOfMonth.plusMonths(1);
 		LocalDate prevMonth = lastDayOfMonth.minusMonths(1);
 		output.setCalendar(calendar);
@@ -82,6 +70,53 @@ public class CalendarService {
 		output.setYearOfPrevMonth(prevMonth.getYear());
 		output.setMonthOfPrevMonth(prevMonth.getMonthOfYear());
 		return output;
+	}
+
+	/**
+	 *
+	 * @param mondayCount
+	 * @param sundayCount
+	 * @param firstDayOfCalendar
+	 * @param weekList
+	 */
+	private void generateWeekList(int firstDay, int lastDay, LocalDate firstDayOfCalendar,
+			List<DayEntity> weekList, CalendarOutput output) {
+		for(int i = firstDay; i <= lastDay; i++) {
+			//IDリスト
+			List<Long> idList = new ArrayList<Long>();
+			//日付Model
+			DayEntity day = new DayEntity();
+			String scheduledate = firstDayOfCalendar.plusDays(i).toString().replace("-", "/");
+			//スケージュールデータを取得するための日付
+			day.setScheduledate(scheduledate);
+			//カレンダー表示のための日付
+			day.setDay(generateCalendarDate(scheduledate));
+			//スケージュールリスト
+			List<Schedule> scheduleList = selectAllByDate(scheduledate);
+			day.setScheduleList(scheduleList);
+			//スケージュールがあった日付のスケージュールIDをIDリストに格納
+			for(Schedule schedule : scheduleList) {
+				idList.add(schedule.getId());
+				day.setIdList(idList);
+			}
+			//日付リストに格納
+			weekList.add(day);
+		}
+	}
+	/**
+	 *
+	 * @param scheduledate
+	 * @return
+	 */
+	private String generateCalendarDate(String scheduledate) {
+		String result = "";
+		if(scheduledate.substring(8, 9).equals("0")) {
+			result = scheduledate.substring(9,10);
+			return result;
+		}else {
+			result = scheduledate.substring(8,10);
+			return result;
+		}
 	}
 
 	/**
@@ -101,22 +136,19 @@ public class CalendarService {
 	public List<Schedule> selectAll() {
 		return selectScheduleMapper.selectAll();
 	}
-
-	/**
-	 *
-	 * @param scheduledate
-	 * @return
-	 */
-	public List<Schedule> selectByDate(String scheduledate) {
-		return selectScheduleMapper.selectByDate(scheduledate);
-	}
-
 	/**
 	 *
 	 * @param scheduledate
 	 * @return
 	 */
 	public List<Schedule> selectAllByDate(String scheduledate) {
-		return selectScheduleMapper.selectAllByDate(scheduledate);
+		return selectScheduleMapper.selectAllByDate(scheduledate); }
+	/**
+	 *
+	 * @param id
+	 * @return
+	 */
+	public Schedule selectAllById(Long id) {
+		return selectScheduleMapper.selectAllById(id);
 	}
 }

@@ -36,4 +36,17 @@
 		FROM java_study.schedule s WHERE
 		s.scheduledate = #{scheduledate}
 	</select>
+	<select id="selectAllById"
+		resultType="spring.schedule.entity.Schedule">
+		SELECT
+		s.id AS id
+		, s.userid AS userid
+		, s.scheduledate AS scheduledate
+		,s.starttime AS starttime
+		, s.endtime AS endtime
+		, s.schedule AS schedule
+		, s.schedulememo AS schedulememo
+		FROM java_study.schedule s WHERE
+		s.id = #{id}
+	</select>
 </mapper>

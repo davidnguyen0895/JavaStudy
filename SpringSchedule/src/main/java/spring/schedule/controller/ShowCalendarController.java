@@ -1,6 +1,5 @@
 package spring.schedule.controller;
 
-import java.util.List;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,19 +12,20 @@ import spring.schedule.service.CalendarService;
 
 /**
  *
- * @author thinh
- *スケジュール情報Controller
+ * @author thinh スケジュール情報Controller
  */
 @Controller
 @RequestMapping("calendar")
 public class ShowCalendarController {
 	/**
-	 *カレンダー作成Service
+	 * カレンダー作成Service
 	 */
 	@Autowired
 	CalendarService calendarService;
+
 	/**
-	 *	本日の日付を取得
+	 * 本日の日付を取得
+	 *
 	 * @param model
 	 * @return
 	 */
@@ -36,6 +36,7 @@ public class ShowCalendarController {
 		int month = today.getMonthOfYear();
 		return date(year, month, model);
 	}
+
 	/**
 	 *
 	 * @param year
@@ -44,24 +45,19 @@ public class ShowCalendarController {
 	 * @return
 	 */
 	@RequestMapping(value = "date")
-	public String date(@RequestParam("year") int year,@RequestParam("month") int month, Model model) {
-		//一日
-		LocalDate firstDayOfMonth =new LocalDate(year, month, 1);
-		//カレンダーを格納Model
-		CalendarOutput output = calendarService.getCalendarOutput(firstDayOfMonth);
+	public String date(@RequestParam("year") int year, @RequestParam("month") int month, Model model) {
+		// カレンダーを格納Model
+		CalendarOutput output = calendarService.getCalendarOutput(year, month);
 		model.addAttribute("output", output);
 		return "calendar";
 	}
-	/**
-	 *
-	 * @param scheduledate
-	 * @param model
-	 * @return
-	 */
+
 	@RequestMapping(value = "schedule")
-	public String schedule(@RequestParam("scheduledate") String scheduledate, Model model) {
-		List<Schedule> scheduleList = calendarService.selectAllByDate(scheduledate);
-		model.addAttribute("scheduleList", scheduleList);/* Modelに格納してhtmlに渡す */
+	public String schedule(@RequestParam("id") Long id, Model model) {
+		Schedule scheduleList = calendarService.selectAllById(id);
+		model.addAttribute("scheduleList", scheduleList);
+		//Modelに格納してhtmlに渡す
 		return "showSchedule";
 	}
+
 }

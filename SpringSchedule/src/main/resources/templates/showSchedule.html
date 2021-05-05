@@ -24,7 +24,7 @@
 			<tr th:each="schedule : ${scheduleList}">
 				<td><p th:text="${schedule.id}">ID</p></td>
 				<td><p th:text="${schedule.userid}">ユーザID</p></td>
-				<td><p th:text="${#dates.format(schedule.scheduledate,'YYYY/MM/DD')}">スケジュール日付</p></td>
+				<td><p th:text="${#dates.format(schedule.scheduledate,'yyyy/MM/dd')}">スケジュール日付</p></td>
 				<td><p th:text="${schedule.starttime}">開始時間</p></td>
 				<td><p th:text="${schedule.endtime}">終了時間</p></td>
 				<td><p th:text="${schedule.schedule}">スケジュール内容ID</p></td>

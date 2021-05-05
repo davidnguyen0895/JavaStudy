@@ -1,6 +1,7 @@
 package spring.schedule.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import lombok.Data;
 
@@ -10,7 +11,7 @@ public class DayEntity implements Serializable{
 	/**
 	 * ID
 	 */
-	private Long id;
+	private List<Long> idList;
 	/**
 	 *カレンダーの日付
 	 */
@@ -18,9 +19,9 @@ public class DayEntity implements Serializable{
 	/**
 	 *スケージュール内容
 	 */
-	private String schedule;
+	private List<Schedule> scheduleList;
 	/**
-	 *スケージュールの日付
+	 *
 	 */
 	private String scheduledate;
 }

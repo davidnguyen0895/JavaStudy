@@ -23,5 +23,11 @@ public interface SelectScheduleMapper{
 	 * @param scheduledate
 	 * @return
 	 */
-	List<Schedule> selectAllByDate(String scheduledate) ;
+	List<Schedule> selectAllByDate(String scheduledate);
+	/**
+	 *
+	 * @param id
+	 * @return
+	 */
+	Schedule selectAllById(Long id);
 }
