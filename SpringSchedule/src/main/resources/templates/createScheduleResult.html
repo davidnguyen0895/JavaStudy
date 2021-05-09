@@ -2,15 +2,25 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>スケジュール管理</title>
+<title>新規登録・スケジュール情報</title>
 <link href="/css/list.css" rel="stylesheet"></link>
 <meta charset="utf-8" />
 </head>
 <body>
+<!--～～～～～～～～～～ホームページ画面に戻る ～～～～～～～～～～-->
 	<div>
 		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
 	</div>
-	<h4 align="center">入力したスケージュール情報</h4>
+	<!--～～～～～～～～～～ カレンダー表示画面に戻る～～～～～～～～～～-->
+	<div>
+		<p>
+			<a href="displayCalendar.html"
+				th:href="@{/displayCalendar/date(year=*{dayEntity.getCalendarYear()},
+				month=*{dayEntity.getCalendarMonth()})}"><button>カレンダーに戻る</button></a>
+		</p>
+	</div>
+		<!--～～～～～～～～～～ 新規登録したスケージュール情報～～～～～～～～～～-->
+	<h3 align="center">新規登録したスケージュール情報</h3>
 	<table>
 		<thead>
 			<tr>
@@ -28,19 +38,13 @@
 				<td><p th:text="${data.id}">ID</p></td>
 				<td><p th:text="${data.userid}">ユーザID</p></td>
 				<td><p th:text="${#dates.format(data.scheduledate,'yyyy/MM/dd')}">スケジュール日付</p></td>
-				<td><p th:text="${data.starttime}">開始時間</p></td>
-				<td><p th:text="${data.endtime}">終了時間</p></td>
+				<td><p th:text="${#dates.format(data.starttime,'hh:mm')}">開始時間</p></td>
+				<td><p th:text="${#dates.format(data.endtime,'hh:mm')}">終了時間</p></td>
 				<td><p th:text="${data.schedule}">スケジュール内容ID</p></td>
 				<td><p th:text="${data.schedulememo}">メモ</p></td>
 			</tr>
 		</tbody>
 	</table>
-	<div>
-		<p>
-			<a href="calendar.html"
-				th:href="@{/calendar/date(year=*{dayEntity.getCalendarYear()},
-				month=*{dayEntity.getCalendarMonth()})}"><button>カレンダーに戻る</button></a>
-		</p>
-	</div>
+
 </body>
 </html>

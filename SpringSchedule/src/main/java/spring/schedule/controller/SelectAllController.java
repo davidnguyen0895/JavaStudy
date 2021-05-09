@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import spring.schedule.entity.Schedule;
+import spring.schedule.constants.ScheduleConstants;
+import spring.schedule.entity.ScheduleInfoEntity;
 import spring.schedule.service.CalendarService;
 
 /**
@@ -31,9 +30,9 @@ public class SelectAllController {
 	 */
 	@GetMapping(value = "/selectAll")
 	public String selectAll(Model model) {
-		List<Schedule> scheduleList = new ArrayList<Schedule>();
+		List<ScheduleInfoEntity> scheduleList = new ArrayList<ScheduleInfoEntity>();
 		scheduleList = calendarService.selectAll();
 		model.addAttribute("scheduleList", scheduleList);
-		return "selectAll";
+		return ScheduleConstants.SELECT_ALL;
 	}
 }

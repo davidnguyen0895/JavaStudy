@@ -3,14 +3,19 @@ package spring.schedule.entity;
 import java.io.Serializable;
 import org.joda.time.LocalDate;
 import java.util.List;
-
-/*import org.joda.time.LocalDate;*/
-
 import lombok.Data;
 
+/**
+ * 日付情報を格納するためのEntity
+ * @author thinh
+ *
+ */
 @Data
 public class DayEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
+	/**
+	 *ID
+	 */
 	private Long id;
 	/**
 	 * IDリスト
@@ -21,15 +26,15 @@ public class DayEntity implements Serializable{
 	 */
 	private LocalDate day;
 	/**
-	 *スケージュール内容
+	 *スケージュール内容リスト
 	 */
-	private List<Schedule> scheduleList;
+	private List<ScheduleInfoEntity> scheduleList;
 	/**
-	 *
+	 * 日付の年(カレンダー表示画面に戻る用)
 	 */
 	private int calendarYear;
 	/**
-	 *
+	 *日付の月(カレンダー表示画面に戻る用)
 	 */
 	private int calendarMonth;
 }

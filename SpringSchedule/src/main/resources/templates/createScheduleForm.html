@@ -27,21 +27,23 @@
 <!--～～～～～～～～～～ カレンダーに戻るボタン ～～～～～～～～～～-->
 	<div>
 		<p>
-			<a href="calendar.html"
-				th:href="@{/calendar/date(year=*{dayEntity.getCalendarYear()},
+			<a href="displayCalendar.html"
+				th:href="@{/displayCalendar/date(year=*{dayEntity.getCalendarYear()},
 				month=*{dayEntity.getCalendarMonth()})}"><button>カレンダーに戻る</button></a>
 		</p>
 	</div>
-<!--～～～～～～～～～～ スケジュール入力画面 ～～～～～～～～～～-->
-	<h3>スケジュール入力画面</h3>
+<!--～～～～～～～～～～ スケージュール情報を新規登録フォーム ～～～～～～～～～～-->
+	<h4 align="center">スケージュール情報を新規登録フォーム</h4>
 	<form method="POST" th:action="@{/schedule/createSchedule}"
 		th:object="${schedule}">
 		<table>
+		<!--～～～～～～～～～～ スケージュール日付 ～～～～～～～～～～-->
 			<tr>
 				<th class="cell_title">スケージュール日付</th>
 				<th class="cell_required"></th>
 				<td><input type="text" th:field="*{scheduledate}" id="datepicker" placeholder="スケージュール日付"></td>
 			</tr>
+			<!--～～～～～～～～～～ 開始時間 ～～～～～～～～～～-->
 			<tr>
 				<th class="cell_title">開始時間</th>
 				<th class="cell_required"></th>
@@ -49,6 +51,7 @@
 					<input type="time" th:field="*{starttime}" placeholder="開始時間">
 				</td>
 			</tr>
+			<!--～～～～～～～～～～ 終了時間 ～～～～～～～～～～-->
 			<tr>
 				<th class="cell_title">終了時間</th>
 				<th class="cell_required"></th>
@@ -56,20 +59,24 @@
 					<input type="time" th:field="*{endtime}" placeholder="終了時間">
 				</td>
 			</tr>
+			<!--～～～～～～～～～～ スケジュール内容 ～～～～～～～～～～-->
 			<tr>
 				<th class="cell_title">スケジュール内容</th>
 				<th class="cell_required"></th>
 				<td><input type="text" th:field="*{schedule}" placeholder="スケジュール内容"></td>
 			</tr>
+			<!--～～～～～～～～～～ メモ ～～～～～～～～～～-->
 			<tr>
 				<th class="cell_title">メモ</th>
 				<th class="cell_required"></th>
 				<td><input type="text" th:field="*{schedulememo}" placeholder="メモ"></td>
 			</tr>
 		</table>
+		<!--～～～～～～～～～～ 登録ボタン ～～～～～～～～～～-->
 		<div class="btn_area_center">
 			<input type="submit" value="登録" />
 		</div>
+		<!--～～～～～～～～～～ クリアボタン ～～～～～～～～～～-->
 		<div class="btn_area_center">
 			<input type="reset" value="クリア" />
 		</div>

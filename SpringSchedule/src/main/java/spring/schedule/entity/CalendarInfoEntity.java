@@ -6,15 +6,30 @@ import org.joda.time.LocalDate;
 import lombok.Data;
 
 @Data
-public class CalendarOutput implements Serializable{
+public class CalendarInfoEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/**
-	 *４週間の日付
+	 *x週間の日付リスト
 	 */
 	private List<List<DayEntity>> calendar;
+	/**
+	 *月の最初の日付（1日）
+	 */
 	private LocalDate firstDayOfMonth;
+	/**
+	 *来月の年
+	 */
 	private int yearOfNextMonth;
+	/**
+	 *来月の月
+	 */
 	private int monthOfNextMonth;
+	/**
+	 *先月の年
+	 */
 	private int yearOfPrevMonth;
+	/**
+	 *先月の月
+	 */
 	private int monthOfPrevMonth;
 }

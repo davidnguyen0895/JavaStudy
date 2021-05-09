@@ -7,17 +7,19 @@
 <meta charset="utf-8" />
 </head>
 <body>
+<!--～～～～～～～～～～ ホームページ画面に戻る ～～～～～～～～～～-->
 	<div>
 		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
 	</div>
+	<!--～～～～～～～～～～カレンダー表示画面に戻る～～～～～～～～～～-->
 		<div>
 		<p>
-			<a href="calendar.html"
-				th:href="@{/calendar/date(year=*{dayEntity.getCalendarYear()},
+			<a href="displayCalendar.html"
+				th:href="@{/displayCalendar/date(year=*{dayEntity.getCalendarYear()},
 				month=*{dayEntity.getCalendarMonth()})}"><button>カレンダーに戻る</button></a>
 		</p>
 	</div>
-	<h3>スケジュール情報一覧</h3>
+	<h4 align="center">スケージュール詳細情報</h4>
 	<table>
 		<thead>
 			<tr>
@@ -35,8 +37,8 @@
 				<td><p th:text="${data.id}">ID</p></td>
 				<td><p th:text="${data.userid}">ユーザID</p></td>
 				<td><p th:text="${#dates.format(data.scheduledate,'yyyy/MM/dd')}">スケジュール日付</p></td>
-				<td><p th:text="${data.starttime}">開始時間</p></td>
-				<td><p th:text="${data.endtime}">終了時間</p></td>
+				<td><p th:text="${#dates.format(data.starttime,'hh:mm')}">開始時間</p></td>
+				<td><p th:text="${#dates.format(data.endtime,'hh:mm')}">終了時間</p></td>
 				<td><p th:text="${data.schedule}">スケジュール内容ID</p></td>
 				<td><p th:text="${data.schedulememo}">メモ</p></td>
 			</tr>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<link href="/css/calendar.css" rel="stylesheet"></link>
+<title>スケジュール管理</title>
+</head>
+<body>
+<!--～～～～～～～～～～ ホームページに戻るボタン～～～～～～～～～～-->
+	<div>
+		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
+		<!--～～～～～～～～～～ スケジュール新規登録ボタン～～～～～～～～～～-->
+		<a href="createScheduleForm.html" th:href="@{'/schedule/showScheduleForm'}">
+		<button>スケジュール新規登録</button></a>
+	</div>
+	<!--～～～～～～～～～～ カレンダー表示 ～～～～～～～～～～-->
+	<div th:object="${calendarInfo}">
+		<p>
+			<a href="displayCalendar.html"
+				th:href="@{/displayCalendar/date(year=*{yearOfPrevMonth},
+				month=*{monthOfPrevMonth})}"><button>&larr;先月</button></a>
+			<a href="displayCalendar.html"
+				th:href="@{/displayCalendar/date(year=*{yearOfNextMonth},
+				month=*{monthOfNextMonth})}"><button>来月&rarr;</button></a><br>
+			<span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span>
+		</p>
+		<table border=1>
+			<tr>
+				<th>日</th>
+				<th>月</th>
+				<th>火</th>
+				<th>水</th>
+				<th>木</th>
+				<th>金</th>
+				<th>土</th>
+			</tr>
+			<tr th:each="week : *{calendar}">
+				<td th:each="day : ${week}">
+				<span th:text="${day.getDay().getDayOfMonth()}"></span>
+				<!--～～～～～～～～～～スケージュール情報IDが存在する場合，それをスケージュール詳細画面
+				に渡し，スケージュール情報を取得する．～～～～～～～～～～-->
+					<div th:each="id : ${day.getIdList()}">
+						<a href="showScheduleDetail.html" th:href="@{/displayCalendar/schedule(id=${id})}">
+						<img src="/images/calendar.png" />
+						</a>
+					</div>
+					</td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

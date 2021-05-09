@@ -16,7 +16,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name="schedule")
-public class Schedule implements Serializable{
+public class ScheduleInfoEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/**
 	 * ID

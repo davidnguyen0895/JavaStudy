@@ -5,11 +5,19 @@
 <mapper
 	namespace="spring.schedule.repository.SelectScheduleMapper">
 	<select id="selectAll"
-		resultType="spring.schedule.entity.Schedule">
-		SELECT * FROM java_study.schedule
+		resultType="spring.schedule.entity.ScheduleInfoEntity">
+		SELECT s.id AS id
+		, s.userid AS userid
+		, s.scheduledate AS scheduledate
+		, s.starttime AS starttime
+		, s.endtime AS endtime
+		,s.schedule AS schedule
+		, s.schedulememo AS schedulememo
+		FROM
+		java_study.schedule s
 	</select>
 	<select id="selectById"
-		resultType="spring.schedule.entity.Schedule">
+		resultType="spring.schedule.entity.ScheduleInfoEntity">
 		SELECT
 		s.id AS id
 		, s.userid AS userid
@@ -24,7 +32,7 @@
 		s.id = #{id}
 	</select>
 	<select id="selectAllByDate"
-		resultType="spring.schedule.entity.Schedule">
+		resultType="spring.schedule.entity.ScheduleInfoEntity">
 		SELECT
 		s.id AS id
 		, s.userid AS userid
@@ -37,7 +45,7 @@
 		s.scheduledate = #{scheduledate}
 	</select>
 	<select id="selectAllById"
-		resultType="spring.schedule.entity.Schedule">
+		resultType="spring.schedule.entity.ScheduleInfoEntity">
 		SELECT
 		s.id AS id
 		, s.userid AS userid

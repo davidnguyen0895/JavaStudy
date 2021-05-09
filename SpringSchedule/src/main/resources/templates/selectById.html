@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>スケジュール管理</title>
+<title>スケジュール情報・ID検索画面</title>
 <link href="/css/list.css" rel="stylesheet"></link>
 <meta charset="utf-8" />
 </head>
@@ -10,7 +10,7 @@
 	<div>
 		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
 	</div>
-	<h1>スケジュール情報一覧</h1>
+	<h3>IDでスケジュール情報を参照する画面</h3>
 	<form th:action="@{/selectById}" th:object="${scheduleSearchRequest}"
 		th:method="post">
 		<div>
@@ -35,16 +35,15 @@
 			</tr>
 			<tr>
 				<th class="cell_title">スケジュール日付</th>
-				<td
-					th:text="${#dates.format(selectByIdInfo.scheduledate,'YYYY/MM/DD')}"></td>
+				<td th:text="${#dates.format(selectByIdInfo.scheduledate,'YYYY/MM/DD')}"></td>
 			</tr>
 			<tr>
 				<th class="cell_title">開始時間</th>
-				<td th:text="*{starttime}"></td>
+				<td th:text="${#dates.format(selectByIdInfo.starttime,'hh:mm')}"></td>
 			</tr>
 			<tr>
 				<th class="cell_title">終了時間</th>
-				<td th:text="*{endtime}"></td>
+				<td th:text="${#dates.format(selectByIdInfo.endtime,'hh:mm')}"></td>
 			</tr>
 			<tr>
 				<th class="cell_title">スケジュール内容</th>
