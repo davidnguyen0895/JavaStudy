@@ -1,5 +1,9 @@
 package spring.schedule.service;
 
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -9,18 +13,30 @@ import org.springframework.stereotype.Service;
 import spring.schedule.dto.ScheduleSearchRequest;
 import spring.schedule.entity.CalendarOutput;
 import spring.schedule.entity.DayEntity;
+import spring.schedule.entity.InsertScheduleEntity;
 import spring.schedule.entity.Schedule;
+import spring.schedule.entity.ScheduleRequest;
 import spring.schedule.repository.SelectScheduleMapper;
 
 @Service
 @Transactional(rollbackOn = Exception.class)
 public class CalendarService {
+	//
+	private final SimpleDateFormat dateFormat_mmddyyyy = new SimpleDateFormat("yyyy/MM/dd");
+	private final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm");
+	private final SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
 	/**
 	 * Mapper
 	 */
 	@Autowired
 	private SelectScheduleMapper selectScheduleMapper;
 
+	/**
+	 *
+	 * @param year
+	 * @param month
+	 * @return
+	 */
 	public CalendarOutput getCalendarOutput(int year, int month) {
 		//一日
 		LocalDate firstDayOfMonth =new LocalDate(year, month, 1);
@@ -43,9 +59,6 @@ public class CalendarService {
 		List<DayEntity> fifthWeekList = new ArrayList<DayEntity>();
 		List<DayEntity> sixthWeekList = new ArrayList<DayEntity>();
 		List<List<DayEntity>> calendar = new ArrayList<List<DayEntity>>();
-
-		//DateTimeFormatter
-		/* DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd"); */
 
 		generateWeekList(0, 6, firstDayOfCalendar, firstWeekList, output);
 		generateWeekList(7, 13, firstDayOfCalendar, secondWeekList, output);
@@ -86,39 +99,21 @@ public class CalendarService {
 			List<Long> idList = new ArrayList<Long>();
 			//日付Model
 			DayEntity day = new DayEntity();
-			String scheduledate = firstDayOfCalendar.plusDays(i).toString().replace("-", "/");
-			//スケージュールデータを取得するための日付
-			day.setScheduledate(scheduledate);
+			LocalDate scheduledate = firstDayOfCalendar.plusDays(i);
 			//カレンダー表示のための日付
-			day.setDay(generateCalendarDate(scheduledate));
+			day.setDay(scheduledate);
 			//スケージュールリスト
-			List<Schedule> scheduleList = selectAllByDate(scheduledate);
+			List<Schedule> scheduleList = selectAllByDate(scheduledate.toString());
 			day.setScheduleList(scheduleList);
 			//スケージュールがあった日付のスケージュールIDをIDリストに格納
 			for(Schedule schedule : scheduleList) {
 				idList.add(schedule.getId());
-				day.setIdList(idList);
 			}
+			day.setIdList(idList);
 			//日付リストに格納
 			weekList.add(day);
 		}
 	}
-	/**
-	 *
-	 * @param scheduledate
-	 * @return
-	 */
-	private String generateCalendarDate(String scheduledate) {
-		String result = "";
-		if(scheduledate.substring(8, 9).equals("0")) {
-			result = scheduledate.substring(9,10);
-			return result;
-		}else {
-			result = scheduledate.substring(8,10);
-			return result;
-		}
-	}
-
 	/**
 	 * ユーザ情報検索
 	 *
@@ -142,7 +137,8 @@ public class CalendarService {
 	 * @return
 	 */
 	public List<Schedule> selectAllByDate(String scheduledate) {
-		return selectScheduleMapper.selectAllByDate(scheduledate); }
+		return selectScheduleMapper.selectAllByDate(scheduledate);
+		}
 	/**
 	 *
 	 * @param id
@@ -150,5 +146,41 @@ public class CalendarService {
 	 */
 	public Schedule selectAllById(Long id) {
 		return selectScheduleMapper.selectAllById(id);
+	}
+	/**
+	 *	スケージュール情報新規登録
+	 * @param schedule スケージュール情報
+	 * @throws ParseException
+	 */
+	public void insertNewSchedule(ScheduleRequest scheduleRequest) throws ParseException {
+		InsertScheduleEntity schedule = new InsertScheduleEntity();
+		schedule = CreateSchedule(scheduleRequest);
+		selectScheduleMapper.insertNewSchedule(schedule);
+	}
+	/**
+
+	 * @param scheduleRequest スケージュール情報リクエストデータ
+	 * @return
+	 * @throws ParseException
+	 */
+	private InsertScheduleEntity CreateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
+		InsertScheduleEntity schedule = new InsertScheduleEntity();
+		java.sql.Time convertedStarttime = new java.sql.Time(timeFormat.parse(scheduleRequest.getStarttime()).getTime());
+		java.sql.Time convertedEndtime = new java.sql.Time(timeFormat.parse(scheduleRequest.getEndtime()).getTime());
+		java.util.Date convertedUtilScheduleDate = dateFormat_mmddyyyy.parse(scheduleRequest.getScheduledate());
+		java.sql.Date convertedSqlScheduleDate = new java.sql.Date(convertedUtilScheduleDate.getTime());
+		String stringStartTime = convertedStarttime.toString();
+		String stringEndTime = convertedEndtime.toString();
+		String startTimeStamp = scheduleRequest.getScheduledate() + " " + stringStartTime;
+		String endTimeStamp = scheduleRequest.getScheduledate() + " " + stringEndTime;
+		Date resultStartTime = (Date) timeStampFormat.parse(startTimeStamp);
+		Date resultEndTime = (Date) timeStampFormat.parse(endTimeStamp);
+		schedule.setUserid(3);
+		schedule.setScheduledate(convertedSqlScheduleDate);
+		schedule.setStarttime(resultStartTime);
+		schedule.setEndtime(resultEndTime);
+		schedule.setSchedule(scheduleRequest.getSchedule());
+		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
+		return schedule;
 	}
 }

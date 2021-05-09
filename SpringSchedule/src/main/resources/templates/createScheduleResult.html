@@ -10,14 +10,7 @@
 	<div>
 		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
 	</div>
-		<div>
-		<p>
-			<a href="calendar.html"
-				th:href="@{/calendar/date(year=*{dayEntity.getCalendarYear()},
-				month=*{dayEntity.getCalendarMonth()})}"><button>カレンダーに戻る</button></a>
-		</p>
-	</div>
-	<h3>スケジュール情報一覧</h3>
+	<h4 align="center">入力したスケージュール情報</h4>
 	<table>
 		<thead>
 			<tr>
@@ -42,5 +35,12 @@
 			</tr>
 		</tbody>
 	</table>
+	<div>
+		<p>
+			<a href="calendar.html"
+				th:href="@{/calendar/date(year=*{dayEntity.getCalendarYear()},
+				month=*{dayEntity.getCalendarMonth()})}"><button>カレンダーに戻る</button></a>
+		</p>
+	</div>
 </body>
 </html>

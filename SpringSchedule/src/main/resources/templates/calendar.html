@@ -6,13 +6,20 @@
 <title>スケジュール管理</title>
 </head>
 <body>
+	<div>
+		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
+				<a href="createScheduleForm.html"
+			th:href="@{'/schedule/showScheduleForm'}"><button>スケジュール追加</button></a>
+	</div>
 	<div th:object="${output}">
 		<p>
 			<a href="calendar.html"
-				th:href="@{/calendar/date(year=*{yearOfPrevMonth}, month=*{monthOfPrevMonth})}">&larr;先月</a>
+				th:href="@{/calendar/date(year=*{yearOfPrevMonth},
+				month=*{monthOfPrevMonth})}"><button>&larr;先月</button></a>
 			<a href="calendar.html"
-				th:href="@{/calendar/date(year=*{yearOfNextMonth}, month=*{monthOfNextMonth})}">来月&rarr;</a>
-			<br> <span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span>
+				th:href="@{/calendar/date(year=*{yearOfNextMonth},
+				month=*{monthOfNextMonth})}"><button>来月&rarr;</button></a><br>
+			<span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span>
 		</p>
 		<table border=1>
 			<tr>
@@ -25,16 +32,14 @@
 				<th>土</th>
 			</tr>
 			<tr th:each="week : *{calendar}">
-				<td th:each="day : ${week}"><span th:text="${day.getDay()}"></span>
-					<div th:if="${day.getIdList() != null}">
-						<div th:each="id : ${day.getIdList()}">
-							<a href="showSchedule.html"
-								th:href="@{/calendar/schedule(id=${id})}">
-								<img src="/images/calendar.png" />
-							</a>
-						</div>
+				<td th:each="day : ${week}">
+				<span th:text="${day.getDay().getDayOfMonth()}"></span>
+					<div th:each="id : ${day.getIdList()}">
+						<a href="showSchedule.html" th:href="@{/calendar/schedule(id=${id})}">
+						<img src="/images/calendar.png" />
+						</a>
 					</div>
-				</td>
+					</td>
 			</tr>
 		</table>
 	</div>

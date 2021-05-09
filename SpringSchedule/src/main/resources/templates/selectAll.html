@@ -7,10 +7,10 @@
 <meta charset="utf-8" />
 </head>
 <body>
-	<h1>スケジュール情報一覧</h1>
 	<div>
-		<a th:href="@{index}">ホームページ</a>
+		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
 	</div>
+	<h1>スケジュール情報一覧</h1>
 	<table>
 		<thead>
 			<tr>
@@ -28,7 +28,7 @@
 			<tr th:each="schedule : ${scheduleList}" th:object="${schedule}">
 				<td class="center" th:text="*{id}"></td>
 				<td th:text="*{userid}"></td>
-				<td th:text="${#dates.format(schedule.scheduledate,'YYYY/MM/DD')}"></td>
+				<td th:text="${#dates.format(schedule.scheduledate,'yyyy/MM/dd')}"></td>
 				<td th:text="*{starttime}"></td>
 				<td th:text="*{endtime}"></td>
 				<td th:text="*{schedule}"></td>
