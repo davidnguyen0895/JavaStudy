@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import spring.schedule.constants.ScheduleConstants;
+import spring.schedule.constants.Constants;
 import spring.schedule.dto.ScheduleSearchRequest;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
@@ -139,14 +139,17 @@ public class CalendarService {
 	 */
 	private InsertScheduleEntity CreateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
 		InsertScheduleEntity schedule = new InsertScheduleEntity();
-		java.sql.Time convertedStarttime = new java.sql.Time(ScheduleConstants.timeFormat.parse(scheduleRequest.getStarttime()).getTime());
-		java.sql.Time convertedEndtime = new java.sql.Time(ScheduleConstants.timeFormat.parse(scheduleRequest.getEndtime()).getTime());
-		java.util.Date convertedUtilScheduleDate = ScheduleConstants.dateFormat.parse(scheduleRequest.getScheduledate());
+		String startTimeStr = scheduleRequest.getStarttime();
+		java.sql.Time convertedStarttime = new java.sql.Time(Constants.timeFormat.parse(startTimeStr).getTime());
+		String endTimeStr = scheduleRequest.getEndtime();
+		java.sql.Time convertedEndtime = new java.sql.Time(Constants.timeFormat.parse(endTimeStr).getTime());
+		String scheduleDateStr = scheduleRequest.getScheduledate();
+		java.util.Date convertedUtilScheduleDate = Constants.dateFormat.parse(scheduleDateStr);
 		java.sql.Date convertedSqlScheduleDate = new java.sql.Date(convertedUtilScheduleDate.getTime());
-		String startTimeStamp = scheduleRequest.getScheduledate() + ScheduleConstants.SPACE + convertedStarttime.toString();
-		String endTimeStamp = scheduleRequest.getScheduledate() + ScheduleConstants.SPACE + convertedEndtime.toString();
-		Date resultStartTime = (Date) ScheduleConstants.timeStampFormat.parse(startTimeStamp);
-		Date resultEndTime = (Date) ScheduleConstants.timeStampFormat.parse(endTimeStamp);
+		String startTimeStamp = scheduleRequest.getScheduledate() + Constants.SPACE + convertedStarttime.toString();
+		String endTimeStamp = scheduleRequest.getScheduledate() + Constants.SPACE + convertedEndtime.toString();
+		Date resultStartTime = (Date) Constants.timeStampFormat.parse(startTimeStamp);
+		Date resultEndTime = (Date) Constants.timeStampFormat.parse(endTimeStamp);
 		schedule.setUserid(3);
 		schedule.setScheduledate(convertedSqlScheduleDate);
 		schedule.setStarttime(resultStartTime);
@@ -188,5 +191,12 @@ public class CalendarService {
 	 */
 	public ScheduleInfoEntity selectAllById(Long id) {
 		return selectScheduleMapper.selectAllById(id);
+	}
+	/**
+	 *
+	 * @param id
+	 */
+	public void deleteSchedule(Long id) {
+		selectScheduleMapper.deleteSchedule(id);
 	}
 }

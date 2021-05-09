@@ -68,4 +68,11 @@
 		#{schedule},
 		#{schedulememo})
 	</insert>
+	<delete id="deleteSchedule">
+	DELETE
+	FROM
+	java_study.schedule s
+	WHERE
+	s.id = #{id}
+	</delete>
 </mapper>

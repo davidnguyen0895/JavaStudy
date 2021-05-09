@@ -44,5 +44,11 @@
 			</tr>
 		</tbody>
 	</table>
+	<br>
+			<!--～～～～～～～～～～ 削除ボタン～～～～～～～～～～-->
+		<div th:each="data : ${schedule}">
+			<a href="displayCalendar.html" th:href="@{/schedule/deleteSchedule(id=*{data.id})}">
+		<button>削除</button></a>
+		</div>
 </body>
 </html>

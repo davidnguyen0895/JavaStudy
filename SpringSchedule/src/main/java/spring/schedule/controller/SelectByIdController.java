@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import spring.schedule.constants.ScheduleConstants;
+import spring.schedule.constants.Constants;
 import spring.schedule.dto.ScheduleSearchRequest;
 import spring.schedule.entity.ScheduleInfoEntity;
 import spring.schedule.service.CalendarService;
@@ -49,6 +49,6 @@ public class SelectByIdController {
 			BindingResult result, Model model) {
 		ScheduleInfoEntity schedule = calendarService.selectById(scheduleSearchRequest);
 		model.addAttribute("selectByIdInfo", schedule);/* Modelに格納してhtmlに渡す */
-		return ScheduleConstants.SELECT_BY_ID;
+		return Constants.SELECT_BY_ID;
 	}
 }

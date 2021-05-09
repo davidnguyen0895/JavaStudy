@@ -3,7 +3,7 @@ package spring.schedule.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import spring.schedule.constants.ScheduleConstants;
+import spring.schedule.constants.Constants;
 
 /**
  *
@@ -14,6 +14,6 @@ import spring.schedule.constants.ScheduleConstants;
 public class HomePageController {
 	@GetMapping(value = "/index")
 	public String displayHomePage(Model model) {
-		return ScheduleConstants.INDEX;
+		return Constants.INDEX;
 	}
 }

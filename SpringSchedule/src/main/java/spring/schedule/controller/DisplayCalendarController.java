@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import spring.schedule.constants.ScheduleConstants;
+import spring.schedule.constants.Constants;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
@@ -53,7 +53,7 @@ public class DisplayCalendarController {
 		// カレンダーを格納するインストタンス
 		CalendarInfoEntity calendarInfo = calendarService.generateCalendarInfo(year, month);
 		model.addAttribute("calendarInfo", calendarInfo);
-		return ScheduleConstants.DISPLAY_CALENDAR;
+		return Constants.DISPLAY_CALENDAR;
 	}
 	/**
 	 *
@@ -73,6 +73,6 @@ public class DisplayCalendarController {
 		//modelに格納してhtmlに渡す
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", schedule);
-		return ScheduleConstants.SHOW_SCHEDULE_DETAIL;
+		return Constants.SHOW_SCHEDULE_DETAIL;
 	}
 }

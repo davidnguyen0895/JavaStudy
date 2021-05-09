@@ -41,4 +41,9 @@ public interface SelectScheduleMapper{
  * @param newSchedule
  */
 	void insertNewSchedule(InsertScheduleEntity newSchedule);
+	/**
+	 * IDでスケージュール情報を削除する．
+	 * @param id
+	 */
+	void deleteSchedule(Long id);
 }

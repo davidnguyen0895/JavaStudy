@@ -1,7 +1,6 @@
 package spring.schedule.controller;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
@@ -12,7 +11,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import spring.schedule.constants.ScheduleConstants;
+import org.springframework.web.bind.annotation.RequestParam;
+import spring.schedule.constants.Constants;
 import spring.schedule.entity.DayEntity;
 import spring.schedule.entity.InsertScheduleEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
@@ -58,7 +58,7 @@ public class CreateScheduleController {
 		//modelにdayEntityとScheduleRequestのインスタンスを格納し，スケージュール作成フォームに送信する．
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", new ScheduleRequest());
-		return ScheduleConstants.CREATE_SCHEDULE_FORM;
+		return Constants.CREATE_SCHEDULE_FORM;
 	}
 	/**
 	 *
@@ -89,7 +89,7 @@ public class CreateScheduleController {
 		dayEntity.setCalendarMonth(calendarDate.getMonthValue());
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", schedule);
-		return ScheduleConstants.CREATE_SCHEDULE_RESULT;
+		return Constants.CREATE_SCHEDULE_RESULT;
 	}
 	/**
 	 * スケージュール情報を作成する．
@@ -99,13 +99,16 @@ public class CreateScheduleController {
 	 */
 	private InsertScheduleEntity CreateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
 		InsertScheduleEntity schedule = new InsertScheduleEntity();
-		java.sql.Time convertedStarttime = new java.sql.Time(ScheduleConstants.timeFormat.parse(scheduleRequest.getStarttime()).getTime());
-		java.sql.Time convertedEndtime = new java.sql.Time(ScheduleConstants.timeFormat.parse(scheduleRequest.getEndtime()).getTime());
-		java.util.Date convertedUtilScheduleDate = ScheduleConstants.dateFormat.parse(scheduleRequest.getScheduledate());
-		String startTimeStamp = scheduleRequest.getScheduledate() + ScheduleConstants.SPACE + convertedStarttime.toString();
-		String endTimeStamp = scheduleRequest.getScheduledate() + ScheduleConstants.SPACE + convertedEndtime.toString();
-		Date resultStartTime = (Date) ScheduleConstants.timeStampFormat.parse(startTimeStamp);
-		Date resultEndTime = (Date) ScheduleConstants.timeStampFormat.parse(endTimeStamp);
+		String startTimeStr = scheduleRequest.getStarttime();
+		java.sql.Time convertedStarttime = new java.sql.Time(Constants.timeFormat.parse(startTimeStr).getTime());
+		String endTimeStr = scheduleRequest.getEndtime();
+		java.sql.Time convertedEndtime = new java.sql.Time(Constants.timeFormat.parse(endTimeStr).getTime());
+		String scheduleDateStr = scheduleRequest.getScheduledate();
+		java.util.Date convertedUtilScheduleDate = Constants.dateFormat.parse(scheduleDateStr);
+		String startTimeStamp = scheduleRequest.getScheduledate() + Constants.SPACE + convertedStarttime.toString();
+		String endTimeStamp = scheduleRequest.getScheduledate() + Constants.SPACE + convertedEndtime.toString();
+		Date resultStartTime = (Date) Constants.timeStampFormat.parse(startTimeStamp);
+		Date resultEndTime = (Date) Constants.timeStampFormat.parse(endTimeStamp);
 		schedule.setUserid(3);
 		schedule.setScheduledate(convertedUtilScheduleDate);
 		schedule.setStarttime(resultStartTime);
@@ -113,5 +116,15 @@ public class CreateScheduleController {
 		schedule.setSchedule(scheduleRequest.getSchedule());
 		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
 		return schedule;
+	}
+	/**
+	 *	スケジュール情報を削除するメソッド
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="deleteSchedule",method=RequestMethod.GET)
+	public String deleteSchedule(@RequestParam("id") Long id) {
+		calendarService.deleteSchedule(id);
+		return Constants.REDIRECT_DISPLAY_CALENDAR;
 	}
 }
