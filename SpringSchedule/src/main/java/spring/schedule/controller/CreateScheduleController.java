@@ -1,9 +1,7 @@
 package spring.schedule.controller;
 
-import java.sql.Time;
 import java.text.ParseException;
 import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -127,11 +125,13 @@ public class CreateScheduleController {
 	 *
 	 * @param model
 	 * @return
+	 * @throws ParseException
 	 */
 	@RequestMapping(value="showUpdateScheduleForm", method=RequestMethod.GET)
 	public String showUpdateScheduleForm(@RequestParam("id") Long id, @RequestParam("userid") int userid,
-			@RequestParam("scheduledate") Date scheduledate, @RequestParam("starttime") Time starttime,
-			@RequestParam("endtime") Time endtime, @RequestParam("schedule") String schedule, Model model) {
+			@RequestParam("scheduledate") String scheduledate, @RequestParam("starttime") String starttime,
+			@RequestParam("endtime") String endtime, @RequestParam("schedule") String schedule,
+			@RequestParam("schedulememo") String schedulememo, Model model) throws ParseException {
 		//今月の年と月の値をdayEntityインスタンスに格納する．
 		DayEntity dayEntity = new DayEntity();
 		LocalDate today = new LocalDate();
@@ -139,7 +139,15 @@ public class CreateScheduleController {
 		int month = today.getMonthOfYear();
 		dayEntity.setCalendarYear(year);
 		dayEntity.setCalendarMonth(month);
+
 		ScheduleRequest updateSchedule = new ScheduleRequest();
+		updateSchedule.setId(id);
+		updateSchedule.setUserid(userid);
+		updateSchedule.setScheduledate(scheduledate);
+		updateSchedule.setStarttime(starttime);
+		updateSchedule.setEndtime(endtime);
+		updateSchedule.setSchedule(schedule);
+		updateSchedule.setSchedulememo(schedulememo);
 		//modelにdayEntityとScheduleRequestのインスタンスを格納し，スケージュール作成フォームに送信する．
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("updateSchedule", updateSchedule);

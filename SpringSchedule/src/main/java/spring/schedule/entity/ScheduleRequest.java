@@ -12,6 +12,10 @@ import lombok.Data;
 public class ScheduleRequest implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/**
+	 * ID
+	 */
+	private Long id;
+	/**
 	 *ユーザID
 	 */
 	private int userid;
