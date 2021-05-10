@@ -37,8 +37,8 @@
 				<td><p th:text="${data.id}">ID</p></td>
 				<td><p th:text="${data.userid}">ユーザID</p></td>
 				<td><p th:text="${#dates.format(data.scheduledate,'yyyy/MM/dd')}">スケジュール日付</p></td>
-				<td><p th:text="${#dates.format(data.starttime,'hh:mm')}">開始時間</p></td>
-				<td><p th:text="${#dates.format(data.endtime,'hh:mm')}">終了時間</p></td>
+				<td><p th:text="${#dates.format(data.starttime,'HH:mm')}">開始時間</p></td>
+				<td><p th:text="${#dates.format(data.endtime,'HH:mm')}">終了時間</p></td>
 				<td><p th:text="${data.schedule}">スケジュール内容ID</p></td>
 				<td><p th:text="${data.schedulememo}">メモ</p></td>
 			</tr>
@@ -49,6 +49,8 @@
 		<div th:each="data : ${schedule}">
 			<a href="displayCalendar.html" th:href="@{/schedule/deleteSchedule(id=*{data.id})}">
 		<button>削除</button></a>
+			<a href="updateScheduleForm.html" th:href="@{/schedule/showUpdateScheduleForm(id=*{data.id})}">
+		<button>更新</button></a>
 		</div>
 </body>
 </html>

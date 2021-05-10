@@ -1,6 +1,5 @@
 package spring.schedule.service;
 
-import java.util.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +11,6 @@ import spring.schedule.constants.Constants;
 import spring.schedule.dto.ScheduleSearchRequest;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
-import spring.schedule.entity.InsertScheduleEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
 import spring.schedule.entity.ScheduleRequest;
 import spring.schedule.repository.SelectScheduleMapper;
@@ -108,6 +106,8 @@ public class CalendarService {
 			LocalDate scheduledate = firstDayOfCalendar.plusDays(i);
 			//日付データを日付情報インストタンスに格納する．
 			day.setDay(scheduledate);
+			//当月の月を設定する
+			day.setCalendarMonth(scheduledate.getMonthOfYear());
 			//日付データを用いてスケージュール情報リストを参照する．
 			List<ScheduleInfoEntity> scheduleList = selectAllByDate(scheduledate.toString());
 			//スケージュール情報リストを日付情報インストタンスに格納する．
@@ -128,17 +128,27 @@ public class CalendarService {
 	 * @throws ParseException
 	 */
 	public void insertNewSchedule(ScheduleRequest scheduleRequest) throws ParseException {
-		InsertScheduleEntity schedule = new InsertScheduleEntity();
+		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
 		schedule = CreateSchedule(scheduleRequest);
 		selectScheduleMapper.insertNewSchedule(schedule);
+	}
+	/**
+	 * 更新
+	 * @param scheduleRequest
+	 * @throws ParseException
+	 */
+	public void updateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
+		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
+		schedule = CreateSchedule(scheduleRequest);
+		selectScheduleMapper.updateSchedule(schedule);
 	}
 	/**
 	 * @param scheduleRequest スケージュール情報リクエストデータ
 	 * @return
 	 * @throws ParseException
 	 */
-	private InsertScheduleEntity CreateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
-		InsertScheduleEntity schedule = new InsertScheduleEntity();
+	private ScheduleInfoEntity CreateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
+		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
 		String startTimeStr = scheduleRequest.getStarttime();
 		java.sql.Time convertedStarttime = new java.sql.Time(Constants.timeFormat.parse(startTimeStr).getTime());
 		String endTimeStr = scheduleRequest.getEndtime();
@@ -146,14 +156,10 @@ public class CalendarService {
 		String scheduleDateStr = scheduleRequest.getScheduledate();
 		java.util.Date convertedUtilScheduleDate = Constants.dateFormat.parse(scheduleDateStr);
 		java.sql.Date convertedSqlScheduleDate = new java.sql.Date(convertedUtilScheduleDate.getTime());
-		String startTimeStamp = scheduleRequest.getScheduledate() + Constants.SPACE + convertedStarttime.toString();
-		String endTimeStamp = scheduleRequest.getScheduledate() + Constants.SPACE + convertedEndtime.toString();
-		Date resultStartTime = (Date) Constants.timeStampFormat.parse(startTimeStamp);
-		Date resultEndTime = (Date) Constants.timeStampFormat.parse(endTimeStamp);
 		schedule.setUserid(3);
 		schedule.setScheduledate(convertedSqlScheduleDate);
-		schedule.setStarttime(resultStartTime);
-		schedule.setEndtime(resultEndTime);
+		schedule.setStarttime(convertedStarttime);
+		schedule.setEndtime(convertedEndtime);
 		schedule.setSchedule(scheduleRequest.getSchedule());
 		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
 		return schedule;

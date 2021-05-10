@@ -14,6 +14,10 @@ public final class Constants {
 	public static final String CREATE_SCHEDULE_FORM = "createScheduleForm";
 	//return用定数 スケジュール情報の新規登録の結果表示画面
 	public static final String CREATE_SCHEDULE_RESULT = "createScheduleResult";
+	//return用定数 スケジュール情報の新規登録画面
+	public static final String UPDATE_SCHEDULE_FORM = "updateScheduleForm";
+	//return用定数 スケジュール情報の新規登録の結果表示画面
+	public static final String UPDATE_SCHEDULE_RESULT = "updateScheduleResult";
 	//return用定数 カレンダー表示画面．
 	public static final String DISPLAY_CALENDAR = "displayCalendar";
 	//return用定数 カレンダー表示画面．

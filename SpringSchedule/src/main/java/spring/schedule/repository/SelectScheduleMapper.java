@@ -3,7 +3,6 @@ package spring.schedule.repository;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import spring.schedule.dto.ScheduleSearchRequest;
-import spring.schedule.entity.InsertScheduleEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
 
 /**
@@ -40,10 +39,15 @@ public interface SelectScheduleMapper{
  * スケージュール情報を登録する
  * @param newSchedule
  */
-	void insertNewSchedule(InsertScheduleEntity newSchedule);
+	void insertNewSchedule(ScheduleInfoEntity newSchedule);
 	/**
 	 * IDでスケージュール情報を削除する．
 	 * @param id
 	 */
 	void deleteSchedule(Long id);
+	/**
+	 *更新
+	 * @param id
+	 */
+	void updateSchedule(ScheduleInfoEntity newSchedule);
 }

@@ -1,46 +1,57 @@
 @charset "UTF-8";
 
 body {
-  width: 100%;
+	width: 100%;
 }
-table{
-    width: 100%;
-    border-collapse: collapse;
-  font-size: 10px;
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 15px;
 }
+
 table th, table td {
-    border: 1px solid #ddd;
-    padding: 6px;
+	border: 1px solid #ddd;
+	padding: 6px;
 }
+
 table th {
-  background-color: #F2F2F2;
+	background-color: #F2F2F2;
 }
+
 table input {
-	width:90%;
+	width: 90%;
 }
+
 .center {
-  text-align: center;
+	text-align: center;
 }
+
 .left {
-  text-align: left;
+	text-align: left;
 }
+
 .right {
-  text-align: right;
+	text-align: right;
 }
+
 .cell_title {
 	border-right: 0;
 }
-.cell_required{
-    color: red;
-    font-size: 12px;
-    width: 10px;
-    border-left: 0;
+
+.cell_required {
+	color: red;
+	font-size: 12px;
+	width: 10px;
+	border-left: 0;
 }
+
 .btn_area_center {
 	margin-top: 20px;
 	text-align: center;
 }
+
 .btn {
 	width: 100px;
-    text-align: center;
+	text-align: center;
 }

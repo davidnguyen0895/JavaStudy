@@ -75,4 +75,13 @@
 	WHERE
 	s.id = #{id}
 	</delete>
+	<update id="updateSchedule">
+	UPDATE java_study.schedule s SET
+	s.scheduledate = #{scheduledate},
+	s.starttime = #{starttime},
+	s.endtime = #{endtime},
+	s.schedule = #{schedule},
+	s.schedulememo = #{schedulememo}
+	WHERE s.id = #{id}
+	</update>
 </mapper>
