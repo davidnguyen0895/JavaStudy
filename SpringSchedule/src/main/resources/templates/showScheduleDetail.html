@@ -49,6 +49,7 @@
 		<div th:each="data : ${schedule}">
 			<a href="displayCalendar.html" th:href="@{/schedule/deleteSchedule(id=*{data.id})}">
 		<button>削除</button></a>
+
 			<a href="updateScheduleForm.html" th:href="@{/schedule/showUpdateScheduleForm(id=*{data.id},
 			userid=*{data.userid},scheduledate=*{#dates.format(data.scheduledate,'yyyy/MM/dd')},
 			starttime=*{#dates.format(data.starttime,'HH:mm')},

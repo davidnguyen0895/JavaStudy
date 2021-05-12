@@ -128,8 +128,7 @@ public class CalendarService {
 	 * @throws ParseException
 	 */
 	public void insertNewSchedule(ScheduleRequest scheduleRequest) throws ParseException {
-		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
-		schedule = CreateSchedule(scheduleRequest);
+		ScheduleInfoEntity schedule = CreateSchedule(scheduleRequest);
 		selectScheduleMapper.insertNewSchedule(schedule);
 	}
 	/**
@@ -138,9 +137,8 @@ public class CalendarService {
 	 * @throws ParseException
 	 */
 	public void updateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
-		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
-		schedule = CreateSchedule(scheduleRequest);
-		selectScheduleMapper.updateSchedule(schedule);
+		ScheduleInfoEntity updateSchedule = CreateUpdateSchedule(scheduleRequest);
+		selectScheduleMapper.updateSchedule(updateSchedule);
 	}
 	/**
 	 * @param scheduleRequest スケージュール情報リクエストデータ
@@ -156,6 +154,7 @@ public class CalendarService {
 		String scheduleDateStr = scheduleRequest.getScheduledate();
 		java.util.Date convertedUtilScheduleDate = Constants.dateFormat.parse(scheduleDateStr);
 		java.sql.Date convertedSqlScheduleDate = new java.sql.Date(convertedUtilScheduleDate.getTime());
+		schedule.setId(scheduleRequest.getId());
 		schedule.setUserid(3);
 		schedule.setScheduledate(convertedSqlScheduleDate);
 		schedule.setStarttime(convertedStarttime);
@@ -163,6 +162,29 @@ public class CalendarService {
 		schedule.setSchedule(scheduleRequest.getSchedule());
 		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
 		return schedule;
+	}
+	/**
+	 * @param scheduleRequest スケージュール情報リクエストデータ
+	 * @return
+	 * @throws ParseException
+	 */
+	private ScheduleInfoEntity CreateUpdateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
+		ScheduleInfoEntity updateSchedule = new ScheduleInfoEntity();
+		String startTimeStr = scheduleRequest.getStarttime();
+		java.sql.Time convertedStarttime = new java.sql.Time(Constants.timeFormat.parse(startTimeStr).getTime());
+		String endTimeStr = scheduleRequest.getEndtime();
+		java.sql.Time convertedEndtime = new java.sql.Time(Constants.timeFormat.parse(endTimeStr).getTime());
+		String scheduleDateStr = scheduleRequest.getScheduledate();
+		java.util.Date convertedUtilScheduleDate = Constants.dateFormat.parse(scheduleDateStr);
+		java.sql.Date convertedSqlScheduleDate = new java.sql.Date(convertedUtilScheduleDate.getTime());
+		updateSchedule.setId(scheduleRequest.getId());
+		updateSchedule.setUserid(scheduleRequest.getUserid());
+		updateSchedule.setScheduledate(convertedSqlScheduleDate);
+		updateSchedule.setStarttime(convertedStarttime);
+		updateSchedule.setEndtime(convertedEndtime);
+		updateSchedule.setSchedule(scheduleRequest.getSchedule());
+		updateSchedule.setSchedulememo(scheduleRequest.getSchedulememo());
+		return updateSchedule;
 	}
 	//～～～～～～～～～～Mapperを呼び出すメソッド～～～～～～～～～～
 	/**

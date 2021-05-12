@@ -10,21 +10,22 @@
 <!--～～～～～～～～～～ jQuery UI ～～～～～～～～～～-->
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <!--～～～～～～～～～～ css ～～～～～～～～～～-->
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/black-tie/jquery-ui.css">
-	<script>
-		$(function() {
-			$("#datepicker").datepicker({
-				dateFormat : 'yy/mm/dd'
-			});
+<link rel="stylesheet"
+	href="https://code.jquery.com/ui/1.12.1/themes/black-tie/jquery-ui.css">
+<script>
+	$(function() {
+		$("#datepicker").datepicker({
+			dateFormat : 'yy/mm/dd'
 		});
-	</script>
+	});
+</script>
 </head>
 <body>
-<!--～～～～～～～～～～ ホームページに戻るボタン ～～～～～～～～～～-->
+	<!--～～～～～～～～～～ ホームページに戻るボタン ～～～～～～～～～～-->
 	<div>
 		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
 	</div>
-<!--～～～～～～～～～～ カレンダーに戻るボタン ～～～～～～～～～～-->
+	<!--～～～～～～～～～～ カレンダーに戻るボタン ～～～～～～～～～～-->
 	<div>
 		<p>
 			<a href="displayCalendar.html"
@@ -32,44 +33,51 @@
 				month=*{dayEntity.getCalendarMonth()})}"><button>カレンダーに戻る</button></a>
 		</p>
 	</div>
-<!--～～～～～～～～～～ スケージュール情報を新規登録フォーム ～～～～～～～～～～-->
+	<!--～～～～～～～～～～ スケージュール情報を新規登録フォーム ～～～～～～～～～～-->
 	<h4 align="center">スケージュール情報を更新するフォーム</h4>
 	<form method="POST" th:action="@{/schedule/updateSchedule}"
 		th:object="${updateSchedule}">
+		<p>
+			<input type="hidden" th:field="*{id}" placeholder="ID">
+		</p>
+		<p>
+			<input type="hidden" th:field="*{userid}" placeholder="ユーザID">
+		</p>
 		<table>
-		<!--～～～～～～～～～～ スケージュール日付 ～～～～～～～～～～-->
+			<!--～～～～～～～～～～ スケージュール日付 ～～～～～～～～～～-->
 			<tr>
 				<th class="cell_title">スケージュール日付</th>
 				<th class="cell_required"></th>
-				<td><input type="text" th:field="*{scheduledate}" id="datepicker" placeholder="スケージュール日付"></td>
+				<td><input type="text" th:field="*{scheduledate}"
+					id="datepicker" placeholder="スケージュール日付"></td>
 			</tr>
 			<!--～～～～～～～～～～ 開始時間 ～～～～～～～～～～-->
 			<tr>
 				<th class="cell_title">開始時間</th>
 				<th class="cell_required"></th>
-				<td>
-					<input type="time" th:field="*{starttime}" placeholder="開始時間">
-				</td>
+				<td><input type="time" th:field="*{starttime}"
+					placeholder="開始時間"></td>
 			</tr>
 			<!--～～～～～～～～～～ 終了時間 ～～～～～～～～～～-->
 			<tr>
 				<th class="cell_title">終了時間</th>
 				<th class="cell_required"></th>
-				<td>
-					<input type="time" th:field="*{endtime}" placeholder="終了時間">
+				<td><input type="time" th:field="*{endtime}" placeholder="終了時間">
 				</td>
 			</tr>
 			<!--～～～～～～～～～～ スケジュール内容 ～～～～～～～～～～-->
 			<tr>
 				<th class="cell_title">スケジュール内容</th>
 				<th class="cell_required"></th>
-				<td><input type="text" th:field="*{schedule}" placeholder="スケジュール内容"></td>
+				<td><input type="text" th:field="*{schedule}"
+					placeholder="スケジュール内容"></td>
 			</tr>
 			<!--～～～～～～～～～～ メモ ～～～～～～～～～～-->
 			<tr>
 				<th class="cell_title">メモ</th>
 				<th class="cell_required"></th>
-				<td><input type="text" th:field="*{schedulememo}" placeholder="メモ"></td>
+				<td><input type="text" th:field="*{schedulememo}"
+					placeholder="メモ"></td>
 			</tr>
 		</table>
 		<!--～～～～～～～～～～ 登録ボタン ～～～～～～～～～～-->

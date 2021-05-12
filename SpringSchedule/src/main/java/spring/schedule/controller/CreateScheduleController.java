@@ -38,6 +38,28 @@ public class CreateScheduleController {
 		return calendarService.selectAllByDate(scheduledate);
 	}
 	/**
+	 * スケージュール情報を作成する．
+	 * @param scheduleRequest
+	 * @return スケージュール情報オブジェクト
+	 * @throws ParseException
+	 */
+	private ScheduleInfoEntity CreateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
+		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
+		String startTimeStr = scheduleRequest.getStarttime();
+		java.sql.Time convertedStarttime = new java.sql.Time(Constants.timeFormat.parse(startTimeStr).getTime());
+		String endTimeStr = scheduleRequest.getEndtime();
+		java.sql.Time convertedEndtime = new java.sql.Time(Constants.timeFormat.parse(endTimeStr).getTime());
+		String scheduleDateStr = scheduleRequest.getScheduledate();
+		java.util.Date convertedUtilScheduleDate = Constants.dateFormat.parse(scheduleDateStr);
+		schedule.setUserid(3);
+		schedule.setScheduledate(convertedUtilScheduleDate);
+		schedule.setStarttime(convertedStarttime);
+		schedule.setEndtime(convertedEndtime);
+		schedule.setSchedule(scheduleRequest.getSchedule());
+		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
+		return schedule;
+	}
+	/**
 	 * スケジュール登録フォーム画面を表示する．
 	 * @param year
 	 * @param month
@@ -88,38 +110,6 @@ public class CreateScheduleController {
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", schedule);
 		return Constants.CREATE_SCHEDULE_RESULT;
-	}
-	/**
-	 * スケージュール情報を作成する．
-	 * @param scheduleRequest
-	 * @return スケージュール情報オブジェクト
-	 * @throws ParseException
-	 */
-	private ScheduleInfoEntity CreateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
-		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
-		String startTimeStr = scheduleRequest.getStarttime();
-		java.sql.Time convertedStarttime = new java.sql.Time(Constants.timeFormat.parse(startTimeStr).getTime());
-		String endTimeStr = scheduleRequest.getEndtime();
-		java.sql.Time convertedEndtime = new java.sql.Time(Constants.timeFormat.parse(endTimeStr).getTime());
-		String scheduleDateStr = scheduleRequest.getScheduledate();
-		java.util.Date convertedUtilScheduleDate = Constants.dateFormat.parse(scheduleDateStr);
-		schedule.setUserid(3);
-		schedule.setScheduledate(convertedUtilScheduleDate);
-		schedule.setStarttime(convertedStarttime);
-		schedule.setEndtime(convertedEndtime);
-		schedule.setSchedule(scheduleRequest.getSchedule());
-		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
-		return schedule;
-	}
-	/**
-	 *	スケジュール情報を削除するメソッド
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value="deleteSchedule",method=RequestMethod.GET)
-	public String deleteSchedule(@RequestParam("id") Long id) {
-		calendarService.deleteSchedule(id);
-		return Constants.REDIRECT_DISPLAY_CALENDAR;
 	}
 	/**
 	 *
@@ -173,15 +163,26 @@ public class CreateScheduleController {
 			dayEntity.setId(schedule.getId());
 		}
 		//新規登録のスケージュール情報を作成してscheduleインストタンスに格納する．
-		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
-		schedule = CreateSchedule(scheduleRequest);
-		schedule.setId(dayEntity.getId());
+		ScheduleInfoEntity updateSchedule = new ScheduleInfoEntity();
+		updateSchedule = CreateSchedule(scheduleRequest);
+		updateSchedule.setId(dayEntity.getId());
 		//カレンダーに戻るボタンのための年と月の値を格納する．
-		java.time.LocalDate calendarDate = java.time.LocalDate.ofInstant(schedule.getScheduledate().toInstant(), ZoneId.systemDefault());
+		java.time.LocalDate calendarDate = java.time.LocalDate.ofInstant(updateSchedule.getScheduledate().toInstant(), ZoneId.systemDefault());
 		dayEntity.setCalendarYear(calendarDate.getYear());
 		dayEntity.setCalendarMonth(calendarDate.getMonthValue());
 		model.addAttribute("dayEntity", dayEntity);
-		model.addAttribute("schedule", schedule);
+		model.addAttribute("updateSchedule", updateSchedule);
 		return Constants.UPDATE_SCHEDULE_RESULT;
+	}
+
+	/**
+	 *	スケジュール情報を削除するメソッド
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="deleteSchedule",method=RequestMethod.GET)
+	public String deleteSchedule(@RequestParam("id") Long id) {
+		calendarService.deleteSchedule(id);
+		return Constants.REDIRECT_DISPLAY_CALENDAR;
 	}
 }

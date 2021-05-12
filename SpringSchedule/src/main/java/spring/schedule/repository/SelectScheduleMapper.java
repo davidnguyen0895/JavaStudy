@@ -49,5 +49,5 @@ public interface SelectScheduleMapper{
 	 *更新
 	 * @param id
 	 */
-	void updateSchedule(ScheduleInfoEntity newSchedule);
+	void updateSchedule(ScheduleInfoEntity updateSchedule);
 }

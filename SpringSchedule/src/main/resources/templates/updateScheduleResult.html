@@ -34,7 +34,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr th:each="data : ${schedule}">
+			<tr th:each="data : ${updateSchedule}">
 				<td><p th:text="${data.id}">ID</p></td>
 				<td><p th:text="${data.userid}">ユーザID</p></td>
 				<td><p th:text="${#dates.format(data.scheduledate,'yyyy/MM/dd')}">スケジュール日付</p></td>
