@@ -37,8 +37,7 @@
 		<div th:if="${validationError}" th:each="error : ${validationError}">
 			<p style="color: red;" th:text="${error}"></p>
 		</div>
-	<form method="POST" th:action="@{/schedule/createSchedule}"
-		th:object="${schedule}">
+	<form method="POST" th:action="@{/schedule/createSchedule}" th:object="${schedule}">
 		<table>
 		<!--～～～～～～～～～～ スケージュール日付 ～～～～～～～～～～-->
 			<tr>

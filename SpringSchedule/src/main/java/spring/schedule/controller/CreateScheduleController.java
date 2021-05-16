@@ -90,7 +90,7 @@ public class CreateScheduleController {
 	 */
 	@RequestMapping(value="createSchedule",method=RequestMethod.POST)
 	public String createNewSchedule(@Validated @ModelAttribute ScheduleRequest scheduleRequest,
-			BindingResult result, Model model, LocalDate today) throws ParseException {
+			BindingResult result, Model model) throws ParseException {
 		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
 		//日付情報インストタンス
 		DayEntity dayEntity = new DayEntity();
@@ -101,6 +101,7 @@ public class CreateScheduleController {
 				errorList.add(error.getDefaultMessage());
 			}
 			//カレンダーに戻るための日付情報
+			LocalDate today = new LocalDate();
 			dayEntity.setCalendarYear(today.getYear());
 			dayEntity.setCalendarMonth(today.getMonthOfYear());
 			model.addAttribute("dayEntity", dayEntity);
@@ -172,7 +173,7 @@ public class CreateScheduleController {
 	 */
 	@RequestMapping(value="updateSchedule",method=RequestMethod.POST)
 	public String updateSchedule(@Validated @ModelAttribute ScheduleRequest scheduleRequest,
-			LocalDate today, BindingResult result, Model model) throws ParseException {
+			BindingResult result, Model model) throws ParseException {
 		DayEntity dayEntity = new DayEntity();
 		//日付情報インストタンス
 		ScheduleInfoEntity updateSchedule = new ScheduleInfoEntity();
@@ -182,6 +183,7 @@ public class CreateScheduleController {
 			for(ObjectError error : result.getAllErrors()) {
 				errorList.add(error.getDefaultMessage());
 			}
+			LocalDate today = new LocalDate();
 			dayEntity.setCalendarYear(today.getYear());
 			dayEntity.setCalendarMonth(today.getMonthOfYear());
 			model.addAttribute("dayEntity", dayEntity);

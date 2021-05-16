@@ -38,8 +38,7 @@
 	<div th:if="${validationError}" th:each="error : ${validationError}">
 		<p style="color: red;" th:text="${error}"></p>
 	</div>
-	<form method="POST" th:action="@{/schedule/updateSchedule}"
-		th:object="${schedule}">
+	<form method="POST" th:action="@{/schedule/updateSchedule}" th:object="${schedule}">
 		<p><input type="hidden" th:field="*{id}"></p>
 		<p><input type="hidden" th:field="*{userid}"></p>
 		<table>
