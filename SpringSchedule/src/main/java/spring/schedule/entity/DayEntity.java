@@ -37,4 +37,8 @@ public class DayEntity implements Serializable{
 	 *日付の月(カレンダー表示画面に戻る用)
 	 */
 	private int calendarMonth;
+	/**
+	 *	操作名
+	 */
+	private String action;
 }

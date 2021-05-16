@@ -49,9 +49,8 @@ p {
 }
 
 .transparency {
-    color: #000; /* Fallback for older browsers */
+    color: #000;
     color: rgba(0, 0, 0, 0.5);
-
     font-size: 16pt;
     font-family: Arial, sans-serif;
 }

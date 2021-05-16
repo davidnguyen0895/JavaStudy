@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import spring.schedule.constants.Constants;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
@@ -70,6 +69,7 @@ public class DisplayCalendarController {
 		DayEntity dayEntity = new DayEntity();
 		dayEntity.setCalendarYear(calendarDate.getYear());
 		dayEntity.setCalendarMonth(calendarDate.getMonthValue());
+		dayEntity.setAction(Constants.ACTION_SEARCH);
 		//modelに格納してhtmlに渡す
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", schedule);

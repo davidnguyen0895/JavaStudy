@@ -1,13 +1,13 @@
 package spring.schedule.service;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import spring.schedule.constants.Constants;
 import spring.schedule.dto.ScheduleSearchRequest;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
@@ -23,6 +23,10 @@ import spring.schedule.repository.SelectScheduleMapper;
 @Service
 @Transactional(rollbackOn = Exception.class)
 public class CalendarService {
+	//日付変換定数 : yyyy/MM/dd
+	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+	//日付変換定数 : hh:mm
+	private SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm");
 	/**
 	 * スケージュール情報を参照するためのMapperインストタンス
 	 */
@@ -137,7 +141,7 @@ public class CalendarService {
 	 * @throws ParseException
 	 */
 	public void updateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
-		ScheduleInfoEntity updateSchedule = CreateUpdateSchedule(scheduleRequest);
+		ScheduleInfoEntity updateSchedule = CreateSchedule(scheduleRequest);
 		selectScheduleMapper.updateSchedule(updateSchedule);
 	}
 	/**
@@ -147,44 +151,23 @@ public class CalendarService {
 	 */
 	private ScheduleInfoEntity CreateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
 		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
-		String startTimeStr = scheduleRequest.getStarttime();
-		java.sql.Time convertedStarttime = new java.sql.Time(Constants.timeFormat.parse(startTimeStr).getTime());
-		String endTimeStr = scheduleRequest.getEndtime();
-		java.sql.Time convertedEndtime = new java.sql.Time(Constants.timeFormat.parse(endTimeStr).getTime());
-		String scheduleDateStr = scheduleRequest.getScheduledate();
-		java.util.Date convertedUtilScheduleDate = Constants.dateFormat.parse(scheduleDateStr);
+		java.sql.Time convertedStarttime = new java.sql.Time(timeFormat.parse(scheduleRequest.getStarttime()).getTime());
+		java.sql.Time convertedEndtime = new java.sql.Time(timeFormat.parse(scheduleRequest.getEndtime()).getTime());
+		java.util.Date convertedUtilScheduleDate = dateFormat.parse(scheduleRequest.getScheduledate());
 		java.sql.Date convertedSqlScheduleDate = new java.sql.Date(convertedUtilScheduleDate.getTime());
 		schedule.setId(scheduleRequest.getId());
-		schedule.setUserid(3);
+		//新規登録の場合
+		if(scheduleRequest.getUserid() == 0) {
+			schedule.setUserid(1);
+		}else {//更新の場合
+			schedule.setUserid(scheduleRequest.getUserid());
+		}
 		schedule.setScheduledate(convertedSqlScheduleDate);
 		schedule.setStarttime(convertedStarttime);
 		schedule.setEndtime(convertedEndtime);
 		schedule.setSchedule(scheduleRequest.getSchedule());
 		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
 		return schedule;
-	}
-	/**
-	 * @param scheduleRequest スケージュール情報リクエストデータ
-	 * @return
-	 * @throws ParseException
-	 */
-	private ScheduleInfoEntity CreateUpdateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
-		ScheduleInfoEntity updateSchedule = new ScheduleInfoEntity();
-		String startTimeStr = scheduleRequest.getStarttime();
-		java.sql.Time convertedStarttime = new java.sql.Time(Constants.timeFormat.parse(startTimeStr).getTime());
-		String endTimeStr = scheduleRequest.getEndtime();
-		java.sql.Time convertedEndtime = new java.sql.Time(Constants.timeFormat.parse(endTimeStr).getTime());
-		String scheduleDateStr = scheduleRequest.getScheduledate();
-		java.util.Date convertedUtilScheduleDate = Constants.dateFormat.parse(scheduleDateStr);
-		java.sql.Date convertedSqlScheduleDate = new java.sql.Date(convertedUtilScheduleDate.getTime());
-		updateSchedule.setId(scheduleRequest.getId());
-		updateSchedule.setUserid(scheduleRequest.getUserid());
-		updateSchedule.setScheduledate(convertedSqlScheduleDate);
-		updateSchedule.setStarttime(convertedStarttime);
-		updateSchedule.setEndtime(convertedEndtime);
-		updateSchedule.setSchedule(scheduleRequest.getSchedule());
-		updateSchedule.setSchedulememo(scheduleRequest.getSchedulememo());
-		return updateSchedule;
 	}
 	//～～～～～～～～～～Mapperを呼び出すメソッド～～～～～～～～～～
 	/**
@@ -205,7 +188,7 @@ public class CalendarService {
 		return selectScheduleMapper.selectAll();
 	}
 	/**
-	 * 日付情報でDBを参照する．
+	 * 日付情報でスケージュール情報を参照する．
 	 * @param scheduledate
 	 * @return
 	 */
@@ -221,7 +204,7 @@ public class CalendarService {
 		return selectScheduleMapper.selectAllById(id);
 	}
 	/**
-	 *
+	 *	IDで削除
 	 * @param id
 	 */
 	public void deleteSchedule(Long id) {

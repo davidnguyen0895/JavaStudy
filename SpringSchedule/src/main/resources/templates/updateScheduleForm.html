@@ -35,14 +35,13 @@
 	</div>
 	<!--～～～～～～～～～～ スケージュール情報を新規登録フォーム ～～～～～～～～～～-->
 	<h4 align="center">スケージュール情報を更新するフォーム</h4>
+	<div th:if="${validationError}" th:each="error : ${validationError}">
+		<p style="color: red;" th:text="${error}"></p>
+	</div>
 	<form method="POST" th:action="@{/schedule/updateSchedule}"
-		th:object="${updateSchedule}">
-		<p>
-			<input type="hidden" th:field="*{id}" placeholder="ID">
-		</p>
-		<p>
-			<input type="hidden" th:field="*{userid}" placeholder="ユーザID">
-		</p>
+		th:object="${schedule}">
+		<p><input type="hidden" th:field="*{id}"></p>
+		<p><input type="hidden" th:field="*{userid}"></p>
 		<table>
 			<!--～～～～～～～～～～ スケージュール日付 ～～～～～～～～～～-->
 			<tr>

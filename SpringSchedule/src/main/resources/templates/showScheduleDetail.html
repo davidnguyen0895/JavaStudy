@@ -19,7 +19,16 @@
 				month=*{dayEntity.getCalendarMonth()})}"><button>カレンダーに戻る</button></a>
 		</p>
 	</div>
-	<h4 align="center">スケージュール詳細情報</h4>
+	<div>
+		<h4 align="center" th:if="${dayEntity.getAction() == 'regist'}">登録したスケージュール詳細情報</h4>
+	</div>
+	<div>
+		<h4 align="center"
+			th:if="${dayEntity.getAction() == 'update'}">更新したスケージュール詳細情報</h4>
+	</div>
+	<div>
+		<h4 align="center" th:if="${dayEntity.getAction() == 'search'}">スケージュール詳細情報</h4>
+	</div>
 	<table>
 		<thead>
 			<tr>
@@ -47,9 +56,7 @@
 	<br>
 			<!--～～～～～～～～～～ 削除ボタン～～～～～～～～～～-->
 		<div th:each="data : ${schedule}">
-			<a href="displayCalendar.html" th:href="@{/schedule/deleteSchedule(id=*{data.id})}">
-		<button>削除</button></a>
-
+			<a href="displayCalendar.html" th:href="@{/schedule/deleteSchedule(id=*{data.id})}"><button>削除</button></a>
 			<a href="updateScheduleForm.html" th:href="@{/schedule/showUpdateScheduleForm(id=*{data.id},
 			userid=*{data.userid},scheduledate=*{#dates.format(data.scheduledate,'yyyy/MM/dd')},
 			starttime=*{#dates.format(data.starttime,'HH:mm')},

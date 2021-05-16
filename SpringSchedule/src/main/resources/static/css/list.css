@@ -55,3 +55,14 @@ table input {
 	width: 100px;
 	text-align: center;
 }
+
+.cell_title {
+border-right: 0;
+}
+
+.cell_required{
+color: red;
+font-size: 12px;
+width: 10px;
+border-left: 0;
+}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>スケジュール情報・全件検索一覧</title>
+<link href="/css/list.css" rel="stylesheet"></link>
+<meta charset="utf-8" />
+</head>
+<body>
+	<div>
+		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
+	</div>
+	<h3>ユーザー情報・全件検索一覧</h3>
+	<table>
+		<thead>
+			<tr>
+				<th>ユーザID</th>
+				<th>ユーザ名</th>
+				<th>パスワード</th>
+				<th>登録日</th>
+				<th>更新日</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="user : ${userList}" th:object="${user}">
+				<td class="center" th:text="*{id}"></td>
+				<td class="center" th:text="*{username}"></td>
+				<td class="center" th:text="*{password}"></td>
+				<td th:text="${#dates.format(user.create_date,'yyyy/MM/dd')}"></td>
+				<td th:text="${#dates.format(user.update_date,'yyyy/MM/dd')}"></td>
+			</tr>
+		</tbody>
+	</table>
+</body>
+</html>

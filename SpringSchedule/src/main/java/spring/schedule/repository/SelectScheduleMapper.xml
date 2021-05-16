@@ -8,7 +8,8 @@
 		resultType="spring.schedule.entity.ScheduleInfoEntity">
 		SELECT s.id AS id
 		, s.userid AS userid
-		, s.scheduledate AS scheduledate
+		, s.scheduledate AS
+		scheduledate
 		, s.starttime AS starttime
 		, s.endtime AS endtime
 		,s.schedule AS schedule
@@ -21,7 +22,8 @@
 		SELECT
 		s.id AS id
 		, s.userid AS userid
-		, s.scheduledate AS scheduledate
+		, s.scheduledate AS
+		scheduledate
 		, s.starttime AS starttime
 		, s.endtime AS endtime
 		,s.schedule AS schedule
@@ -36,12 +38,15 @@
 		SELECT
 		s.id AS id
 		, s.userid AS userid
-		, s.scheduledate AS scheduledate
+		, s.scheduledate AS
+		scheduledate
 		,s.starttime AS starttime
 		, s.endtime AS endtime
-		, s.schedule AS schedule
+		,
+		s.schedule AS schedule
 		, s.schedulememo AS schedulememo
-		FROM java_study.schedule s WHERE
+		FROM
+		java_study.schedule s WHERE
 		s.scheduledate = #{scheduledate}
 	</select>
 	<select id="selectAllById"
@@ -49,15 +54,19 @@
 		SELECT
 		s.id AS id
 		, s.userid AS userid
-		, s.scheduledate AS scheduledate
+		, s.scheduledate AS
+		scheduledate
 		,s.starttime AS starttime
 		, s.endtime AS endtime
-		, s.schedule AS schedule
+		,
+		s.schedule AS schedule
 		, s.schedulememo AS schedulememo
-		FROM java_study.schedule s WHERE
+		FROM
+		java_study.schedule s WHERE
 		s.id = #{id}
 	</select>
-	<insert id="insertNewSchedule" useGeneratedKeys="true" keyProperty="id">
+	<insert id="insertNewSchedule" useGeneratedKeys="true"
+		keyProperty="id">
 		INSERT INTO java_study.schedule(userid,scheduledate,
 		starttime,endtime,schedule,schedulememo)
 		VALUES(
@@ -69,19 +78,19 @@
 		#{schedulememo})
 	</insert>
 	<delete id="deleteSchedule">
-	DELETE
-	FROM
-	java_study.schedule s
-	WHERE
-	s.id = #{id}
+		DELETE
+		FROM
+		java_study.schedule s
+		WHERE
+		s.id = #{id}
 	</delete>
 	<update id="updateSchedule">
-	UPDATE java_study.schedule SET
-	scheduledate = #{scheduledate},
-	starttime = #{starttime},
-	endtime = #{endtime},
-	schedule = #{schedule},
-	schedulememo = #{schedulememo}
-	WHERE id = #{id}
+		UPDATE java_study.schedule SET
+		scheduledate = #{scheduledate},
+		starttime = #{starttime},
+		endtime = #{endtime},
+		schedule = #{schedule},
+		schedulememo = #{schedulememo}
+		WHERE id = #{id}
 	</update>
 </mapper>

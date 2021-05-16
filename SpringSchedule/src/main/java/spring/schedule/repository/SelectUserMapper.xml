@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="spring.schedule.repository.SelectUserMapper">
+	<select id="selectAllUser" resultType="spring.schedule.entity.UserInfoEntity">
+		SELECT
+		id
+		, username
+		, password
+		, create_date
+		, update_date
+		FROM
+		java_study.users
+	</select>
+</mapper>
