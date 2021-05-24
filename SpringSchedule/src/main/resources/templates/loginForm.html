@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>ログイン</title>
+<link href="/css/list.css" rel="stylesheet"></link>
+<meta charset="utf-8" />
+</head>
+<body>
+	<!--/* ログイン失敗/ログアウトはgetパラメータにステータスが渡されているので、Thymeleafではparamから取得 */-->
+	<div style="color:red" th:if="${param.logout}">※ログアウトしました．</div>
+	<!-- <div class="error" th:if="${param.error}">IDとパスワードが正しくありません．</div> -->
+	<h3 align="center">スケジュール管理</h3>
+	<h3 align="center">ログイン</h3>
+	<div th:if="${param.error}" style="color:red">※ユーザー名またはパスワードが正しくありません。</div>
+	<form th:action="@{/sign_in}" th:method="post">
+		<div style="width:160px;">
+			<label>ユーザ名</label> <input id="username" type="text" name="username">
+		</div>
+		<br/>
+		<div style="width:160px;">
+			<label>パスワード</label> <input id="password" type="password"
+				name="password">
+		</div>
+		<br>
+		<div><input type="submit" value="ログイン" /></div>
+	</form>
+</body>
+</html>

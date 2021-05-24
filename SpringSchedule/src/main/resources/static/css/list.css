@@ -39,13 +39,6 @@ table input {
 	border-right: 0;
 }
 
-.cell_required {
-	color: red;
-	font-size: 12px;
-	width: 10px;
-	border-left: 0;
-}
-
 .btn_area_center {
 	margin-top: 20px;
 	text-align: center;
@@ -61,6 +54,13 @@ border-right: 0;
 }
 
 .cell_required{
+color: red;
+font-size: 12px;
+width: 10px;
+border-left: 0;
+}
+
+error{
 color: red;
 font-size: 12px;
 width: 10px;

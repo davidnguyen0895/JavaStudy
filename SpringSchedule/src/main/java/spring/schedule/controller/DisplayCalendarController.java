@@ -52,7 +52,7 @@ public class DisplayCalendarController {
 		// カレンダーを格納するインストタンス
 		CalendarInfoEntity calendarInfo = calendarService.generateCalendarInfo(year, month);
 		model.addAttribute("calendarInfo", calendarInfo);
-		return Constants.DISPLAY_CALENDAR;
+		return Constants.RETURN_DISPLAY_CALENDAR;
 	}
 	/**
 	 *
@@ -73,6 +73,6 @@ public class DisplayCalendarController {
 		//modelに格納してhtmlに渡す
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", schedule);
-		return Constants.SHOW_SCHEDULE_DETAIL;
+		return Constants.RETURN_SHOW_SCHEDULE_DETAIL;
 	}
 }

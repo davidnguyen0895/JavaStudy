@@ -49,6 +49,6 @@ public class SelectByIdController {
 			BindingResult result, Model model) {
 		ScheduleInfoEntity schedule = calendarService.selectById(scheduleSearchRequest);
 		model.addAttribute("selectByIdInfo", schedule);/* Modelに格納してhtmlに渡す */
-		return Constants.SELECT_BY_ID;
+		return Constants.RETURN_SELECT_BY_ID;
 	}
 }

@@ -79,7 +79,7 @@ public class CreateScheduleController {
 		//modelにdayEntityとScheduleRequestのインスタンスを格納し，スケージュール作成フォームに送信する．
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", new ScheduleRequest());
-		return Constants.CREATE_SCHEDULE_FORM;
+		return Constants.RETURN_CREATE_SCHEDULE_FORM;
 	}
 	/**
 	 * スケジュール情報を登録するメソッド
@@ -108,7 +108,7 @@ public class CreateScheduleController {
 			model.addAttribute("validationError", errorList);
 			//入力した情報を残す
 			model.addAttribute("schedule", scheduleRequest);
-			return Constants.CREATE_SCHEDULE_FORM;
+			return Constants.RETURN_CREATE_SCHEDULE_FORM;
 		}
 		else {//入力エラーがない場合
 			//入力フォーム画面で入力した値をDBに登録する．
@@ -128,7 +128,7 @@ public class CreateScheduleController {
 			dayEntity.setAction(Constants.ACTION_REGIST);
 			model.addAttribute("dayEntity", dayEntity);
 			model.addAttribute("schedule", schedule);
-			return Constants.SHOW_SCHEDULE_DETAIL;
+			return Constants.RETURN_SHOW_SCHEDULE_DETAIL;
 		}
 	}
 	/**
@@ -162,7 +162,7 @@ public class CreateScheduleController {
 		//modelにdayEntityとScheduleRequestのインスタンスを格納し，スケージュール作成フォームに送信する．
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", updateSchedule);
-		return Constants.UPDATE_SCHEDULE_FORM;
+		return Constants.RETURN_UPDATE_SCHEDULE_FORM;
 	}
 	/**
 	 *	スケジュール情報を更新するメソッド
@@ -190,7 +190,7 @@ public class CreateScheduleController {
 			model.addAttribute("validationError", errorList);
 			//入力した情報を残す
 			model.addAttribute("schedule", scheduleRequest);
-			return Constants.UPDATE_SCHEDULE_FORM;
+			return Constants.RETURN_UPDATE_SCHEDULE_FORM;
 		}else {
 			//入力フォーム画面で入力した値をDBに登録する．
 			calendarService.updateSchedule(scheduleRequest);
@@ -205,7 +205,7 @@ public class CreateScheduleController {
 			dayEntity.setAction(Constants.ACTION_UPDATE);
 			model.addAttribute("dayEntity", dayEntity);
 			model.addAttribute("schedule", updateSchedule);
-			return Constants.SHOW_SCHEDULE_DETAIL;
+			return Constants.RETURN_SHOW_SCHEDULE_DETAIL;
 		}
 	}
 

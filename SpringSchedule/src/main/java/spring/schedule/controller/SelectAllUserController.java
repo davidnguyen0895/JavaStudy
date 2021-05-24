@@ -34,6 +34,6 @@ public class SelectAllUserController {
 		List<UserInfoEntity> userList = new ArrayList<UserInfoEntity>();
 		userList = userService.selectAllUser();
 		model.addAttribute("userList", userList);
-		return Constants.SELECT_ALL_USER;
+		return Constants.RETURN_SELECT_ALL_USER;
 	}
 }

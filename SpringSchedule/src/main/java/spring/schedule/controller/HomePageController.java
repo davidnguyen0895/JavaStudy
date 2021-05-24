@@ -1,8 +1,11 @@
 package spring.schedule.controller;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
 import spring.schedule.constants.Constants;
 
 /**
@@ -12,8 +15,12 @@ import spring.schedule.constants.Constants;
  */
 @Controller
 public class HomePageController {
-	@GetMapping(value = "/index")
-	public String displayHomePage(Model model) {
-		return Constants.INDEX;
+	@RequestMapping("/index")
+	private String init(Model model) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		//Principalからログインユーザの情報を取得
+		String userName = auth.getName();
+		model.addAttribute("username", userName);
+		return Constants.RETURN_INDEX;
 	}
 }

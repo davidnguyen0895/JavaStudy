@@ -33,6 +33,6 @@ public class SelectAllController {
 		List<ScheduleInfoEntity> scheduleList = new ArrayList<ScheduleInfoEntity>();
 		scheduleList = calendarService.selectAll();
 		model.addAttribute("scheduleList", scheduleList);
-		return Constants.SELECT_ALL;
+		return Constants.RETURN_SELECT_ALL;
 	}
 }

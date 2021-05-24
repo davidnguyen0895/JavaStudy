@@ -7,6 +7,21 @@
 <meta charset="utf-8" />
 </head>
 <body>
+	<div>
+		<p align="left">ようこそ</p>
+		<p align="left" th:text="${username}"></p>
+		<p>様</p>
+	</div>
+	<div>
+<!-- 		<form method="post" th:action="@{/logout}">
+			<input type="submit" value="ログアウト">
+		</form> -->
+		<form name="logoutForm" th:hidden="true" method="post"
+			th:action="@{/logout}">
+			<input type="submit" value="ログアウト" />
+		</form>
+		<a href="javascript: logoutForm.submit();"><button>ログアウト</button></a>
+	</div>
 	<h1 align="center">スケジュール管理</h1>
 	<div align="center">
 		<a th:href="@{selectById}"><button>IDで検索</button></a>

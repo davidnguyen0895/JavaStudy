@@ -16,4 +16,9 @@ public interface SelectUserMapper{
 	 * @return 全件検索結果
 	 */
 	List<UserInfoEntity> selectAllUser();
+	/**
+	 *
+	 * @return
+	 */
+	UserInfoEntity selectUserByUserName(String username);
 }
