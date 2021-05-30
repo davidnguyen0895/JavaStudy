@@ -47,9 +47,20 @@ public class CreateScheduleController {
 		return calendarService.selectAllByDate(scheduledate);
 	}
 	/**
-	 * スケージュール情報を作成する．
+	 *	スケジュール情報を削除するメソッド
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="deleteSchedule",method=RequestMethod.GET)
+	public String deleteSchedule(@RequestParam("id") Long id) {
+		calendarService.deleteSchedule(id);
+		return Constants.REDIRECT_DISPLAY_CALENDAR;
+	}
+	/**
+	 *
 	 * @param scheduleRequest
-	 * @return スケージュール情報オブジェクト
+	 * @param schedule
+	 * @return
 	 * @throws ParseException
 	 */
 	private ScheduleInfoEntity CreateSchedule(ScheduleRequest scheduleRequest, ScheduleInfoEntity schedule) throws ParseException {
@@ -64,11 +75,10 @@ public class CreateScheduleController {
 		return schedule;
 	}
 	/**
-	 * スケジュール登録フォーム画面を表示する．
-	 * @param year
-	 * @param month
+	 * スケージュール情報を登録フォーム
 	 * @param model
-	 * @return スケージュール作成フォーム
+	 * @param today
+	 * @return
 	 */
 	@RequestMapping(value="showScheduleForm", method=RequestMethod.GET)
 	public String showNewScheduleForm(Model model, LocalDate today) {
@@ -139,7 +149,7 @@ public class CreateScheduleController {
 	 */
 	@RequestMapping(value="showUpdateScheduleForm", method=RequestMethod.GET)
 	public String showUpdateScheduleForm(@RequestParam("id") Long id,
-			@RequestParam("userid") int userid,
+			@RequestParam("userid") Long userid,
 			@RequestParam("scheduledate") String scheduledate,
 			@RequestParam("starttime") String starttime,
 			@RequestParam("endtime") String endtime,
@@ -207,16 +217,5 @@ public class CreateScheduleController {
 			model.addAttribute("schedule", updateSchedule);
 			return Constants.RETURN_SHOW_SCHEDULE_DETAIL;
 		}
-	}
-
-	/**
-	 *	スケジュール情報を削除するメソッド
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value="deleteSchedule",method=RequestMethod.GET)
-	public String deleteSchedule(@RequestParam("id") Long id) {
-		calendarService.deleteSchedule(id);
-		return Constants.REDIRECT_DISPLAY_CALENDAR;
 	}
 }

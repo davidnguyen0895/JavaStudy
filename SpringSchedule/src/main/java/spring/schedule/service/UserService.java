@@ -52,7 +52,7 @@ public class UserService implements UserDetailsService{
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 		//UserDetailsはインタフェースなのでUserクラスのコンストラクタで生成したユーザオブジェクトをキャスト
-		UserDetails userDetails = (UserDetails)new User(user.getUsername(), encoder.encode(user.getPassword()),grantList);
+		UserDetails userDetails = (UserDetails)new User(user.getUsername(), encoder.encode(user.getPass()),grantList);
 
 		return userDetails;
 	}

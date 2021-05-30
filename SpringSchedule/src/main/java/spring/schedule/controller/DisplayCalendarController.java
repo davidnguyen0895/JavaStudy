@@ -35,9 +35,7 @@ public class DisplayCalendarController {
 	@RequestMapping
 	public String today(Model model) {
 		LocalDate today = new LocalDate();
-		int year = today.getYear();
-		int month = today.getMonthOfYear();
-		return date(year, month, model);
+		return date(today.getYear(), today.getMonthOfYear(), model);
 	}
 
 	/**
@@ -61,7 +59,7 @@ public class DisplayCalendarController {
 	 * @return
 	 */
 	@RequestMapping(value = "schedule")
-	public String schedule(@RequestParam("id") Long id, Model model) {
+	public String showScheduleDetail(@RequestParam("id") Long id, Model model) {
 		//リクエストデータのID情報を用いてスケージュール情報を参照する．
 		ScheduleInfoEntity schedule = calendarService.selectAllById(id);
 		//カレンダー表示画面に戻るための年と月のデータをdayEntityインストタンスに格納する．

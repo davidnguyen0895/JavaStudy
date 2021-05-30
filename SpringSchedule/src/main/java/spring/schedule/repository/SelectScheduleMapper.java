@@ -35,6 +35,13 @@ public interface SelectScheduleMapper{
 	 * @return IDで参照したスケジュールの情報
 	 */
 	ScheduleInfoEntity selectAllById(Long id);
+	/**
+	 *
+	 * @param userId
+	 * @return
+	 */
+	List<ScheduleInfoEntity> selectAllByUserId(Long userId, String scheduledate);
+
 /**
  * スケージュール情報を登録する
  * @param newSchedule

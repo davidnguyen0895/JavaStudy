@@ -23,7 +23,7 @@ public class ScheduleRequest implements Serializable{
 	/**
 	 *ユーザID
 	 */
-	private int userid;
+	private Long userid;
 	/**
 	 *スケジュール日付
 	 */

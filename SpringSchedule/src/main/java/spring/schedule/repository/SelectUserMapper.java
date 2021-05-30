@@ -18,7 +18,14 @@ public interface SelectUserMapper{
 	List<UserInfoEntity> selectAllUser();
 	/**
 	 *
+	 * @param userName
 	 * @return
 	 */
-	UserInfoEntity selectUserByUserName(String username);
+	UserInfoEntity selectUserId(String userName);
+	/**
+	 *
+	 * @param userName
+	 * @return
+	 */
+	UserInfoEntity selectUserByUserName(String userName);
 }

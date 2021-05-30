@@ -1,19 +1,17 @@
 package spring.schedule.entity;
 import java.io.Serializable;
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 /*スケジュール情報Entity*/
 @Entity
 @Data
-@Table(name="users")
+@Table(name="usertable")
 public class UserInfoEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/**
@@ -31,18 +29,11 @@ public class UserInfoEntity implements Serializable{
 	/**
 	 * パスワード
 	 */
-	@Column(name="password")
-	private String password;
+	@Column(name="pass")
+	private String pass;
 	/**
-	 * 登録日
+	 * ROLL
 	 */
-	@JsonFormat(pattern = "yyyy/MM/dd", timezone = "Asia/Tokyo")
-	@Column(name="create_date")
-	private Date create_date;
-	/**
-	 * 更新日
-	 */
-	@JsonFormat(pattern = "yyyy/MM/dd", timezone = "Asia/Tokyo")
-	@Column(name="update_date")
-	private Date update_date;
+	@Column(name="roll")
+	private int roll;
 }

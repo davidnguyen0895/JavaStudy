@@ -7,13 +7,17 @@ import java.util.List;
 import javax.transaction.Transactional;
 import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import spring.schedule.dto.ScheduleSearchRequest;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
 import spring.schedule.entity.ScheduleRequest;
+import spring.schedule.entity.UserInfoEntity;
 import spring.schedule.repository.SelectScheduleMapper;
+import spring.schedule.repository.SelectUserMapper;
 
 /**
  * rollbackOn = Exception.class : 例外が発生した場合，ロールバックする．
@@ -27,11 +31,18 @@ public class CalendarService {
 	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 	//日付変換定数 : hh:mm
 	private SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm");
+	//週
+	private final int weekNum = 6;
 	/**
 	 * スケージュール情報を参照するためのMapperインストタンス
 	 */
 	@Autowired
 	private SelectScheduleMapper selectScheduleMapper;
+	/**
+	 *
+	 */
+	@Autowired
+	private SelectUserMapper selectUserMapper;
 
 	/**
 	 * カレンダーを表示するための情報を作成するメソッド．
@@ -40,6 +51,9 @@ public class CalendarService {
 	 * @return
 	 */
 	public CalendarInfoEntity generateCalendarInfo(int year, int month) {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		//Principalからログインユーザの情報を取得
+		String userName = auth.getName();
 		//当月の１日
 		LocalDate firstDayOfMonth =new LocalDate(year, month, 1);
 		// 当月の最後の日
@@ -47,31 +61,20 @@ public class CalendarService {
 		// カレンダーの一日目
 		//minusDays(1)による最初の日付を日曜日に指定する．
 		LocalDate firstDayOfCalendar = firstDayOfMonth.dayOfWeek().withMinimumValue().minusDays(1);
+		int monday = 0;
+		int sunday = 6;
+		//ユーザIDを取得
+		Long userId = getUserId(userName);
 		// カレンダー情報を格納Model
 		CalendarInfoEntity calendarInfo = new CalendarInfoEntity();
-		// 6週間分の日付リスト
-		List<DayEntity> firstWeekList = new ArrayList<DayEntity>();
-		List<DayEntity> secondWeekList = new ArrayList<DayEntity>();
-		List<DayEntity> thirdWeekList = new ArrayList<DayEntity>();
-		List<DayEntity> fourthWeekList = new ArrayList<DayEntity>();
-		List<DayEntity> fifthWeekList = new ArrayList<DayEntity>();
-		List<DayEntity> sixthWeekList = new ArrayList<DayEntity>();
-		//6週間分の日付リストを格納するための2重リスト
 		List<List<DayEntity>> calendar = new ArrayList<List<DayEntity>>();
+
+		for(int week = 1; week <= weekNum; week++) {
+			generateWeekList(firstDayOfCalendar, calendar, week, monday, sunday, userId);
+			monday = monday + 7;
+			sunday = sunday + 7;
+		}
 		//それぞれの週の日付を作成し，リストに格納する．
-		generateWeekList(0, 6, firstDayOfCalendar, firstWeekList);
-		generateWeekList(7, 13, firstDayOfCalendar, secondWeekList);
-		generateWeekList(14, 20, firstDayOfCalendar, thirdWeekList);
-		generateWeekList(21, 27, firstDayOfCalendar, fourthWeekList);
-		generateWeekList(28, 34, firstDayOfCalendar, fifthWeekList);
-		generateWeekList(35, 41, firstDayOfCalendar, sixthWeekList);
-		//それぞれの週の日付リストデータを2重リストcalendarに格納する．
-		calendar.add(firstWeekList);
-		calendar.add(secondWeekList);
-		calendar.add(thirdWeekList);
-		calendar.add(fourthWeekList);
-		calendar.add(fifthWeekList);
-		calendar.add(sixthWeekList);
 		//来月の日付を取得
 		LocalDate nextMonth = firstDayOfMonth.plusMonths(1);
 		//先月の日付を取得
@@ -93,15 +96,15 @@ public class CalendarService {
 	}
 	/**
 	 *
-	 * @param firstDay その週の最初の日
-	 * @param lastDay その週の最終の日
-	 * @param firstDayOfCalendar カレンダーの最初の日付
-	 * @param weekList 週の日付リスト
+	 * @param firstDayOfCalendar
+	 * @param calendar
+	 * @param week
+	 * @param monday
+	 * @param sunday
 	 */
-	private void generateWeekList(int firstDay, int lastDay, LocalDate firstDayOfCalendar,
-			List<DayEntity> weekList) {
-		//その週の最初日付から最終日付までループで処理する．
-		for(int i = firstDay; i <= lastDay; i++) {
+	private void generateWeekList(LocalDate firstDayOfCalendar, List<List<DayEntity>> calendar, int week, int monday, int sunday, Long userId) {
+		List<DayEntity> weekList = new ArrayList<DayEntity>();
+		for(int i = monday; i <= sunday; i++) {
 			//IDリストインストタンス
 			List<Long> idList = new ArrayList<Long>();
 			//日付情報インストタンス
@@ -113,7 +116,7 @@ public class CalendarService {
 			//当月の月を設定する
 			day.setCalendarMonth(scheduledate.getMonthOfYear());
 			//日付データを用いてスケージュール情報リストを参照する．
-			List<ScheduleInfoEntity> scheduleList = selectAllByDate(scheduledate.toString());
+			List<ScheduleInfoEntity> scheduleList = selectAllByUserId(userId, scheduledate.toString());
 			//スケージュール情報リストを日付情報インストタンスに格納する．
 			day.setScheduleList(scheduleList);
 			//スケージュール情報リストからスケージュールIDをIDリストに格納
@@ -125,6 +128,7 @@ public class CalendarService {
 			//日付情報インストタンスを週の日付リストに格納する．
 			weekList.add(day);
 		}
+		calendar.add(weekList);
 	}
 	/**
 	 * 新規登録スケジュール情報をDBに登録するメソッド．
@@ -132,7 +136,7 @@ public class CalendarService {
 	 * @throws ParseException
 	 */
 	public void insertNewSchedule(ScheduleRequest scheduleRequest) throws ParseException {
-		ScheduleInfoEntity schedule = CreateSchedule(scheduleRequest);
+		ScheduleInfoEntity schedule = createSchedule(scheduleRequest);
 		selectScheduleMapper.insertNewSchedule(schedule);
 	}
 	/**
@@ -141,7 +145,7 @@ public class CalendarService {
 	 * @throws ParseException
 	 */
 	public void updateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
-		ScheduleInfoEntity updateSchedule = CreateSchedule(scheduleRequest);
+		ScheduleInfoEntity updateSchedule = createSchedule(scheduleRequest);
 		selectScheduleMapper.updateSchedule(updateSchedule);
 	}
 	/**
@@ -149,25 +153,32 @@ public class CalendarService {
 	 * @return
 	 * @throws ParseException
 	 */
-	private ScheduleInfoEntity CreateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
+	private ScheduleInfoEntity createSchedule(ScheduleRequest scheduleRequest) throws ParseException {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		//Principalからログインユーザの情報を取得
+		String userName = auth.getName();
 		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
 		java.sql.Time convertedStarttime = new java.sql.Time(timeFormat.parse(scheduleRequest.getStarttime()).getTime());
 		java.sql.Time convertedEndtime = new java.sql.Time(timeFormat.parse(scheduleRequest.getEndtime()).getTime());
 		java.util.Date convertedUtilScheduleDate = dateFormat.parse(scheduleRequest.getScheduledate());
 		java.sql.Date convertedSqlScheduleDate = new java.sql.Date(convertedUtilScheduleDate.getTime());
 		schedule.setId(scheduleRequest.getId());
-		//新規登録の場合
-		if(scheduleRequest.getUserid() == 0) {
-			schedule.setUserid(1);
-		}else {//更新の場合
-			schedule.setUserid(scheduleRequest.getUserid());
-		}
+		schedule.setUserid(getUserId(userName));
 		schedule.setScheduledate(convertedSqlScheduleDate);
 		schedule.setStarttime(convertedStarttime);
 		schedule.setEndtime(convertedEndtime);
 		schedule.setSchedule(scheduleRequest.getSchedule());
 		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
 		return schedule;
+	}
+	/**
+	 *
+	 * @param userName
+	 * @return
+	 */
+	public Long getUserId(String userName) {
+		UserInfoEntity userInfo = selectUserMapper.selectUserId(userName);
+		return userInfo.getId();
 	}
 	//～～～～～～～～～～Mapperを呼び出すメソッド～～～～～～～～～～
 	/**
@@ -194,6 +205,22 @@ public class CalendarService {
 	 */
 	public List<ScheduleInfoEntity> selectAllByDate(String scheduledate) {
 		return selectScheduleMapper.selectAllByDate(scheduledate);
+	}
+	/**
+	 *
+	 * @param userId
+	 * @return
+	 */
+	public List<ScheduleInfoEntity> selectAllByUserId(Long userId, String scheduledate){
+		return selectScheduleMapper.selectAllByUserId(userId, scheduledate);
+	}
+	/**
+	 *
+	 * @param userName
+	 * @return
+	 */
+	public UserInfoEntity selectUserId(String userName) {
+		return selectUserMapper.selectUserId(userName);
 	}
 	/**
 	 * ID情報でDBを参照する

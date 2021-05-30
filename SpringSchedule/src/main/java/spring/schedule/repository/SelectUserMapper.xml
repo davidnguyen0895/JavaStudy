@@ -6,22 +6,32 @@
 	<select id="selectAllUser"
 		resultType="spring.schedule.entity.UserInfoEntity">
 		SELECT
-		id
-		, username
-		, password
-		, create_date
-		, update_date
+		u.id as id
+		, u.username
+		, u.pass as pass
+		, u.roll as roll
 		FROM
-		java_study.users
+		java_study.usertable u
 	</select>
-	<select id="selectUserByUserName"
+	<select id="selectUserId"
 		resultType="spring.schedule.entity.UserInfoEntity">
 		SELECT
-		UI.username
-		,UI.password
+		u.id as id
 		FROM
-		java_study.users UI
-		where
-		UI.username = #{username}
+		java_study.usertable u
+		WHERE
+		u.username = #{username}
+	</select>
+		<select id="selectUserByUserName"
+		resultType="spring.schedule.entity.UserInfoEntity">
+		SELECT
+		u.id as id
+		, u.username
+		, u.pass as pass
+		, u.roll as roll
+		FROM
+		java_study.usertable u
+		WHERE
+		u.username = #{username}
 	</select>
 </mapper>

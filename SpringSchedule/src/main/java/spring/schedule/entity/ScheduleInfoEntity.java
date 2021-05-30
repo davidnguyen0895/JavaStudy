@@ -30,7 +30,7 @@ public class ScheduleInfoEntity implements Serializable{
 	 * ユーザID
 	 */
 	@Column(name="userid")
-	private int userid;
+	private Long userid;
 	/**
 	 * スケジュール日付
 	 */

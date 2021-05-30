@@ -42,8 +42,7 @@
 		scheduledate
 		,s.starttime AS starttime
 		, s.endtime AS endtime
-		,
-		s.schedule AS schedule
+		,s.schedule AS schedule
 		, s.schedulememo AS schedulememo
 		FROM
 		java_study.schedule s WHERE
@@ -58,12 +57,27 @@
 		scheduledate
 		,s.starttime AS starttime
 		, s.endtime AS endtime
-		,
-		s.schedule AS schedule
+		,s.schedule AS schedule
 		, s.schedulememo AS schedulememo
 		FROM
 		java_study.schedule s WHERE
 		s.id = #{id}
+	</select>
+	<select id="selectAllByUserId"
+		resultType="spring.schedule.entity.ScheduleInfoEntity">
+		SELECT
+		s.id AS id
+		, s.userid AS userid
+		, s.scheduledate AS scheduledate
+		, s.starttime AS starttime
+		, s.endtime AS endtime
+		, s.schedule AS schedule
+		, s.schedulememo AS schedulememo
+		FROM
+		java_study.schedule s
+		WHERE
+		s.userid = #{userId}
+		AND s.scheduledate = #{scheduledate}
 	</select>
 	<insert id="insertNewSchedule" useGeneratedKeys="true"
 		keyProperty="id">
@@ -86,7 +100,8 @@
 	</delete>
 	<update id="updateSchedule">
 		UPDATE java_study.schedule SET
-		scheduledate = #{scheduledate},
+		scheduledate =
+		#{scheduledate},
 		starttime = #{starttime},
 		endtime = #{endtime},
 		schedule = #{schedule},
