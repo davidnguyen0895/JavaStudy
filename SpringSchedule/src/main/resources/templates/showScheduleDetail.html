@@ -45,9 +45,9 @@
 			<tr th:each="data : ${schedule}">
 				<td><p th:text="${data.id}">ID</p></td>
 				<td><p th:text="${data.userid}">ユーザID</p></td>
-				<td><p th:text="${#dates.format(data.scheduledate,'yyyy/MM/dd')}">スケジュール日付</p></td>
-				<td><p th:text="${#dates.format(data.starttime,'HH:mm')}">開始時間</p></td>
-				<td><p th:text="${#dates.format(data.endtime,'HH:mm')}">終了時間</p></td>
+				<td><p th:text="${#temporals.format(data.scheduledate,'yyyy/MM/dd')}">スケジュール日付</p></td>
+				<td><p th:text="${#temporals.format(data.starttime,'HH:mm')}">開始時間</p></td>
+				<td><p th:text="${#temporals.format(data.endtime,'HH:mm')}">終了時間</p></td>
 				<td><p th:text="${data.schedule}">スケジュール内容ID</p></td>
 				<td><p th:text="${data.schedulememo}">メモ</p></td>
 			</tr>
@@ -57,11 +57,17 @@
 			<!--～～～～～～～～～～ 削除ボタン～～～～～～～～～～-->
 		<div th:each="data : ${schedule}">
 			<a href="displayCalendar.html" th:href="@{/schedule/deleteSchedule(id=*{data.id})}"><button>削除</button></a>
-			<a href="updateScheduleForm.html" th:href="@{/schedule/showUpdateScheduleForm(id=*{data.id},
-			userid=*{data.userid},scheduledate=*{#dates.format(data.scheduledate,'yyyy/MM/dd')},
-			starttime=*{#dates.format(data.starttime,'HH:mm')},
-			endtime=*{#dates.format(data.endtime,'HH:mm')},schedule=*{data.schedule},schedulememo=*{data.schedulememo})}">
-		<button>更新</button></a>
 		</div>
+<!-- 			<a href="updateScheduleForm.html" th:href="@{/schedule/showUpdateScheduleForm(
+			id=*{data.id},
+			userid=*{data.userid},
+			scheduledate=*{#temporals.format(data.scheduledate,'yyyy/MM/dd')},
+			starttime=*{#temporals.format(data.starttime,'HH:mm')},
+			endtime=*{#temporals.format(data.endtime,'HH:mm')},
+			schedule=*{data.schedule},
+			schedulememo=*{data.schedulememo}
+			)}">
+			<button>更新</button></a> -->
+			<a th:text="${schedule}" th:href="@{|/schedule/showUpdateScheduleForm/${schedule}|}"><button>更新</button></a>
 </body>
 </html>

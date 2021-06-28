@@ -1,5 +1,6 @@
 package spring.schedule.repository;
 
+import java.time.LocalDate;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import spring.schedule.dto.ScheduleSearchRequest;
@@ -28,7 +29,7 @@ public interface SelectScheduleMapper{
 	 * @param scheduledate
 	 * @return
 	 */
-	List<ScheduleInfoEntity> selectAllByDate(String scheduledate);
+	List<ScheduleInfoEntity> selectAllByDate(LocalDate scheduledate);
 	/**
 	 * カレンダー表示画面
 	 * @param id

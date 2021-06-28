@@ -100,8 +100,7 @@
 	</delete>
 	<update id="updateSchedule">
 		UPDATE java_study.schedule SET
-		scheduledate =
-		#{scheduledate},
+		scheduledate = #{scheduledate},
 		starttime = #{starttime},
 		endtime = #{endtime},
 		schedule = #{schedule},

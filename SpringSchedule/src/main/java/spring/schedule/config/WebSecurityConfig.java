@@ -11,7 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import spring.schedule.service.UserService;
 
 /**
- *
+ * SpringSecurityを利用するための設定クラス
+ * ログイン処理でのパラメータ、画面遷移や認証処理でのデータアクセス先を設定する
  * @author thinh
  *
  */
@@ -31,7 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	/**
-	 * 静的ファイルには認証をかけない
+	 * 認可設定を無視するリクエストを設定
+	 * 静的リソース(images,css)を認可処理の対象から除外する
 	 * @param web
 	 * @throws Exception
 	 */
@@ -44,7 +46,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	}
 
 	/**
-	 * UserDetailsServiceインターフェースを実装した独自の認証レルムを使用する設定
+	 * 認証時に利用するデータソースを定義する設定メソッド
+	 * ここではDBから取得したユーザ情報をuserDetailsServiceへセットすることで認証時の比較情報としている
 	 * @param auth
 	 * @throws Exception
 	 */

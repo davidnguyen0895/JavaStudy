@@ -28,9 +28,15 @@
 			<tr th:each="schedule : ${scheduleList}" th:object="${schedule}">
 				<td class="center" th:text="*{id}"></td>
 				<td class="center" th:text="*{userid}"></td>
-				<td th:text="${#dates.format(schedule.scheduledate,'yyyy/MM/dd')}"></td>
+<!-- 				<td th:text="${#dates.format(schedule.scheduledate,'yyyy/MM/dd')}"></td>
 				<td th:text="${#dates.format(schedule.starttime,'HH:mm')}"></td>
-				<td th:text="${#dates.format(schedule.endtime,'HH:mm')}"></td>
+				<td th:text="${#dates.format(schedule.endtime,'HH:mm')}"></td> -->
+				<td th:text="${#temporals.format(schedule.scheduledate,'yyyy/MM/dd')}"></td>
+				<td th:text="${#temporals.format(schedule.starttime,'HH:mm')}"></td>
+				<td th:text="${#temporals.format(schedule.endtime,'HH:mm')}"></td>
+				<!-- 				<td th:text="${schedule.scheduledate}">
+				<td th:text="${schedule.starttime}">
+				<td th:text="${schedule.endtime}"> -->
 				<td th:text="*{schedule}"></td>
 				<td th:text="*{schedulememo}"></td>
 			</tr>

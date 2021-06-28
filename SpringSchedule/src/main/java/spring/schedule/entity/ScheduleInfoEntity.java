@@ -1,16 +1,16 @@
 package spring.schedule.entity;
 
 import java.io.Serializable;
-import java.util.Date;
-import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
 import lombok.Data;
 
 /*スケジュール情報Entity*/
@@ -34,19 +34,21 @@ public class ScheduleInfoEntity implements Serializable{
 	/**
 	 * スケジュール日付
 	 */
-	@JsonFormat(pattern = "yyyy/MM/dd", timezone = "Asia/Tokyo")
 	@Column(name="scheduledate")
-	private Date scheduledate;
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
+	private LocalDate scheduledate;
 	/**
 	 * 開始時間
 	 */
 	@Column(name="starttime")
-	private Time starttime;
+	@DateTimeFormat(pattern = "HH:mm")
+	private LocalTime starttime;
 	/**
 	 * 終了時間
 	 */
+	@DateTimeFormat(pattern = "HH:mm")
 	@Column(name="endtime")
-	private Time endtime;
+	private LocalTime endtime;
 	/**
 	 * スケジュール内容
 	 */

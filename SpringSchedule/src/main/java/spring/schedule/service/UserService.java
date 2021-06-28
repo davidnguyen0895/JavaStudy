@@ -42,8 +42,6 @@ public class UserService implements UserDetailsService{
 			throw new UsernameNotFoundException("ユーザ名：" + userName + "が見つかりません．");
 		}
 		//権限のリスト
-		//AdminやUserなどが存在するが、今回は利用しないのでUSERのみを仮で設定
-		//権限を利用する場合は、DB上で権限テーブル、ユーザ権限テーブルを作成し管理が必要
 		List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
 		GrantedAuthority authority = new SimpleGrantedAuthority("USER");
 		grantList.add(authority);

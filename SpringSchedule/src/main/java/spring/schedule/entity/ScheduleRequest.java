@@ -1,11 +1,12 @@
 package spring.schedule.entity;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
-import javax.validation.constraints.NotEmpty;
-//import javax.validation.constraints.Pattern;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-
+import org.springframework.format.annotation.DateTimeFormat;
 import lombok.Data;
 
 /**
@@ -27,23 +28,25 @@ public class ScheduleRequest implements Serializable{
 	/**
 	 *スケジュール日付
 	 */
-	@NotEmpty(message="スケジュール日付を入力してください．")
-	//@Pattern(regexp = "^[0-9]{4}/(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])$", message="スケジュール日付が不正です．")
-	private String scheduledate;
+	@NotNull(message="スケジュール日付を入力してください．")
+	@DateTimeFormat (pattern = "yyyy/MM/dd")
+	private LocalDate scheduledate;
 	/**
 	 *開始時間
 	 */
-	@NotEmpty(message="開始時間を入力してください．")
-	private String starttime;
+	@NotNull(message="開始時間を入力してください．")
+	@DateTimeFormat(pattern = "HH:mm")
+	private LocalTime starttime;
 	/**
 	 *終了時間
 	 */
-	@NotEmpty(message="終了時間を入力してください．")
-	private String endtime;
+	@NotNull(message="終了時間を入力してください．")
+	@DateTimeFormat(pattern = "HH:mm")
+	private LocalTime endtime;
 	/**
 	 *スケージュール内容
 	 */
-	@NotEmpty(message="スケジュール内容を入力してください．")
+	@NotNull(message="スケジュール内容を入力してください．")
 	@Size(max=100, message="スケジュールは100バイト以内です．")
 	private String schedule;
 	/**

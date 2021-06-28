@@ -1,7 +1,6 @@
 package spring.schedule.controller;
 
-import org.joda.time.LocalDate;
-import java.time.ZoneId;
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,7 +33,7 @@ public class DisplayCalendarController {
 	 */
 	@RequestMapping
 	public String today(Model model) {
-		LocalDate today = new LocalDate();
+		org.joda.time.LocalDate today = new org.joda.time.LocalDate();
 		return date(today.getYear(), today.getMonthOfYear(), model);
 	}
 
@@ -63,9 +62,11 @@ public class DisplayCalendarController {
 		//リクエストデータのID情報を用いてスケージュール情報を参照する．
 		ScheduleInfoEntity schedule = calendarService.selectAllById(id);
 		//カレンダー表示画面に戻るための年と月のデータをdayEntityインストタンスに格納する．
-		java.time.LocalDate calendarDate = java.time.LocalDate.ofInstant(schedule.getScheduledate().toInstant(), ZoneId.systemDefault());
+		//java.time.LocalDate calendarDate = java.time.LocalDate.ofInstant(schedule.getScheduledate().toInstant(), ZoneId.systemDefault());
+		LocalDate calendarDate = schedule.getScheduledate();
 		DayEntity dayEntity = new DayEntity();
 		dayEntity.setCalendarYear(calendarDate.getYear());
+		//dayEntity.setCalendarMonth(calendarDate.getMonthOfYear());
 		dayEntity.setCalendarMonth(calendarDate.getMonthValue());
 		dayEntity.setAction(Constants.ACTION_SEARCH);
 		//modelに格納してhtmlに渡す

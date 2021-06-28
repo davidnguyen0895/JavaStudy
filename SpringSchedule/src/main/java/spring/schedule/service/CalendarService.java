@@ -1,11 +1,11 @@
 package spring.schedule.service;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
-import org.joda.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,10 +27,6 @@ import spring.schedule.repository.SelectUserMapper;
 @Service
 @Transactional(rollbackOn = Exception.class)
 public class CalendarService {
-	//日付変換定数 : yyyy/MM/dd
-	private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-	//日付変換定数 : hh:mm
-	private SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm");
 	//週
 	private final int weekNum = 6;
 	/**
@@ -51,18 +47,19 @@ public class CalendarService {
 	 * @return
 	 */
 	public CalendarInfoEntity generateCalendarInfo(int year, int month) {
+		int firstDayOfWeek = 0;
+		int lastDayOfWeek = 6;
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		//Principalからログインユーザの情報を取得
 		String userName = auth.getName();
 		//当月の１日
-		LocalDate firstDayOfMonth =new LocalDate(year, month, 1);
+		org.joda.time.LocalDate firstDayOfMonth =new org.joda.time.LocalDate(year, month, 1);
 		// 当月の最後の日
-		LocalDate lastDayOfMonth = firstDayOfMonth.dayOfMonth().withMaximumValue();
+		org.joda.time.LocalDate lastDayOfMonth = firstDayOfMonth.dayOfMonth().withMaximumValue();
 		// カレンダーの一日目
 		//minusDays(1)による最初の日付を日曜日に指定する．
-		LocalDate firstDayOfCalendar = firstDayOfMonth.dayOfWeek().withMinimumValue().minusDays(1);
-		int monday = 0;
-		int sunday = 6;
+		org.joda.time.LocalDate firstDayOfCalendar = firstDayOfMonth.dayOfWeek().withMinimumValue().minusDays(1);
+
 		//ユーザIDを取得
 		Long userId = getUserId(userName);
 		// カレンダー情報を格納Model
@@ -70,15 +67,15 @@ public class CalendarService {
 		List<List<DayEntity>> calendar = new ArrayList<List<DayEntity>>();
 
 		for(int week = 1; week <= weekNum; week++) {
-			generateWeekList(firstDayOfCalendar, calendar, week, monday, sunday, userId);
-			monday = monday + 7;
-			sunday = sunday + 7;
+			generateWeekList(firstDayOfCalendar, calendar, firstDayOfWeek, lastDayOfWeek, userId);
+			firstDayOfWeek = firstDayOfWeek + 7;
+			lastDayOfWeek = lastDayOfWeek + 7;
 		}
 		//それぞれの週の日付を作成し，リストに格納する．
 		//来月の日付を取得
-		LocalDate nextMonth = firstDayOfMonth.plusMonths(1);
+		org.joda.time.LocalDate nextMonth = firstDayOfMonth.plusMonths(1);
 		//先月の日付を取得
-		LocalDate prevMonth = lastDayOfMonth.minusMonths(1);
+		org.joda.time.LocalDate prevMonth = lastDayOfMonth.minusMonths(1);
 		//calendarInfoインストタンスに2重リストcalendarを格納する．
 		calendarInfo.setCalendar(calendar);
 		//月の１日を格納する．
@@ -102,15 +99,15 @@ public class CalendarService {
 	 * @param monday
 	 * @param sunday
 	 */
-	private void generateWeekList(LocalDate firstDayOfCalendar, List<List<DayEntity>> calendar, int week, int monday, int sunday, Long userId) {
+	private void generateWeekList(org.joda.time.LocalDate firstDayOfCalendar, List<List<DayEntity>> calendar, int firstDayOfWeek, int lastDayOfWeek, Long userId) {
 		List<DayEntity> weekList = new ArrayList<DayEntity>();
-		for(int i = monday; i <= sunday; i++) {
+		for(int i = firstDayOfWeek; i <= lastDayOfWeek; i++) {
 			//IDリストインストタンス
 			List<Long> idList = new ArrayList<Long>();
 			//日付情報インストタンス
 			DayEntity day = new DayEntity();
 			//カレンダーの最初日付をその週の最初日付と最終日付でインクリメントする．
-			LocalDate scheduledate = firstDayOfCalendar.plusDays(i);
+			org.joda.time.LocalDate scheduledate = firstDayOfCalendar.plusDays(i);
 			//日付データを日付情報インストタンスに格納する．
 			day.setDay(scheduledate);
 			//当月の月を設定する
@@ -154,25 +151,35 @@ public class CalendarService {
 	 * @throws ParseException
 	 */
 	private ScheduleInfoEntity createSchedule(ScheduleRequest scheduleRequest) throws ParseException {
+		//日付変換定数 : yyyy/MM/dd
+		//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		//日付変換定数 : hh:mm
+		//SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm");
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		//Principalからログインユーザの情報を取得
 		String userName = auth.getName();
 		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
-		java.sql.Time convertedStarttime = new java.sql.Time(timeFormat.parse(scheduleRequest.getStarttime()).getTime());
-		java.sql.Time convertedEndtime = new java.sql.Time(timeFormat.parse(scheduleRequest.getEndtime()).getTime());
-		java.util.Date convertedUtilScheduleDate = dateFormat.parse(scheduleRequest.getScheduledate());
-		java.sql.Date convertedSqlScheduleDate = new java.sql.Date(convertedUtilScheduleDate.getTime());
+		//java.sql.Time convertedStarttime = new java.sql.Time(timeFormat.parse(scheduleRequest.getStarttime()).getTime());
+		//java.sql.Time convertedEndtime = new java.sql.Time(timeFormat.parse(scheduleRequest.getEndtime()).getTime());
+		//java.util.Date convertedUtilScheduleDate = dateFormat.parse(scheduleRequest.getScheduledate());
+		//java.sql.Date convertedSqlScheduleDate = new java.sql.Date(convertedUtilScheduleDate.getTime());
+		//java.sql.Time convertedStarttime = scheduleRequest.getStarttime();
+		//java.sql.Time convertedEndtime = scheduleRequest.getEndtime();
+		LocalTime startTime = scheduleRequest.getStarttime();
+		LocalTime endTime = scheduleRequest.getEndtime();
+		//java.sql.Date convertedSqlScheduleDate = scheduleRequest.getScheduledate();
+		LocalDate scheduleDate = scheduleRequest.getScheduledate();
 		schedule.setId(scheduleRequest.getId());
 		schedule.setUserid(getUserId(userName));
-		schedule.setScheduledate(convertedSqlScheduleDate);
-		schedule.setStarttime(convertedStarttime);
-		schedule.setEndtime(convertedEndtime);
+		schedule.setScheduledate(scheduleDate);
+		schedule.setStarttime(startTime);
+		schedule.setEndtime(endTime);
 		schedule.setSchedule(scheduleRequest.getSchedule());
 		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
 		return schedule;
 	}
 	/**
-	 *
+	 *	ユーザID
 	 * @param userName
 	 * @return
 	 */
@@ -203,7 +210,7 @@ public class CalendarService {
 	 * @param scheduledate
 	 * @return
 	 */
-	public List<ScheduleInfoEntity> selectAllByDate(String scheduledate) {
+	public List<ScheduleInfoEntity> selectAllByDate(LocalDate scheduledate) {
 		return selectScheduleMapper.selectAllByDate(scheduledate);
 	}
 	/**
