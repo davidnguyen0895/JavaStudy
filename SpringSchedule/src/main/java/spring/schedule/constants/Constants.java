@@ -34,4 +34,6 @@ public final class Constants {
 	public static final String ACTION_SEARCH = "search";
 
 	public static final String MAPPING_SCHEDULE = "schedule";
+
+	public static final org.joda.time.LocalDate TODAY = new org.joda.time.LocalDate();
 }

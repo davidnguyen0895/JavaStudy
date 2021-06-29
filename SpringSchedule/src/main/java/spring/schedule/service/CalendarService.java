@@ -49,9 +49,9 @@ public class CalendarService {
 	public CalendarInfoEntity generateCalendarInfo(int year, int month) {
 		int firstDayOfWeek = 0;
 		int lastDayOfWeek = 6;
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		//Principalからログインユーザの情報を取得
-		String userName = auth.getName();
+		// カレンダー情報を格納Model
+		CalendarInfoEntity calendarInfo = new CalendarInfoEntity();
+		List<List<DayEntity>> calendar = new ArrayList<List<DayEntity>>();
 		//当月の１日
 		org.joda.time.LocalDate firstDayOfMonth =new org.joda.time.LocalDate(year, month, 1);
 		// 当月の最後の日
@@ -60,11 +60,15 @@ public class CalendarService {
 		//minusDays(1)による最初の日付を日曜日に指定する．
 		org.joda.time.LocalDate firstDayOfCalendar = firstDayOfMonth.dayOfWeek().withMinimumValue().minusDays(1);
 
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		//Principalからログインユーザの情報を取得
+		String userName = auth.getName();
 		//ユーザIDを取得
 		Long userId = getUserId(userName);
-		// カレンダー情報を格納Model
-		CalendarInfoEntity calendarInfo = new CalendarInfoEntity();
-		List<List<DayEntity>> calendar = new ArrayList<List<DayEntity>>();
+		//来月の日付を取得
+		org.joda.time.LocalDate nextMonth = firstDayOfMonth.plusMonths(1);
+		//先月の日付を取得
+		org.joda.time.LocalDate prevMonth = lastDayOfMonth.minusMonths(1);
 
 		for(int week = 1; week <= weekNum; week++) {
 			generateWeekList(firstDayOfCalendar, calendar, firstDayOfWeek, lastDayOfWeek, userId);
@@ -72,10 +76,6 @@ public class CalendarService {
 			lastDayOfWeek = lastDayOfWeek + 7;
 		}
 		//それぞれの週の日付を作成し，リストに格納する．
-		//来月の日付を取得
-		org.joda.time.LocalDate nextMonth = firstDayOfMonth.plusMonths(1);
-		//先月の日付を取得
-		org.joda.time.LocalDate prevMonth = lastDayOfMonth.minusMonths(1);
 		//calendarInfoインストタンスに2重リストcalendarを格納する．
 		calendarInfo.setCalendar(calendar);
 		//月の１日を格納する．
@@ -99,7 +99,8 @@ public class CalendarService {
 	 * @param monday
 	 * @param sunday
 	 */
-	private void generateWeekList(org.joda.time.LocalDate firstDayOfCalendar, List<List<DayEntity>> calendar, int firstDayOfWeek, int lastDayOfWeek, Long userId) {
+	private void generateWeekList(org.joda.time.LocalDate firstDayOfCalendar, List<List<DayEntity>> calendar,
+			int firstDayOfWeek, int lastDayOfWeek, Long userId) {
 		List<DayEntity> weekList = new ArrayList<DayEntity>();
 		for(int i = firstDayOfWeek; i <= lastDayOfWeek; i++) {
 			//IDリストインストタンス
@@ -132,7 +133,7 @@ public class CalendarService {
 	 * @param scheduleRequest
 	 * @throws ParseException
 	 */
-	public void insertNewSchedule(ScheduleRequest scheduleRequest) throws ParseException {
+	public void insertNewSchedule(ScheduleRequest scheduleRequest){
 		ScheduleInfoEntity schedule = createSchedule(scheduleRequest);
 		selectScheduleMapper.insertNewSchedule(schedule);
 	}
@@ -141,7 +142,7 @@ public class CalendarService {
 	 * @param scheduleRequest
 	 * @throws ParseException
 	 */
-	public void updateSchedule(ScheduleRequest scheduleRequest) throws ParseException {
+	public void updateSchedule(ScheduleRequest scheduleRequest){
 		ScheduleInfoEntity updateSchedule = createSchedule(scheduleRequest);
 		selectScheduleMapper.updateSchedule(updateSchedule);
 	}
@@ -150,24 +151,13 @@ public class CalendarService {
 	 * @return
 	 * @throws ParseException
 	 */
-	private ScheduleInfoEntity createSchedule(ScheduleRequest scheduleRequest) throws ParseException {
-		//日付変換定数 : yyyy/MM/dd
-		//SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-		//日付変換定数 : hh:mm
-		//SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm");
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		//Principalからログインユーザの情報を取得
-		String userName = auth.getName();
+	private ScheduleInfoEntity createSchedule(ScheduleRequest scheduleRequest){
 		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
-		//java.sql.Time convertedStarttime = new java.sql.Time(timeFormat.parse(scheduleRequest.getStarttime()).getTime());
-		//java.sql.Time convertedEndtime = new java.sql.Time(timeFormat.parse(scheduleRequest.getEndtime()).getTime());
-		//java.util.Date convertedUtilScheduleDate = dateFormat.parse(scheduleRequest.getScheduledate());
-		//java.sql.Date convertedSqlScheduleDate = new java.sql.Date(convertedUtilScheduleDate.getTime());
-		//java.sql.Time convertedStarttime = scheduleRequest.getStarttime();
-		//java.sql.Time convertedEndtime = scheduleRequest.getEndtime();
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		//ログインユーザの情報を取得
+		String userName = auth.getName();
 		LocalTime startTime = scheduleRequest.getStarttime();
 		LocalTime endTime = scheduleRequest.getEndtime();
-		//java.sql.Date convertedSqlScheduleDate = scheduleRequest.getScheduledate();
 		LocalDate scheduleDate = scheduleRequest.getScheduledate();
 		schedule.setId(scheduleRequest.getId());
 		schedule.setUserid(getUserId(userName));

@@ -1,6 +1,5 @@
 package spring.schedule.entity;
 import java.io.Serializable;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,22 +17,22 @@ public class UserInfoEntity implements Serializable{
 	 * ユーザID
 	 */
 	@Id
-	@Column(name="id")
+	//@Column(name="id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	/**
 	 * ユーザ名
 	 */
-	@Column(name="username")
+	//@Column(name="username")
 	private String username;
 	/**
 	 * パスワード
 	 */
-	@Column(name="pass")
+	//@Column(name="pass")
 	private String pass;
 	/**
 	 * ROLL
 	 */
-	@Column(name="roll")
+	//@Column(name="roll")
 	private int roll;
 }

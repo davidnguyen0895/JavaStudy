@@ -62,7 +62,6 @@ public class DisplayCalendarController {
 		//リクエストデータのID情報を用いてスケージュール情報を参照する．
 		ScheduleInfoEntity schedule = calendarService.selectAllById(id);
 		//カレンダー表示画面に戻るための年と月のデータをdayEntityインストタンスに格納する．
-		//java.time.LocalDate calendarDate = java.time.LocalDate.ofInstant(schedule.getScheduledate().toInstant(), ZoneId.systemDefault());
 		LocalDate calendarDate = schedule.getScheduledate();
 		DayEntity dayEntity = new DayEntity();
 		dayEntity.setCalendarYear(calendarDate.getYear());

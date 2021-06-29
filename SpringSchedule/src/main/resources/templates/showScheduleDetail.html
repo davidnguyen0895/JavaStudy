@@ -57,8 +57,8 @@
 			<!--～～～～～～～～～～ 削除ボタン～～～～～～～～～～-->
 		<div th:each="data : ${schedule}">
 			<a href="displayCalendar.html" th:href="@{/schedule/deleteSchedule(id=*{data.id})}"><button>削除</button></a>
-		</div>
-<!-- 			<a href="updateScheduleForm.html" th:href="@{/schedule/showUpdateScheduleForm(
+			<a href="updateScheduleForm.html"
+			th:href="@{/schedule/showUpdateScheduleForm(
 			id=*{data.id},
 			userid=*{data.userid},
 			scheduledate=*{#temporals.format(data.scheduledate,'yyyy/MM/dd')},
@@ -67,7 +67,9 @@
 			schedule=*{data.schedule},
 			schedulememo=*{data.schedulememo}
 			)}">
-			<button>更新</button></a> -->
-			<a th:text="${schedule}" th:href="@{|/schedule/showUpdateScheduleForm/${schedule}|}"><button>更新</button></a>
+			<button>更新</button>
+		</a>
+	</div>
+
 </body>
 </html>
