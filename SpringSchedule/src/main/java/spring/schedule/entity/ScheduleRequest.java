@@ -54,6 +54,10 @@ public class ScheduleRequest implements Serializable{
 	 */
 	@Size(max=100, message="メモは100バイト以内です．")
 	private String schedulememo;
+	/**
+	 *
+	 */
+	private String version;
 }
 
 

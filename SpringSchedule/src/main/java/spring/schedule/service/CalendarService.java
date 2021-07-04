@@ -2,7 +2,8 @@ package spring.schedule.service;
 
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import javax.transaction.Transactional;
@@ -156,16 +157,14 @@ public class CalendarService {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		//ログインユーザの情報を取得
 		String userName = auth.getName();
-		LocalTime startTime = scheduleRequest.getStarttime();
-		LocalTime endTime = scheduleRequest.getEndtime();
-		LocalDate scheduleDate = scheduleRequest.getScheduledate();
 		schedule.setId(scheduleRequest.getId());
 		schedule.setUserid(getUserId(userName));
-		schedule.setScheduledate(scheduleDate);
-		schedule.setStarttime(startTime);
-		schedule.setEndtime(endTime);
+		schedule.setScheduledate(scheduleRequest.getScheduledate());
+		schedule.setStarttime(scheduleRequest.getStarttime());
+		schedule.setEndtime(scheduleRequest.getEndtime());
 		schedule.setSchedule(scheduleRequest.getSchedule());
 		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
+		schedule.setVersion(scheduleRequest.getVersion());
 		return schedule;
 	}
 	/**
@@ -233,5 +232,21 @@ public class CalendarService {
 	 */
 	public void deleteSchedule(Long id) {
 		selectScheduleMapper.deleteSchedule(id);
+	}
+	/**
+	 *
+	 * @param scheduleDate
+	 * @return
+	 */
+	public String selectScheduleVersion(Long id) {
+		return selectScheduleMapper.selectScheduleVersion(id);
+	}
+	/**
+	 *
+	 * @param id
+	 * @param version
+	 */
+	public void updateScheduleVersion(Long id, String version) {
+		selectScheduleMapper.updateScheduleVersion(id, version);
 	}
 }

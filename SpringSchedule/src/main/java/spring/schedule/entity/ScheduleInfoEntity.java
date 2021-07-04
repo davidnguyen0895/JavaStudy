@@ -9,6 +9,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.springframework.data.annotation.Version;
+
 import lombok.Data;
 
 /*スケジュール情報Entity*/
@@ -57,4 +60,9 @@ public class ScheduleInfoEntity implements Serializable{
 	 */
 	//@Column(name="schedulememo")
 	private String schedulememo;
+	/**
+	 *
+	 */
+	@Version
+	private String version;
 }

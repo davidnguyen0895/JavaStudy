@@ -68,17 +68,21 @@
 		SELECT
 		s.id AS id
 		, s.userid AS userid
-		, s.scheduledate AS scheduledate
+		, s.scheduledate AS
+		scheduledate
 		, s.starttime AS starttime
 		, s.endtime AS endtime
-		, s.schedule AS schedule
+		,
+		s.schedule AS schedule
 		, s.schedulememo AS schedulememo
 		FROM
 		java_study.schedule s
 		WHERE
 		s.userid = #{userId}
-		AND s.scheduledate = #{scheduledate}
+		AND s.scheduledate =
+		#{scheduledate}
 	</select>
+
 	<insert id="insertNewSchedule" useGeneratedKeys="true"
 		keyProperty="id">
 		INSERT INTO java_study.schedule(userid,scheduledate,
@@ -100,11 +104,27 @@
 	</delete>
 	<update id="updateSchedule">
 		UPDATE java_study.schedule SET
-		scheduledate = #{scheduledate},
+		scheduledate =
+		#{scheduledate},
 		starttime = #{starttime},
 		endtime = #{endtime},
 		schedule = #{schedule},
 		schedulememo = #{schedulememo}
+		WHERE id = #{id}
+		AND version = #{version}
+	</update>
+	<select id="selectScheduleVersion" resultType="String">
+		SELECT
+		s.version as
+		version
+		FROM
+		java_study.schedule s
+		WHERE
+		s.id = #{id}
+	</select>
+	<update id="updateScheduleVersion">
+		UPDATE java_study.schedule SET
+		version = #{version}
 		WHERE id = #{id}
 	</update>
 </mapper>

@@ -43,10 +43,10 @@ public interface SelectScheduleMapper{
 	 */
 	List<ScheduleInfoEntity> selectAllByUserId(Long userId, String scheduledate);
 
-/**
- * スケージュール情報を登録する
- * @param newSchedule
- */
+	/**
+	 * スケージュール情報を登録する
+	 * @param newSchedule
+	 */
 	void insertNewSchedule(ScheduleInfoEntity newSchedule);
 	/**
 	 * IDでスケージュール情報を削除する．
@@ -58,4 +58,15 @@ public interface SelectScheduleMapper{
 	 * @param id
 	 */
 	void updateSchedule(ScheduleInfoEntity updateSchedule);
+	/**
+	 *
+	 * @return
+	 */
+	String selectScheduleVersion(Long id);
+	/**
+	 *
+	 * @param id
+	 * @param version
+	 */
+	void updateScheduleVersion(Long id, String version);
 }

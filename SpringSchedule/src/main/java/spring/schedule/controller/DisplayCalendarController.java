@@ -65,7 +65,6 @@ public class DisplayCalendarController {
 		LocalDate calendarDate = schedule.getScheduledate();
 		DayEntity dayEntity = new DayEntity();
 		dayEntity.setCalendarYear(calendarDate.getYear());
-		//dayEntity.setCalendarMonth(calendarDate.getMonthOfYear());
 		dayEntity.setCalendarMonth(calendarDate.getMonthValue());
 		dayEntity.setAction(Constants.ACTION_SEARCH);
 		//modelに格納してhtmlに渡す
