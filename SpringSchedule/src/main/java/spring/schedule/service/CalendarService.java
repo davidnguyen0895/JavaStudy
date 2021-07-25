@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
 import spring.schedule.dto.ScheduleSearchRequest;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
@@ -143,9 +144,25 @@ public class CalendarService {
 	 * @param scheduleRequest
 	 * @throws ParseException
 	 */
-	public void updateSchedule(ScheduleRequest scheduleRequest){
+	public boolean updateSchedule(ScheduleRequest scheduleRequest){
+		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+		String updateVersion = LocalDateTime.now().format(dateFormat);
+		String firstVersion = scheduleRequest.getVersion();
+		String secondVersion = selectScheduleVersion(scheduleRequest.getId());
+
+		if(secondVersion != null) {
+			if(firstVersion == null) {
+				firstVersion = "9999";
+			}
+			if(!isValidScheduleVersion(firstVersion, secondVersion)) {
+				return false;
+			}
+		}
+
+		scheduleRequest.setVersion(updateVersion);
 		ScheduleInfoEntity updateSchedule = createSchedule(scheduleRequest);
 		selectScheduleMapper.updateSchedule(updateSchedule);
+		return true;
 	}
 	/**
 	 * @param scheduleRequest スケージュール情報リクエストデータ
@@ -248,5 +265,18 @@ public class CalendarService {
 	 */
 	public void updateScheduleVersion(Long id, String version) {
 		selectScheduleMapper.updateScheduleVersion(id, version);
+	}
+	/**
+	 *
+	 * @param currentVersion
+	 * @param oldVersion
+	 * @return
+	 */
+	private boolean isValidScheduleVersion(String currentVersion, String oldVersion) {
+		if(!currentVersion.equals(oldVersion)) {
+			return false;
+		}else {
+			return true;
+		}
 	}
 }

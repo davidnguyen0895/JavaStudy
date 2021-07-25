@@ -109,9 +109,9 @@
 		starttime = #{starttime},
 		endtime = #{endtime},
 		schedule = #{schedule},
-		schedulememo = #{schedulememo}
+		schedulememo = #{schedulememo},
+		version = #{version}
 		WHERE id = #{id}
-		AND version = #{version}
 	</update>
 	<select id="selectScheduleVersion" resultType="String">
 		SELECT

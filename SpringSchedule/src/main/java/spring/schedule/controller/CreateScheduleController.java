@@ -3,8 +3,6 @@ package spring.schedule.controller;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,22 +163,18 @@ public class CreateScheduleController {
 			model.addAttribute("schedule", scheduleRequest);
 			return Constants.RETURN_UPDATE_SCHEDULE_FORM;
 		}
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-		String currentVersion = LocalDateTime.now().format(dateFormat);
-		calendarService.updateScheduleVersion(scheduleRequest.getId(), currentVersion);
-		String afterUpdateVersion = calendarService.selectScheduleVersion(scheduleRequest.getId());
-		if(!isValidScheduleVersion(currentVersion, afterUpdateVersion)) {
+		String firstVersion = calendarService.selectScheduleVersion(scheduleRequest.getId());
+		scheduleRequest.setVersion(firstVersion);
+		//入力フォーム画面で入力した値をDBに登録する．
+		if( calendarService.updateSchedule(scheduleRequest) == false) {
 			List<String> errorList = new ArrayList<String>();
-			errorList.add("更新処理が失敗しました");
+			errorList.add("【更新失敗】他のユーザが利用しています．");
 			model.addAttribute("dayEntity", dayEntity);
 			model.addAttribute("validationError", errorList);
 			//入力した情報を残す
 			model.addAttribute("schedule", scheduleRequest);
 			return Constants.RETURN_UPDATE_SCHEDULE_FORM;
 		}
-		scheduleRequest.setVersion(currentVersion);
-		//入力フォーム画面で入力した値をDBに登録する．
-		calendarService.updateSchedule(scheduleRequest);
 		//更新したスケジュール情報を取得
 		ScheduleInfoEntity updateSchedule = createSchedule(scheduleRequest);
 		updateSchedule.setId(scheduleRequest.getId());
@@ -204,18 +198,5 @@ public class CreateScheduleController {
 		dayEntity.setCalendarYear(today.getYear());
 		dayEntity.setCalendarMonth(today.getMonthOfYear());
 		return dayEntity;
-	}
-	/**
-	 *
-	 * @param currentVersion
-	 * @param id
-	 * @return
-	 */
-	private Boolean isValidScheduleVersion(String currentVersion, String oldVersion) {
-		if(!currentVersion.equals(oldVersion)) {
-			return false;
-		}else {
-			return true;
-		}
 	}
 }
