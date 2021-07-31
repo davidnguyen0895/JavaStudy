@@ -36,7 +36,8 @@
 			<tr>
 				<th class="cell_title">スケジュール日付</th>
 				<!-- <td th:text="${#dates.format(selectByIdInfo.scheduledate,'YYYY/MM/DD')}"></td> -->
-				<td th:text="${#temporals.format(selectByIdInfo.scheduledate,'YYYY/MM/DD')}"></td>
+				<td
+					th:text="${#temporals.format(selectByIdInfo.scheduledate,'yyyy/MM/dd')}"></td>
 			</tr>
 			<tr>
 				<th class="cell_title">開始時間</th>
@@ -55,6 +56,10 @@
 			<tr>
 				<th class="cell_title">メモ</th>
 				<td th:text="*{schedulememo}"></td>
+			</tr>
+			<tr>
+				<th class="cell_title">バージョン</th>
+				<td th:text="*{version}"></td>
 			</tr>
 		</table>
 	</div>

@@ -1,6 +1,5 @@
 package spring.schedule.controller;
 
-import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -60,12 +59,11 @@ public class DisplayCalendarController {
 	@RequestMapping(value = "schedule")
 	public String showScheduleDetail(@RequestParam("id") Long id, Model model) {
 		//リクエストデータのID情報を用いてスケージュール情報を参照する．
-		ScheduleInfoEntity schedule = calendarService.selectAllById(id);
+		ScheduleInfoEntity schedule = calendarService.selectById(id);
 		//カレンダー表示画面に戻るための年と月のデータをdayEntityインストタンスに格納する．
-		LocalDate calendarDate = schedule.getScheduledate();
 		DayEntity dayEntity = new DayEntity();
-		dayEntity.setCalendarYear(calendarDate.getYear());
-		dayEntity.setCalendarMonth(calendarDate.getMonthValue());
+		dayEntity.setCalendarYear(schedule.getScheduledate().getYear());
+		dayEntity.setCalendarMonth(schedule.getScheduledate().getMonthValue());
 		dayEntity.setAction(Constants.ACTION_SEARCH);
 		//modelに格納してhtmlに渡す
 		model.addAttribute("dayEntity", dayEntity);

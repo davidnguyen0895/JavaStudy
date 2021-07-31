@@ -3,7 +3,6 @@ package spring.schedule.entity;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -55,7 +54,7 @@ public class ScheduleRequest implements Serializable{
 	@Size(max=100, message="メモは100バイト以内です．")
 	private String schedulememo;
 	/**
-	 *
+	 *	更新日
 	 */
 	private String version;
 }

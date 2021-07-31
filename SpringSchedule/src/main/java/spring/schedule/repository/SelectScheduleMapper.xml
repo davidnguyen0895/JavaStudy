@@ -14,6 +14,7 @@
 		, s.endtime AS endtime
 		,s.schedule AS schedule
 		, s.schedulememo AS schedulememo
+		, s.version AS version
 		FROM
 		java_study.schedule s
 	</select>
@@ -22,18 +23,18 @@
 		SELECT
 		s.id AS id
 		, s.userid AS userid
-		, s.scheduledate AS
-		scheduledate
+		, s.scheduledate AS scheduledate
 		, s.starttime AS starttime
 		, s.endtime AS endtime
 		,s.schedule AS schedule
 		, s.schedulememo AS schedulememo
+		, s.version AS version
 		FROM
 		java_study.schedule s
 		where
 		s.id = #{id}
 	</select>
-	<select id="selectAllByDate"
+	<select id="selectByDate"
 		resultType="spring.schedule.entity.ScheduleInfoEntity">
 		SELECT
 		s.id AS id
@@ -44,26 +45,12 @@
 		, s.endtime AS endtime
 		,s.schedule AS schedule
 		, s.schedulememo AS schedulememo
+		, s.version AS version
 		FROM
 		java_study.schedule s WHERE
 		s.scheduledate = #{scheduledate}
 	</select>
-	<select id="selectAllById"
-		resultType="spring.schedule.entity.ScheduleInfoEntity">
-		SELECT
-		s.id AS id
-		, s.userid AS userid
-		, s.scheduledate AS
-		scheduledate
-		,s.starttime AS starttime
-		, s.endtime AS endtime
-		,s.schedule AS schedule
-		, s.schedulememo AS schedulememo
-		FROM
-		java_study.schedule s WHERE
-		s.id = #{id}
-	</select>
-	<select id="selectAllByUserId"
+	<select id="selectByUserId"
 		resultType="spring.schedule.entity.ScheduleInfoEntity">
 		SELECT
 		s.id AS id
@@ -72,17 +59,24 @@
 		scheduledate
 		, s.starttime AS starttime
 		, s.endtime AS endtime
-		,
-		s.schedule AS schedule
+		, s.schedule AS schedule
 		, s.schedulememo AS schedulememo
+		, s.version AS version
 		FROM
 		java_study.schedule s
 		WHERE
 		s.userid = #{userId}
-		AND s.scheduledate =
-		#{scheduledate}
+		AND s.scheduledate = #{scheduledate}
 	</select>
-
+	<select id="selectScheduleVersion" resultType="String">
+		SELECT
+		s.version as
+		version
+		FROM
+		java_study.schedule s
+		WHERE
+		s.id = #{id}
+	</select>
 	<insert id="insertNewSchedule" useGeneratedKeys="true"
 		keyProperty="id">
 		INSERT INTO java_study.schedule(userid,scheduledate,
@@ -110,20 +104,6 @@
 		endtime = #{endtime},
 		schedule = #{schedule},
 		schedulememo = #{schedulememo},
-		version = #{version}
-		WHERE id = #{id}
-	</update>
-	<select id="selectScheduleVersion" resultType="String">
-		SELECT
-		s.version as
-		version
-		FROM
-		java_study.schedule s
-		WHERE
-		s.id = #{id}
-	</select>
-	<update id="updateScheduleVersion">
-		UPDATE java_study.schedule SET
 		version = #{version}
 		WHERE id = #{id}
 	</update>

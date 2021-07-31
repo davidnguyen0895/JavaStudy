@@ -7,12 +7,12 @@
 <meta charset="utf-8" />
 </head>
 <body>
-<!--～～～～～～～～～～ ホームページ画面に戻る ～～～～～～～～～～-->
+	<!--～～～～～～～～～～ ホームページ画面に戻る ～～～～～～～～～～-->
 	<div>
 		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
 	</div>
 	<!--～～～～～～～～～～カレンダー表示画面に戻る～～～～～～～～～～-->
-		<div>
+	<div>
 		<p>
 			<a href="displayCalendar.html"
 				th:href="@{/displayCalendar/date(year=*{dayEntity.getCalendarYear()},
@@ -23,8 +23,7 @@
 		<h4 align="center" th:if="${dayEntity.getAction() == 'regist'}">登録したスケージュール詳細情報</h4>
 	</div>
 	<div>
-		<h4 align="center"
-			th:if="${dayEntity.getAction() == 'update'}">更新したスケージュール詳細情報</h4>
+		<h4 align="center" th:if="${dayEntity.getAction() == 'update'}">更新したスケージュール詳細情報</h4>
 	</div>
 	<div>
 		<h4 align="center" th:if="${dayEntity.getAction() == 'search'}">スケージュール詳細情報</h4>
@@ -33,31 +32,35 @@
 		<thead>
 			<tr>
 				<th>ID</th>
-				<th>ユーザID</th>
+				<!-- <th>ユーザID</th> -->
 				<th>スケジュール日付</th>
 				<th>開始時間</th>
 				<th>終了時間</th>
 				<th>スケジュール内容</th>
 				<th>メモ</th>
+				<th>更新日</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr th:each="data : ${schedule}">
 				<td><p th:text="${data.id}">ID</p></td>
-				<td><p th:text="${data.userid}">ユーザID</p></td>
+				<!-- <td><p th:text="${data.userid}">ユーザID</p></td> -->
 				<td><p th:text="${#temporals.format(data.scheduledate,'yyyy/MM/dd')}">スケジュール日付</p></td>
 				<td><p th:text="${#temporals.format(data.starttime,'HH:mm')}">開始時間</p></td>
 				<td><p th:text="${#temporals.format(data.endtime,'HH:mm')}">終了時間</p></td>
 				<td><p th:text="${data.schedule}">スケジュール内容ID</p></td>
 				<td><p th:text="${data.schedulememo}">メモ</p></td>
+				<td><p th:text="${data.version}">更新日</p></td>
 			</tr>
 		</tbody>
 	</table>
 	<br>
-			<!--～～～～～～～～～～ 削除ボタン～～～～～～～～～～-->
-		<div th:each="data : ${schedule}">
-			<a href="displayCalendar.html" th:href="@{/schedule/deleteSchedule(id=*{data.id})}"><button>削除</button></a>
-			<a href="updateScheduleForm.html"
+	<!--～～～～～～～～～～ 削除ボタン～～～～～～～～～～-->
+	<div th:each="data : ${schedule}">
+		<a href="displayCalendar.html"
+			th:href="@{/schedule/deleteSchedule(id=*{data.id})}"><button>削除</button></a>
+
+		<a href="updateScheduleForm.html"
 			th:href="@{/schedule/showUpdateScheduleForm(
 			id=*{data.id},
 			userid=*{data.userid},
@@ -65,7 +68,8 @@
 			starttime=*{#temporals.format(data.starttime,'HH:mm')},
 			endtime=*{#temporals.format(data.endtime,'HH:mm')},
 			schedule=*{data.schedule},
-			schedulememo=*{data.schedulememo}
+			schedulememo=*{data.schedulememo},
+			version=*{data.version}
 			)}">
 			<button>更新</button>
 		</a>

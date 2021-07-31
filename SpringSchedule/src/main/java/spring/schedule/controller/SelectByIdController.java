@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
 import spring.schedule.constants.Constants;
-import spring.schedule.dto.ScheduleSearchRequest;
 import spring.schedule.entity.ScheduleInfoEntity;
+import spring.schedule.entity.ScheduleRequest;
 import spring.schedule.service.CalendarService;
 
 /**
@@ -45,7 +44,7 @@ public class SelectByIdController {
 	 * @return スケジュール情報一覧画面
 	 */
 	@RequestMapping(value = "/selectById", method = RequestMethod.POST)
-	public String selectById(@Validated @ModelAttribute ScheduleSearchRequest scheduleSearchRequest,
+	public String selectById(@Validated @ModelAttribute ScheduleRequest scheduleSearchRequest,
 			BindingResult result, Model model) {
 		ScheduleInfoEntity schedule = calendarService.selectById(scheduleSearchRequest);
 		model.addAttribute("selectByIdInfo", schedule);/* Modelに格納してhtmlに渡す */

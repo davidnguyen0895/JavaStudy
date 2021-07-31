@@ -21,8 +21,13 @@
 				month=*{monthOfPrevMonth})}"><button>&larr;先月</button></a>
 			<a href="displayCalendar.html"
 				th:href="@{/displayCalendar/date(year=*{yearOfNextMonth},
-				month=*{monthOfNextMonth})}"><button>来月&rarr;</button></a><br>
-			<span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span>
+				month=*{monthOfNextMonth})}"><button>来月&rarr;</button></a>
+			<a href="displayCalendar.html"
+				th:href="@{/displayCalendar/date(year=*{currentYear},
+				month=*{currentMonth})}">
+				<button>今月</button></a><br>
+			<span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span><br>
+
 		</p>
 		<table border=1>
 			<tr>

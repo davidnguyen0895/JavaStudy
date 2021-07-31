@@ -21,6 +21,7 @@
 				<th>終了時間</th>
 				<th>スケジュール</th>
 				<th>メモ</th>
+				<th>バージョン</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -39,6 +40,7 @@
 				<td th:text="${schedule.endtime}"> -->
 				<td th:text="*{schedule}"></td>
 				<td th:text="*{schedulememo}"></td>
+				<td th:text="*{version}"></td>
 			</tr>
 		</tbody>
 	</table>

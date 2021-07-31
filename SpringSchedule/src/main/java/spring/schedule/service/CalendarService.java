@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
-import spring.schedule.dto.ScheduleSearchRequest;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
@@ -90,6 +88,11 @@ public class CalendarService {
 		calendarInfo.setYearOfPrevMonth(prevMonth.getYear());
 		//先月の月を格納する．
 		calendarInfo.setMonthOfPrevMonth(prevMonth.getMonthOfYear());
+		//今年を格納
+		calendarInfo.setCurrentYear(LocalDateTime.now().getYear());
+		//今月を格納
+		calendarInfo.setCurrentMonth(LocalDateTime.now().getMonthValue());
+
 		//カレンダー情報を返す
 		return calendarInfo;
 	}
@@ -116,7 +119,7 @@ public class CalendarService {
 			//当月の月を設定する
 			day.setCalendarMonth(scheduledate.getMonthOfYear());
 			//日付データを用いてスケージュール情報リストを参照する．
-			List<ScheduleInfoEntity> scheduleList = selectAllByUserId(userId, scheduledate.toString());
+			List<ScheduleInfoEntity> scheduleList = selectByUserId(userId, scheduledate.toString());
 			//スケージュール情報リストを日付情報インストタンスに格納する．
 			day.setScheduleList(scheduleList);
 			//スケージュール情報リストからスケージュールIDをIDリストに格納
@@ -146,21 +149,14 @@ public class CalendarService {
 	 */
 	public boolean updateSchedule(ScheduleRequest scheduleRequest){
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-		String updateVersion = LocalDateTime.now().format(dateFormat);
-		String firstVersion = scheduleRequest.getVersion();
-		String secondVersion = selectScheduleVersion(scheduleRequest.getId());
+		String screenVersion = scheduleRequest.getVersion();
+		String dbVersion = selectScheduleVersion(scheduleRequest.getId());
 
-		if(secondVersion != null) {
-			if(firstVersion == null) {
-				firstVersion = "9999";
-			}
-			if(!isValidScheduleVersion(firstVersion, secondVersion)) {
-				return false;
-			}
+		if(dbVersion != null & !screenVersion.equals(dbVersion)) {
+			return false;
 		}
-
-		scheduleRequest.setVersion(updateVersion);
 		ScheduleInfoEntity updateSchedule = createSchedule(scheduleRequest);
+		updateSchedule.setVersion(LocalDateTime.now().format(dateFormat));
 		selectScheduleMapper.updateSchedule(updateSchedule);
 		return true;
 	}
@@ -200,10 +196,17 @@ public class CalendarService {
 	 * @param scheduleSearchRequest
 	 * @return IDで検索結果
 	 */
-	public ScheduleInfoEntity selectById(ScheduleSearchRequest scheduleSearchRequest) {
+	public ScheduleInfoEntity selectById(ScheduleRequest scheduleSearchRequest) {
 		return selectScheduleMapper.selectById(scheduleSearchRequest);
 	}
-
+	/**
+	 *
+	 * @param id
+	 * @return
+	 */
+	public ScheduleInfoEntity selectById(Long id) {
+		return selectScheduleMapper.selectById(id);
+	}
 	/**
 	 *
 	 * @return 全件検索結果
@@ -216,16 +219,17 @@ public class CalendarService {
 	 * @param scheduledate
 	 * @return
 	 */
-	public List<ScheduleInfoEntity> selectAllByDate(LocalDate scheduledate) {
-		return selectScheduleMapper.selectAllByDate(scheduledate);
+	public List<ScheduleInfoEntity> selectByDate(LocalDate scheduledate) {
+		return selectScheduleMapper.selectByDate(scheduledate);
 	}
 	/**
 	 *
 	 * @param userId
+	 * @param scheduledate
 	 * @return
 	 */
-	public List<ScheduleInfoEntity> selectAllByUserId(Long userId, String scheduledate){
-		return selectScheduleMapper.selectAllByUserId(userId, scheduledate);
+	public List<ScheduleInfoEntity> selectByUserId(Long userId, String scheduledate){
+		return selectScheduleMapper.selectByUserId(userId, scheduledate);
 	}
 	/**
 	 *
@@ -236,12 +240,12 @@ public class CalendarService {
 		return selectUserMapper.selectUserId(userName);
 	}
 	/**
-	 * ID情報でDBを参照する
+	 *
 	 * @param id
 	 * @return
 	 */
-	public ScheduleInfoEntity selectAllById(Long id) {
-		return selectScheduleMapper.selectAllById(id);
+	public String selectScheduleVersion(Long id) {
+		return selectScheduleMapper.selectScheduleVersion(id);
 	}
 	/**
 	 *	IDで削除
@@ -249,34 +253,5 @@ public class CalendarService {
 	 */
 	public void deleteSchedule(Long id) {
 		selectScheduleMapper.deleteSchedule(id);
-	}
-	/**
-	 *
-	 * @param scheduleDate
-	 * @return
-	 */
-	public String selectScheduleVersion(Long id) {
-		return selectScheduleMapper.selectScheduleVersion(id);
-	}
-	/**
-	 *
-	 * @param id
-	 * @param version
-	 */
-	public void updateScheduleVersion(Long id, String version) {
-		selectScheduleMapper.updateScheduleVersion(id, version);
-	}
-	/**
-	 *
-	 * @param currentVersion
-	 * @param oldVersion
-	 * @return
-	 */
-	private boolean isValidScheduleVersion(String currentVersion, String oldVersion) {
-		if(!currentVersion.equals(oldVersion)) {
-			return false;
-		}else {
-			return true;
-		}
 	}
 }

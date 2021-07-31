@@ -8,22 +8,23 @@
 </head>
 <body>
 	<!--/* ログイン失敗/ログアウトはgetパラメータにステータスが渡されているので、Thymeleafではparamから取得 */-->
-	<div style="color:red" th:if="${param.logout}">※ログアウトしました．</div>
+	<div style="color: red;text-align:center;" th:if="${param.logout}">※ログアウトしました．</div>
 	<!-- <div class="error" th:if="${param.error}">IDとパスワードが正しくありません．</div> -->
 	<h3 align="center">スケジュール管理</h3>
 	<h3 align="center">ログイン</h3>
-	<div th:if="${param.error}" style="color:red">※ユーザー名またはパスワードが正しくありません。</div>
+	<div th:if="${param.error}" style="color: red; text-align:center;">※ユーザー名またはパスワードが正しくありません。</div>
 	<form th:action="@{/sign_in}" th:method="post">
-		<div style="width:160px;">
-			<label>ユーザ名</label> <input id="username" type="text" name="username">
-		</div>
-		<br/>
-		<div style="width:160px;">
-			<label>パスワード</label> <input id="password" type="password"
-				name="password">
+		<div style="text-align:center;">
+			<label>ユーザ名</label>&nbsp;&nbsp;&nbsp;&nbsp;
+			<input id="username" type="text" name="username">
+			<br>
+			<label>パスワード</label>
+			<input id="password" type="password" name="password">
 		</div>
 		<br>
-		<div><input type="submit" value="ログイン" /></div>
+		<div style="text-align:center;">
+			<input class="center" type="submit" value="ログイン" />
+		</div>
 	</form>
 </body>
 </html>

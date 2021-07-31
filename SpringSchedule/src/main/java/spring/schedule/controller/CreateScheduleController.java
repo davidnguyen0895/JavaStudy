@@ -1,6 +1,5 @@
 package spring.schedule.controller;
 
-import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -39,7 +38,7 @@ public class CreateScheduleController {
 	 * @return 日付で参照したスケージュール情報
 	 */
 	public List<ScheduleInfoEntity> selectAllByDate(LocalDate scheduledate) {
-		return calendarService.selectAllByDate(scheduledate);
+		return calendarService.selectByDate(scheduledate);
 	}
 	/**
 	 *	スケジュール情報を削除するメソッド
@@ -65,6 +64,7 @@ public class CreateScheduleController {
 		schedule.setEndtime(scheduleRequest.getEndtime());
 		schedule.setSchedule(scheduleRequest.getSchedule());
 		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
+		schedule.setVersion(scheduleRequest.getVersion());
 		return schedule;
 	}
 	/**
@@ -118,8 +118,8 @@ public class CreateScheduleController {
 			schedule.setId(scheduleObj.getId());
 			schedule.setUserid(scheduleObj.getUserid());
 		}
-		dayEntity.setCalendarYear(scheduleRequest.getScheduledate().getYear());
-		dayEntity.setCalendarMonth(scheduleRequest.getScheduledate().getMonthValue());
+		dayEntity.setCalendarYear(schedule.getScheduledate().getYear());
+		dayEntity.setCalendarMonth(schedule.getScheduledate().getMonthValue());
 		dayEntity.setAction(Constants.ACTION_REGIST);
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", schedule);
@@ -149,7 +149,7 @@ public class CreateScheduleController {
 	 */
 	@RequestMapping(value="updateSchedule",method=RequestMethod.POST)
 	public String createUpdateScheduleForm(@Validated @ModelAttribute ScheduleRequest scheduleRequest,
-			BindingResult result, Model model) throws InvocationTargetException {
+			BindingResult result, Model model){
 		DayEntity dayEntity = createDayEntityObject(Constants.TODAY);
 		//入力チェック
 		if(result.hasErrors()) {
@@ -163,8 +163,6 @@ public class CreateScheduleController {
 			model.addAttribute("schedule", scheduleRequest);
 			return Constants.RETURN_UPDATE_SCHEDULE_FORM;
 		}
-		String firstVersion = calendarService.selectScheduleVersion(scheduleRequest.getId());
-		scheduleRequest.setVersion(firstVersion);
 		//入力フォーム画面で入力した値をDBに登録する．
 		if( calendarService.updateSchedule(scheduleRequest) == false) {
 			List<String> errorList = new ArrayList<String>();
@@ -176,11 +174,9 @@ public class CreateScheduleController {
 			return Constants.RETURN_UPDATE_SCHEDULE_FORM;
 		}
 		//更新したスケジュール情報を取得
-		ScheduleInfoEntity updateSchedule = createSchedule(scheduleRequest);
-		updateSchedule.setId(scheduleRequest.getId());
-		updateSchedule.setUserid(scheduleRequest.getUserid());
+		ScheduleInfoEntity updateSchedule = calendarService.selectById(scheduleRequest.getId());
 		//カレンダーに戻るボタンのための年と月の値を格納する．
-		LocalDate calendarDate = scheduleRequest.getScheduledate();
+		LocalDate calendarDate = updateSchedule.getScheduledate();
 		dayEntity.setCalendarYear(calendarDate.getYear());
 		dayEntity.setCalendarMonth(calendarDate.getMonthValue());
 		dayEntity.setAction(Constants.ACTION_UPDATE);
@@ -189,7 +185,7 @@ public class CreateScheduleController {
 		return Constants.RETURN_SHOW_SCHEDULE_DETAIL;
 	}
 	/**
-	 *
+	 *	今日の日付オブジェクトを作成
 	 * @param today
 	 * @return
 	 */
