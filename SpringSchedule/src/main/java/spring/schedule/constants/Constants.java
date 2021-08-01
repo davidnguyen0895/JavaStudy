@@ -35,5 +35,5 @@ public final class Constants {
 
 	public static final String MAPPING_SCHEDULE = "schedule";
 
-	public static final org.joda.time.LocalDate TODAY = new org.joda.time.LocalDate();
+	public static final java.time.LocalDate TODAY = java.time.LocalDate.now();
 }

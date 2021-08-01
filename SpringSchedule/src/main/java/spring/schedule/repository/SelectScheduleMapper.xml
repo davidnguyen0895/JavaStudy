@@ -39,8 +39,7 @@
 		SELECT
 		s.id AS id
 		, s.userid AS userid
-		, s.scheduledate AS
-		scheduledate
+		, s.scheduledate AS scheduledate
 		,s.starttime AS starttime
 		, s.endtime AS endtime
 		,s.schedule AS schedule

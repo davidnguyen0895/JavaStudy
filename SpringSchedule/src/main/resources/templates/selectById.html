@@ -35,18 +35,15 @@
 			</tr>
 			<tr>
 				<th class="cell_title">スケジュール日付</th>
-				<!-- <td th:text="${#dates.format(selectByIdInfo.scheduledate,'YYYY/MM/DD')}"></td> -->
 				<td
 					th:text="${#temporals.format(selectByIdInfo.scheduledate,'yyyy/MM/dd')}"></td>
 			</tr>
 			<tr>
 				<th class="cell_title">開始時間</th>
-				<!-- <td th:text="${#dates.format(selectByIdInfo.starttime,'HH:mm')}"></td> -->
 				<td th:text="${#temporals.format(selectByIdInfo.starttime,'HH:mm')}"></td>
 			</tr>
 			<tr>
 				<th class="cell_title">終了時間</th>
-				<!-- <td th:text="${#dates.format(selectByIdInfo.endtime,'HH:mm')}"></td> -->
 				<td th:text="${#temporals.format(selectByIdInfo.endtime,'HH:mm')}"></td>
 			</tr>
 			<tr>

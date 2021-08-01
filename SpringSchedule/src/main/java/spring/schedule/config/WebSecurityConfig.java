@@ -65,6 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.authorizeRequests()
 		.anyRequest().authenticated()
 		.and()
+
 		.formLogin()
 		.loginPage("/login") //ログインページはコントローラを経由しないのでViewNameとの紐付けが必要
 		.loginProcessingUrl("/sign_in") //フォームのSubmitURL、このURLへリクエストが送られると認証処理が実行される
@@ -73,6 +74,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.successForwardUrl("/index")
 		.failureUrl("/login?error")
 		.permitAll()
+		.and()
+		.exceptionHandling().accessDeniedPage("/my-error-page")
 		.and()
 		.logout()
 		.logoutUrl("/logout")

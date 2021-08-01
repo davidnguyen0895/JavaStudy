@@ -1,7 +1,6 @@
 package spring.schedule.controller;
 
 import java.text.ParseException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +18,7 @@ import spring.schedule.constants.Constants;
 import spring.schedule.entity.DayEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
 import spring.schedule.entity.ScheduleRequest;
+import spring.schedule.exception.ExclusiveException;
 import spring.schedule.service.CalendarService;
 
 /**
@@ -32,14 +33,6 @@ public class CreateScheduleController {
 	 */
 	@Autowired
 	CalendarService calendarService;
-	/**
-	 *
-	 * @param scheduledate
-	 * @return 日付で参照したスケージュール情報
-	 */
-	public List<ScheduleInfoEntity> selectAllByDate(LocalDate scheduledate) {
-		return calendarService.selectByDate(scheduledate);
-	}
 	/**
 	 *	スケジュール情報を削除するメソッド
 	 * @param id
@@ -76,12 +69,13 @@ public class CreateScheduleController {
 	@RequestMapping(value="showScheduleForm", method=RequestMethod.GET)
 	public String showNewScheduleForm(Model model) {
 		//今月の年と月の値をdayEntityインスタンスに格納する．
+		ScheduleRequest scheduleRequest = new ScheduleRequest();
 		DayEntity dayEntity = createDayEntityObject(Constants.TODAY);
 		dayEntity.setCalendarYear(Constants.TODAY.getYear());
-		dayEntity.setCalendarMonth(Constants.TODAY.getMonthOfYear());
+		dayEntity.setCalendarMonth(Constants.TODAY.getMonthValue());
 		//modelにdayEntityとScheduleRequestのインスタンスを格納し，スケージュール作成フォームに送信する．
 		model.addAttribute("dayEntity", dayEntity);
-		model.addAttribute("schedule", new ScheduleRequest());
+		model.addAttribute("schedule", scheduleRequest);
 		return Constants.RETURN_CREATE_SCHEDULE_FORM;
 	}
 	/**
@@ -95,7 +89,7 @@ public class CreateScheduleController {
 	public String createNewScheduleForm(@Validated @ModelAttribute ScheduleRequest scheduleRequest,
 			BindingResult result, Model model){
 		//日付情報インストタンス
-		DayEntity dayEntity = createDayEntityObject(Constants.TODAY);
+		DayEntity dayEntity = createDayEntityObject(scheduleRequest.getScheduledate());
 		//入力チェック
 		if(result.hasErrors()) {
 			List<String> errorList = new ArrayList<String>();
@@ -112,7 +106,7 @@ public class CreateScheduleController {
 		calendarService.insertNewSchedule(scheduleRequest);
 		ScheduleInfoEntity schedule = createSchedule(scheduleRequest);
 		//日付データを用いてスケージュール情報リストを参照する．
-		List<ScheduleInfoEntity> scheduleList = selectAllByDate(scheduleRequest.getScheduledate());
+		List<ScheduleInfoEntity> scheduleList = calendarService.selectByDate(scheduleRequest.getScheduledate());
 		//新規登録のスケージュール情報を作成してscheduleインストタンスに格納する．
 		for(ScheduleInfoEntity scheduleObj : scheduleList) {
 			schedule.setId(scheduleObj.getId());
@@ -134,7 +128,9 @@ public class CreateScheduleController {
 	@RequestMapping(value="showUpdateScheduleForm", method=RequestMethod.GET)
 	public String showUpdateScheduleForm(@Validated @ModelAttribute ScheduleRequest scheduleRequest, Model model){
 		//今月の年と月の値をdayEntityインスタンスに格納する．
-		DayEntity dayEntity = createDayEntityObject(Constants.TODAY);
+		DayEntity dayEntity = createDayEntityObject(scheduleRequest.getScheduledate());
+		dayEntity.setCalendarYear(scheduleRequest.getScheduledate().getYear());
+		dayEntity.setCalendarMonth(scheduleRequest.getScheduledate().getMonthValue());
 		//modelにdayEntityとScheduleRequestのインスタンスを格納し，スケージュール作成フォームに送信する．
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", scheduleRequest);
@@ -145,12 +141,15 @@ public class CreateScheduleController {
 	 * @param scheduleRequest
 	 * @param model
 	 * @return
+	 * @throws ExclusiveException
 	 * @throws ParseException
 	 */
 	@RequestMapping(value="updateSchedule",method=RequestMethod.POST)
 	public String createUpdateScheduleForm(@Validated @ModelAttribute ScheduleRequest scheduleRequest,
-			BindingResult result, Model model){
-		DayEntity dayEntity = createDayEntityObject(Constants.TODAY);
+			BindingResult result, Model model) throws ExclusiveException{
+		DayEntity dayEntity = createDayEntityObject(scheduleRequest.getScheduledate());
+		dayEntity.setCalendarYear(scheduleRequest.getScheduledate().getYear());
+		dayEntity.setCalendarMonth(scheduleRequest.getScheduledate().getMonthValue());
 		//入力チェック
 		if(result.hasErrors()) {
 			List<String> errorList = new ArrayList<String>();
@@ -176,9 +175,6 @@ public class CreateScheduleController {
 		//更新したスケジュール情報を取得
 		ScheduleInfoEntity updateSchedule = calendarService.selectById(scheduleRequest.getId());
 		//カレンダーに戻るボタンのための年と月の値を格納する．
-		LocalDate calendarDate = updateSchedule.getScheduledate();
-		dayEntity.setCalendarYear(calendarDate.getYear());
-		dayEntity.setCalendarMonth(calendarDate.getMonthValue());
 		dayEntity.setAction(Constants.ACTION_UPDATE);
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", updateSchedule);
@@ -189,10 +185,14 @@ public class CreateScheduleController {
 	 * @param today
 	 * @return
 	 */
-	private DayEntity createDayEntityObject(org.joda.time.LocalDate today) {
+	private DayEntity createDayEntityObject(java.time.LocalDate date) {
 		DayEntity dayEntity = new DayEntity();
-		dayEntity.setCalendarYear(today.getYear());
-		dayEntity.setCalendarMonth(today.getMonthOfYear());
+		dayEntity.setCalendarYear(date.getYear());
+		dayEntity.setCalendarMonth(date.getMonthValue());
 		return dayEntity;
+	}
+	@ExceptionHandler(ExclusiveException.class)
+	public void handleException() {
+
 	}
 }

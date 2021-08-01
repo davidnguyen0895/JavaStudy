@@ -11,11 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import spring.schedule.constants.Constants;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
 import spring.schedule.entity.ScheduleRequest;
 import spring.schedule.entity.UserInfoEntity;
+import spring.schedule.exception.ExclusiveException;
 import spring.schedule.repository.SelectScheduleMapper;
 import spring.schedule.repository.SelectUserMapper;
 
@@ -89,9 +92,9 @@ public class CalendarService {
 		//先月の月を格納する．
 		calendarInfo.setMonthOfPrevMonth(prevMonth.getMonthOfYear());
 		//今年を格納
-		calendarInfo.setCurrentYear(LocalDateTime.now().getYear());
+		calendarInfo.setCurrentYear(Constants.TODAY.getYear());
 		//今月を格納
-		calendarInfo.setCurrentMonth(LocalDateTime.now().getMonthValue());
+		calendarInfo.setCurrentMonth(Constants.TODAY.getMonthValue());
 
 		//カレンダー情報を返す
 		return calendarInfo;
@@ -147,18 +150,23 @@ public class CalendarService {
 	 * @param scheduleRequest
 	 * @throws ParseException
 	 */
-	public boolean updateSchedule(ScheduleRequest scheduleRequest){
+	public boolean updateSchedule(ScheduleRequest scheduleRequest) throws ExclusiveException{
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		String screenVersion = scheduleRequest.getVersion();
 		String dbVersion = selectScheduleVersion(scheduleRequest.getId());
-
+		//楽観排他，DB更新日がNULLではない+バージョンが異なる場合
 		if(dbVersion != null & !screenVersion.equals(dbVersion)) {
 			return false;
 		}
 		ScheduleInfoEntity updateSchedule = createSchedule(scheduleRequest);
 		updateSchedule.setVersion(LocalDateTime.now().format(dateFormat));
-		selectScheduleMapper.updateSchedule(updateSchedule);
-		return true;
+		try{
+			selectScheduleMapper.updateSchedule(updateSchedule);
+			return true;
+		}catch(Exception ex) {
+			ex.printStackTrace();
+			return false;
+		}
 	}
 	/**
 	 * @param scheduleRequest スケージュール情報リクエストデータ
