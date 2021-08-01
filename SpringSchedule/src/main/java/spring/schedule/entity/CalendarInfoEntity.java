@@ -5,6 +5,11 @@ import java.util.List;
 import org.joda.time.LocalDate;
 import lombok.Data;
 
+/**
+ *	カレンダー情報を格納するクラス
+ * @author thinh
+ *
+ */
 @Data
 public class CalendarInfoEntity implements Serializable{
 	private static final long serialVersionUID = 1L;

@@ -2,10 +2,14 @@ package spring.schedule.entity;
 
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
-
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/**
+ *
+ * @author thinh
+ *
+ */
 @Data
 //equals()とhashCode()を生成するが親クラスのメソッドは呼び出さない
 @EqualsAndHashCode(callSuper=false)

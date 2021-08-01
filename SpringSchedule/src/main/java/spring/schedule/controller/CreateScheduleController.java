@@ -3,6 +3,9 @@ package spring.schedule.controller;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +29,7 @@ import spring.schedule.service.CalendarService;
  * @author thinh スケジュール情報Controller
  */
 @RequestMapping(value="schedule")
+@Transactional(rollbackOn = ExclusiveException.class)
 @Controller
 public class CreateScheduleController {
 	/**
@@ -33,16 +37,6 @@ public class CreateScheduleController {
 	 */
 	@Autowired
 	CalendarService calendarService;
-	/**
-	 *	スケジュール情報を削除するメソッド
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value="deleteSchedule",method=RequestMethod.GET)
-	public String deleteSchedule(@RequestParam("id") Long id) {
-		calendarService.deleteSchedule(id);
-		return Constants.REDIRECT_DISPLAY_CALENDAR;
-	}
 	/**
 	 *
 	 * @param scheduleRequest
@@ -59,6 +53,16 @@ public class CreateScheduleController {
 		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
 		schedule.setVersion(scheduleRequest.getVersion());
 		return schedule;
+	}
+	/**
+	 *	スケジュール情報を削除するメソッド
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="deleteSchedule",method=RequestMethod.GET)
+	public String deleteSchedule(@RequestParam("id") Long id) {
+		calendarService.deleteSchedule(id);
+		return Constants.REDIRECT_DISPLAY_CALENDAR;
 	}
 	/**
 	 * スケージュール情報を登録フォーム
@@ -81,15 +85,15 @@ public class CreateScheduleController {
 	/**
 	 * スケジュール情報を登録するメソッド
 	 * @param scheduleRequest
+	 * @param result
 	 * @param model
-	 * @return スケジュール情報詳細画面
-	 * @throws ParseException
+	 * @return
 	 */
 	@RequestMapping(value="createSchedule",method=RequestMethod.POST)
 	public String createNewScheduleForm(@Validated @ModelAttribute ScheduleRequest scheduleRequest,
 			BindingResult result, Model model){
 		//日付情報インストタンス
-		DayEntity dayEntity = createDayEntityObject(scheduleRequest.getScheduledate());
+		DayEntity dayEntity = createDayEntityObject(Constants.TODAY);
 		//入力チェック
 		if(result.hasErrors()) {
 			List<String> errorList = new ArrayList<String>();
@@ -120,10 +124,10 @@ public class CreateScheduleController {
 		return Constants.RETURN_SHOW_SCHEDULE_DETAIL;
 	}
 	/**
-	 *	スケジュール情報を更新するフォーム
+	 * スケジュール情報を更新するフォーム
+	 * @param scheduleRequest
 	 * @param model
 	 * @return
-	 * @throws ParseException
 	 */
 	@RequestMapping(value="showUpdateScheduleForm", method=RequestMethod.GET)
 	public String showUpdateScheduleForm(@Validated @ModelAttribute ScheduleRequest scheduleRequest, Model model){
@@ -137,12 +141,12 @@ public class CreateScheduleController {
 		return Constants.RETURN_UPDATE_SCHEDULE_FORM;
 	}
 	/**
-	 *	スケジュール情報を更新するメソッド
+	 * スケジュール情報を更新するメソッド
 	 * @param scheduleRequest
+	 * @param result
 	 * @param model
 	 * @return
 	 * @throws ExclusiveException
-	 * @throws ParseException
 	 */
 	@RequestMapping(value="updateSchedule",method=RequestMethod.POST)
 	public String createUpdateScheduleForm(@Validated @ModelAttribute ScheduleRequest scheduleRequest,
@@ -165,7 +169,7 @@ public class CreateScheduleController {
 		//入力フォーム画面で入力した値をDBに登録する．
 		if( calendarService.updateSchedule(scheduleRequest) == false) {
 			List<String> errorList = new ArrayList<String>();
-			errorList.add("【更新失敗】他のユーザが利用しています．");
+			errorList.add("【エラー】他のユーザが更新しています．");
 			model.addAttribute("dayEntity", dayEntity);
 			model.addAttribute("validationError", errorList);
 			//入力した情報を残す
@@ -191,8 +195,12 @@ public class CreateScheduleController {
 		dayEntity.setCalendarMonth(date.getMonthValue());
 		return dayEntity;
 	}
+	/**
+	 *
+	 * @param ex
+	 */
 	@ExceptionHandler(ExclusiveException.class)
-	public void handleException() {
-
+	public void handleException(ExclusiveException ex) {
+		ex.printStackTrace();
 	}
 }

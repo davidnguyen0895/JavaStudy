@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>エラー</title>
+<link href="/css/list.css" rel="stylesheet"></link>
+<meta charset="utf-8" />
+</head>
+<body>
+	<div>
+		<form name="logoutForm" th:hidden="true" method="post"
+			th:action="@{/logout}">
+			<input type="submit" value="ログアウト" />
+		</form>
+		<a href="javascript: logoutForm.submit();"><button>ログアウト</button></a>
+	</div>
+	<h1 align="center">エラーが発生しました．システム管理者までご連絡ください．</h1>
+
+	<div th:if="${errorInfo}">
+		<table th:object="${errorInfo}">
+			<tr>
+				<th class="cell_title">エラー内容</th>
+				<td th:text="*{id}"></td>
+			</tr>
+		</table>
+	</div>
+
+	<div align="center">
+		<a th:href="@{displayCalendar}"><button>カレンダー表示画面</button></a>
+	</div>
+</body>
+</html>

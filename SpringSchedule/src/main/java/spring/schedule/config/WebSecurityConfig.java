@@ -75,7 +75,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		.failureUrl("/login?error")
 		.permitAll()
 		.and()
-		.exceptionHandling().accessDeniedPage("/my-error-page")
+		.exceptionHandling().accessDeniedPage("/error")
 		.and()
 		.logout()
 		.logoutUrl("/logout")

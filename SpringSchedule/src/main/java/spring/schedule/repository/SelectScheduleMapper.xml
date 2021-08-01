@@ -54,8 +54,7 @@
 		SELECT
 		s.id AS id
 		, s.userid AS userid
-		, s.scheduledate AS
-		scheduledate
+		, s.scheduledate AS scheduledate
 		, s.starttime AS starttime
 		, s.endtime AS endtime
 		, s.schedule AS schedule
@@ -69,8 +68,7 @@
 	</select>
 	<select id="selectScheduleVersion" resultType="String">
 		SELECT
-		s.version as
-		version
+		s.version as version
 		FROM
 		java_study.schedule s
 		WHERE

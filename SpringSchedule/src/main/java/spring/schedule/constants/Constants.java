@@ -32,8 +32,6 @@ public final class Constants {
 	public static final String ACTION_UPDATE = "update";
 	//【操作】参照
 	public static final String ACTION_SEARCH = "search";
-
-	public static final String MAPPING_SCHEDULE = "schedule";
-
+	//今日の日付
 	public static final java.time.LocalDate TODAY = java.time.LocalDate.now();
 }

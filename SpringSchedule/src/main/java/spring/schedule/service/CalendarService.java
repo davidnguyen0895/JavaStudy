@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import spring.schedule.constants.Constants;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
@@ -28,7 +27,7 @@ import spring.schedule.repository.SelectUserMapper;
  * カレンダー表示画面を作成するService
  */
 @Service
-@Transactional(rollbackOn = Exception.class)
+@Transactional(rollbackOn = ExclusiveException.class)
 public class CalendarService {
 	//週
 	private final int weekNum = 6;
@@ -38,7 +37,7 @@ public class CalendarService {
 	@Autowired
 	private SelectScheduleMapper selectScheduleMapper;
 	/**
-	 *
+	 *ユーザ情報を参照するためのMapperインストタンス
 	 */
 	@Autowired
 	private SelectUserMapper selectUserMapper;
@@ -100,12 +99,12 @@ public class CalendarService {
 		return calendarInfo;
 	}
 	/**
-	 *
+	 *	１週間の日付リストを作成する．
 	 * @param firstDayOfCalendar
 	 * @param calendar
-	 * @param week
-	 * @param monday
-	 * @param sunday
+	 * @param firstDayOfWeek
+	 * @param lastDayOfWeek
+	 * @param userId
 	 */
 	private void generateWeekList(org.joda.time.LocalDate firstDayOfCalendar, List<List<DayEntity>> calendar,
 			int firstDayOfWeek, int lastDayOfWeek, Long userId) {
@@ -137,7 +136,7 @@ public class CalendarService {
 		calendar.add(weekList);
 	}
 	/**
-	 * 新規登録スケジュール情報をDBに登録するメソッド．
+	 * 新規登録スケジュール情報をDBに登録する
 	 * @param scheduleRequest
 	 * @throws ParseException
 	 */
@@ -146,7 +145,7 @@ public class CalendarService {
 		selectScheduleMapper.insertNewSchedule(schedule);
 	}
 	/**
-	 * 更新
+	 * スケージュール情報を更新
 	 * @param scheduleRequest
 	 * @throws ParseException
 	 */
@@ -189,7 +188,7 @@ public class CalendarService {
 		return schedule;
 	}
 	/**
-	 *	ユーザID
+	 *	ユーザIDを取得する．
 	 * @param userName
 	 * @return
 	 */
@@ -208,7 +207,7 @@ public class CalendarService {
 		return selectScheduleMapper.selectById(scheduleSearchRequest);
 	}
 	/**
-	 *
+	 *	スケージュール情報をIDで取得
 	 * @param id
 	 * @return
 	 */
@@ -231,7 +230,7 @@ public class CalendarService {
 		return selectScheduleMapper.selectByDate(scheduledate);
 	}
 	/**
-	 *
+	 *	ユーザIDと日付でスケージュール情報を取得する
 	 * @param userId
 	 * @param scheduledate
 	 * @return
@@ -240,7 +239,7 @@ public class CalendarService {
 		return selectScheduleMapper.selectByUserId(userId, scheduledate);
 	}
 	/**
-	 *
+	 *	ユーザ名でユーザIDを取得
 	 * @param userName
 	 * @return
 	 */
@@ -248,7 +247,7 @@ public class CalendarService {
 		return selectUserMapper.selectUserId(userName);
 	}
 	/**
-	 *
+	 *	スケジュール更新日を取得
 	 * @param id
 	 * @return
 	 */
@@ -256,7 +255,7 @@ public class CalendarService {
 		return selectScheduleMapper.selectScheduleVersion(id);
 	}
 	/**
-	 *	IDで削除
+	 *	IDでスケージュール情報を削除する
 	 * @param id
 	 */
 	public void deleteSchedule(Long id) {
