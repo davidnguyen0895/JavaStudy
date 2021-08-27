@@ -7,26 +7,19 @@
 <meta charset="utf-8" />
 </head>
 <body>
+<!--～～～～～～～～～～ カレンダーに戻るボタン ～～～～～～～～～～-->
 	<div>
-		<form name="logoutForm" th:hidden="true" method="post"
-			th:action="@{/logout}">
-			<input type="submit" value="ログアウト" />
-		</form>
-		<a href="javascript: logoutForm.submit();"><button>ログアウト</button></a>
-	</div>
-	<h1 align="center">エラーが発生しました．システム管理者までご連絡ください．</h1>
-
-	<div th:if="${errorInfo}">
-		<table th:object="${errorInfo}">
-			<tr>
-				<th class="cell_title">エラー内容</th>
-				<td th:text="*{id}"></td>
-			</tr>
-		</table>
+		<p>
+			<a href="displayCalendar.html"
+				th:href="@{/displayCalendar/date(year=*{dayEntity.getCalendarYear()},
+				month=*{dayEntity.getCalendarMonth()})}"><button>カレンダーに戻る</button></a>
+		</p>
 	</div>
 
-	<div align="center">
-		<a th:href="@{displayCalendar}"><button>カレンダー表示画面</button></a>
+	<h1 align="center">エラー</h1>
+	<div th:if="${validationError}" th:each="error : ${validationError}">
+		<p style="color: red;" th:text="${error}"></p>
 	</div>
+
 </body>
 </html>

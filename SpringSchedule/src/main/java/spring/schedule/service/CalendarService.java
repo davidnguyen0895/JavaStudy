@@ -27,7 +27,6 @@ import spring.schedule.repository.SelectUserMapper;
  * カレンダー表示画面を作成するService
  */
 @Service
-@Transactional(rollbackOn = ExclusiveException.class)
 public class CalendarService {
 	//週
 	private final int weekNum = 6;
@@ -147,25 +146,21 @@ public class CalendarService {
 	/**
 	 * スケージュール情報を更新
 	 * @param scheduleRequest
+	 * @throws ExclusiveException
 	 * @throws ParseException
 	 */
-	public boolean updateSchedule(ScheduleRequest scheduleRequest) throws ExclusiveException{
+	@Transactional(rollbackOn = ExclusiveException.class)
+	public void updateSchedule(ScheduleRequest scheduleRequest) throws ExclusiveException{
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
 		String screenVersion = scheduleRequest.getVersion();
 		String dbVersion = selectScheduleVersion(scheduleRequest.getId());
 		//楽観排他，DB更新日がNULLではない+バージョンが異なる場合
-		if(dbVersion != null & !screenVersion.equals(dbVersion)) {
-			return false;
+		if(!screenVersion.equals(dbVersion)) {
+			 throw new ExclusiveException("他のユーザが更新しています．カレンダーに戻して，もう一度更新して下さい．");
 		}
 		ScheduleInfoEntity updateSchedule = createSchedule(scheduleRequest);
 		updateSchedule.setVersion(LocalDateTime.now().format(dateFormat));
-		try{
-			selectScheduleMapper.updateSchedule(updateSchedule);
-			return true;
-		}catch(Exception ex) {
-			ex.printStackTrace();
-			return false;
-		}
+		selectScheduleMapper.updateSchedule(updateSchedule);
 	}
 	/**
 	 * @param scheduleRequest スケージュール情報リクエストデータ

@@ -24,6 +24,8 @@ public final class Constants {
 	public static final String RETURN_SELECT_BY_ID = "selectById";
 	//return用定数 スケージュール情報を全件検索画面．
 	public static final String RETURN_SELECT_ALL_USER = "selectAllUser";
+	//return用定数 エラー画面
+	public static final String RETURN_ERROR = "error";
 	//スペース
 	public static final String SPACE = " ";
 	//【操作】登録
