@@ -7,14 +7,15 @@ import lombok.Data;
 
 /**
  * 日付情報を格納するためのEntity
+ *
  * @author thinh
  *
  */
 @Data
-public class DayEntity implements Serializable{
+public class DayEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/**
-	 *ID
+	 * ID
 	 */
 	private Long id;
 	/**
@@ -22,11 +23,11 @@ public class DayEntity implements Serializable{
 	 */
 	private List<Long> idList;
 	/**
-	 *カレンダーの日付
+	 * カレンダーの日付
 	 */
 	private LocalDate day;
 	/**
-	 *スケージュール内容リスト
+	 * スケージュール内容リスト
 	 */
 	private List<ScheduleInfoEntity> scheduleList;
 	/**
@@ -34,11 +35,11 @@ public class DayEntity implements Serializable{
 	 */
 	private int calendarYear;
 	/**
-	 *日付の月(カレンダー表示画面に戻る用)
+	 * 日付の月(カレンダー表示画面に戻る用)
 	 */
 	private int calendarMonth;
 	/**
-	 *	操作名
+	 * 操作名
 	 */
 	private String action;
 }

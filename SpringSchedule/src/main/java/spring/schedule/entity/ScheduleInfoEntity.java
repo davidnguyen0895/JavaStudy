@@ -61,7 +61,7 @@ public class ScheduleInfoEntity implements Serializable{
 	//@Column(name="schedulememo")
 	private String schedulememo;
 	/**
-	 *
+	 * スケジュール更新日
 	 */
 	@Version
 	private String version;

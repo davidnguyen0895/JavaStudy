@@ -12,8 +12,7 @@ import spring.schedule.service.CalendarService;
 
 /**
  *
- * @author thinh
- *スケジュール情報Controller
+ * @author thinh スケジュール情報Controller
  */
 @Controller
 public class SelectAllController {
@@ -25,6 +24,7 @@ public class SelectAllController {
 
 	/**
 	 * ユーザー情報一覧画面を表示
+	 *
 	 * @param model Model
 	 * @return ユーザー情報一覧画面
 	 */

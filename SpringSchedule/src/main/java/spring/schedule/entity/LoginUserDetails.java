@@ -11,11 +11,11 @@ import lombok.EqualsAndHashCode;
  *
  */
 @Data
-//equals()とhashCode()を生成するが親クラスのメソッドは呼び出さない
-@EqualsAndHashCode(callSuper=false)
+//equals()とhashCode()を生成あするが親クラスのメソッドは呼び出さない
+@EqualsAndHashCode(callSuper = false)
 public class LoginUserDetails extends User {
 	private static final long serialVersionUID = 1L;
-	//employeeテーブルから取得したオブジェクトを格納
+	// employeeテーブルから取得したオブジェクトを格納
 	private final UserInfoEntity user;
 
 	/**
@@ -24,7 +24,7 @@ public class LoginUserDetails extends User {
 	 * @param role
 	 */
 	public LoginUserDetails(UserInfoEntity user, String role) {
-		//employeeテーブルの名前とパスワードでログイン認証を行う
+		// employeeテーブルの名前とパスワードでログイン認証を行う
 		super(user.getUsername(), user.getPass(), AuthorityUtils.createAuthorityList(role));
 		this.user = user;
 	}

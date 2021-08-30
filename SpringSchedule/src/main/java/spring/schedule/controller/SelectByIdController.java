@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
 import spring.schedule.constants.Constants;
 import spring.schedule.entity.ScheduleInfoEntity;
 import spring.schedule.entity.ScheduleRequest;
@@ -16,8 +17,7 @@ import spring.schedule.service.CalendarService;
 
 /**
  *
- * @author thinh
- *スケジュール情報Controller
+ * @author thinh スケジュール情報Controller
  */
 @Controller
 public class SelectByIdController {
@@ -26,26 +26,29 @@ public class SelectByIdController {
 	 */
 	@Autowired
 	CalendarService calendarService;
+
 	/**
+	 * IDでスケージュール情報を検索する画面
 	 *
 	 * @param model
 	 * @return
 	 */
 	@GetMapping(value = "/selectById")
 	public String displaySelectById(Model model) {
-		return "selectById";
+		return Constants.RETURN_SELECT_BY_ID;
 	}
 
 	/**
+	 * IDでスケージュール情報を検索する
 	 *
 	 * @param scheduleSearchRequest
 	 * @param result
 	 * @param model
-	 * @return スケジュール情報一覧画面
+	 * @return
 	 */
 	@RequestMapping(value = "/selectById", method = RequestMethod.POST)
-	public String selectById(@Validated @ModelAttribute ScheduleRequest scheduleSearchRequest,
-			BindingResult result, Model model) {
+	public String selectById(@Validated @ModelAttribute ScheduleRequest scheduleSearchRequest, BindingResult result,
+			Model model) {
 		ScheduleInfoEntity schedule = calendarService.selectById(scheduleSearchRequest);
 		model.addAttribute("selectByIdInfo", schedule);/* Modelに格納してhtmlに渡す */
 		return Constants.RETURN_SELECT_BY_ID;

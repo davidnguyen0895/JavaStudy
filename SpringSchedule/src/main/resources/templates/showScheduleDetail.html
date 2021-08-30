@@ -44,7 +44,6 @@
 		<tbody>
 			<tr th:each="data : ${schedule}">
 				<td><p th:text="${data.id}">ID</p></td>
-				<!-- <td><p th:text="${data.userid}">ユーザID</p></td> -->
 				<td><p th:text="${#temporals.format(data.scheduledate,'yyyy/MM/dd')}">スケジュール日付</p></td>
 				<td><p th:text="${#temporals.format(data.starttime,'HH:mm')}">開始時間</p></td>
 				<td><p th:text="${#temporals.format(data.endtime,'HH:mm')}">終了時間</p></td>

@@ -7,7 +7,11 @@
 <meta charset="utf-8" />
 </head>
 <body>
-<!--～～～～～～～～～～ カレンダーに戻るボタン ～～～～～～～～～～-->
+	<!--～～～～～～～～～～ ホームページ画面に戻る ～～～～～～～～～～-->
+	<div>
+		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
+	</div>
+	<!--～～～～～～～～～～ カレンダーに戻るボタン ～～～～～～～～～～-->
 	<div>
 		<p>
 			<a href="displayCalendar.html"
@@ -16,10 +20,7 @@
 		</p>
 	</div>
 
-	<h1 align="center">エラー</h1>
-	<div th:if="${validationError}" th:each="error : ${validationError}">
-		<p style="color: red;" th:text="${error}"></p>
-	</div>
-
+	<h1 align="center">【エラー】</h1>
+	<h3 style="color: red;" th:text="${errorMessage}"></h3>
 </body>
 </html>

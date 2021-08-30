@@ -73,8 +73,6 @@ public class CreateScheduleController {
 		// 今月の年と月の値をdayEntityインスタンスに格納する．
 		ScheduleRequest scheduleRequest = new ScheduleRequest();
 		DayEntity dayEntity = createDayEntityObject(Constants.TODAY);
-		dayEntity.setCalendarYear(Constants.TODAY.getYear());
-		dayEntity.setCalendarMonth(Constants.TODAY.getMonthValue());
 		// modelにdayEntityとScheduleRequestのインスタンスを格納し，スケージュール作成フォームに送信する．
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", scheduleRequest);
@@ -201,14 +199,12 @@ public class CreateScheduleController {
 	 * @param model
 	 * @return
 	 */
-
 	@ExceptionHandler(ExclusiveException.class)
 	public String exclusiveExceptionHandler(ExclusiveException ex, Model model) {
+		// カレンダーに戻るボタン用の日付
 		DayEntity dayEntity = createDayEntityObject(LocalDate.now());
-		List<String> errorList = new ArrayList<String>();
-		errorList.add(ex.getMessage());
 		model.addAttribute("dayEntity", dayEntity);
-		model.addAttribute("validationError", errorList);
+		model.addAttribute("errorMessage", ex.getMessage());
 		return Constants.RETURN_ERROR;
 	}
 }

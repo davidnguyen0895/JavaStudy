@@ -14,7 +14,8 @@
 		, s.endtime AS endtime
 		,s.schedule AS schedule
 		, s.schedulememo AS schedulememo
-		, s.version AS version
+		, s.version AS
+		version
 		FROM
 		java_study.schedule s
 	</select>
@@ -23,12 +24,14 @@
 		SELECT
 		s.id AS id
 		, s.userid AS userid
-		, s.scheduledate AS scheduledate
+		, s.scheduledate AS
+		scheduledate
 		, s.starttime AS starttime
 		, s.endtime AS endtime
 		,s.schedule AS schedule
 		, s.schedulememo AS schedulememo
-		, s.version AS version
+		, s.version AS
+		version
 		FROM
 		java_study.schedule s
 		where
@@ -39,12 +42,14 @@
 		SELECT
 		s.id AS id
 		, s.userid AS userid
-		, s.scheduledate AS scheduledate
+		, s.scheduledate AS
+		scheduledate
 		,s.starttime AS starttime
 		, s.endtime AS endtime
 		,s.schedule AS schedule
 		, s.schedulememo AS schedulememo
-		, s.version AS version
+		, s.version AS
+		version
 		FROM
 		java_study.schedule s WHERE
 		s.scheduledate = #{scheduledate}
@@ -54,21 +59,26 @@
 		SELECT
 		s.id AS id
 		, s.userid AS userid
-		, s.scheduledate AS scheduledate
+		, s.scheduledate AS
+		scheduledate
 		, s.starttime AS starttime
 		, s.endtime AS endtime
-		, s.schedule AS schedule
+		,
+		s.schedule AS schedule
 		, s.schedulememo AS schedulememo
-		, s.version AS version
+		, s.version AS
+		version
 		FROM
 		java_study.schedule s
 		WHERE
 		s.userid = #{userId}
-		AND s.scheduledate = #{scheduledate}
+		AND
+		s.scheduledate = #{scheduledate}
 	</select>
 	<select id="selectScheduleVersion" resultType="String">
 		SELECT
-		s.version as version
+		s.version as
+		version
 		FROM
 		java_study.schedule s
 		WHERE
@@ -89,9 +99,9 @@
 	<delete id="deleteSchedule">
 		DELETE
 		FROM
-		java_study.schedule s
+		java_study.schedule
 		WHERE
-		s.id = #{id}
+		id = #{id}
 	</delete>
 	<update id="updateSchedule">
 		UPDATE java_study.schedule SET
@@ -101,7 +111,8 @@
 		endtime = #{endtime},
 		schedule = #{schedule},
 		schedulememo = #{schedulememo},
-		version = #{version}
+		version =
+		#{version}
 		WHERE id = #{id}
 	</update>
 </mapper>

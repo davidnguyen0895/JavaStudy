@@ -6,35 +6,36 @@ import org.joda.time.LocalDate;
 import lombok.Data;
 
 /**
- *	カレンダー情報を格納するクラス
+ * カレンダー情報を格納するクラス
+ *
  * @author thinh
  *
  */
 @Data
-public class CalendarInfoEntity implements Serializable{
+public class CalendarInfoEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/**
-	 *x週間の日付リスト
+	 * x週間の日付リスト
 	 */
 	private List<List<DayEntity>> calendar;
 	/**
-	 *月の最初の日付（1日）
+	 * 月の最初の日付（1日）
 	 */
 	private LocalDate firstDayOfMonth;
 	/**
-	 *来月の年
+	 * 来月の年
 	 */
 	private int yearOfNextMonth;
 	/**
-	 *来月の月
+	 * 来月の月
 	 */
 	private int monthOfNextMonth;
 	/**
-	 *先月の年
+	 * 先月の年
 	 */
 	private int yearOfPrevMonth;
 	/**
-	 *先月の月
+	 * 先月の月
 	 */
 	private int monthOfPrevMonth;
 	/**
