@@ -2,6 +2,7 @@ package spring.schedule.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.persistence.Entity;
@@ -10,7 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import org.springframework.data.annotation.Version;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
 
@@ -24,45 +25,38 @@ public class ScheduleInfoEntity implements Serializable{
 	 * ID
 	 */
 	@Id
-	//@Column(name="id")
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	/**
 	 * ユーザID
 	 */
-	//@Column(name="userid")
 	private Long userid;
 	/**
 	 * スケジュール日付
 	 */
-	//@Column(name="scheduledate")
-	//@DateTimeFormat(pattern = "yyyy/MM/dd")
+	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate scheduledate;
 	/**
 	 * 開始時間
 	 */
-	//@Column(name="starttime")
-	//@DateTimeFormat(pattern = "HH:mm")
+	@DateTimeFormat(pattern = "HH:mm:ss")
 	private LocalTime starttime;
 	/**
 	 * 終了時間
 	 */
-	//@DateTimeFormat(pattern = "HH:mm")
-	//@Column(name="endtime")
+	@DateTimeFormat(pattern = "HH:mm:ss")
 	private LocalTime endtime;
 	/**
 	 * スケジュール内容
 	 */
-	//@Column(name="schedule")
 	private String schedule;
 	/**
 	 * メモ
 	 */
-	//@Column(name="schedulememo")
 	private String schedulememo;
 	/**
 	 * スケジュール更新日
 	 */
-	@Version
-	private String version;
+	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
+	private LocalDateTime updateday;
 }

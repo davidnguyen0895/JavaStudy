@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import spring.schedule.constants.Constants;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
@@ -39,6 +40,7 @@ public class DisplayCalendarController {
 
 	/**
 	 * カレンダー表示するための情報を格納して画面に渡す．
+	 * 
 	 * @param year
 	 * @param month
 	 * @param model

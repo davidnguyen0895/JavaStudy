@@ -3,7 +3,6 @@ package spring.schedule.service;
 import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import spring.schedule.constants.Constants;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
@@ -32,7 +30,7 @@ import spring.schedule.repository.SelectUserMapper;
 @Service
 public class CalendarService {
 	// 週
-	private final int weekNum = 6;
+	private static final int WEEKNUM = 6;
 	/**
 	 * スケージュール情報を参照するためのMapperインストタンス
 	 */
@@ -75,7 +73,7 @@ public class CalendarService {
 		// 先月の日付を取得
 		org.joda.time.LocalDate prevMonth = lastDayOfMonth.minusMonths(1);
 
-		for (int week = 1; week <= weekNum; week++) {
+		for (int week = 1; week <= WEEKNUM; week++) {
 			generateWeekList(firstDayOfCalendar, calendar, firstDayOfWeek, lastDayOfWeek, userId);
 			firstDayOfWeek = firstDayOfWeek + 7;
 			lastDayOfWeek = lastDayOfWeek + 7;
@@ -94,9 +92,9 @@ public class CalendarService {
 		// 先月の月を格納する．
 		calendarInfo.setMonthOfPrevMonth(prevMonth.getMonthOfYear());
 		// 今年を格納
-		calendarInfo.setCurrentYear(Constants.TODAY.getYear());
+		calendarInfo.setCurrentYear(java.time.LocalDate.now().getYear());
 		// 今月を格納
-		calendarInfo.setCurrentMonth(Constants.TODAY.getMonthValue());
+		calendarInfo.setCurrentMonth(java.time.LocalDate.now().getMonthValue());
 
 		// カレンダー情報を返す
 		return calendarInfo;
@@ -113,10 +111,10 @@ public class CalendarService {
 	 */
 	private void generateWeekList(org.joda.time.LocalDate firstDayOfCalendar, List<List<DayEntity>> calendar,
 			int firstDayOfWeek, int lastDayOfWeek, Long userId) {
-		List<DayEntity> weekList = new ArrayList<DayEntity>();
+		List<DayEntity> weekList = new ArrayList<>();
 		for (int i = firstDayOfWeek; i <= lastDayOfWeek; i++) {
 			// IDリストインストタンス
-			List<Long> idList = new ArrayList<Long>();
+			List<Long> idList = new ArrayList<>();
 			// 日付情報インストタンス
 			DayEntity day = new DayEntity();
 			// カレンダーの最初日付をその週の最初日付と最終日付でインクリメントする．
@@ -162,20 +160,20 @@ public class CalendarService {
 	 */
 	@Transactional(rollbackOn = ExclusiveException.class)
 	public void updateSchedule(ScheduleRequest scheduleRequest) throws ExclusiveException {
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-		String screenVersion = scheduleRequest.getVersion();
-		String dbVersion = selectScheduleVersion(scheduleRequest.getId());
+		LocalDateTime screenVersion = scheduleRequest.getUpdateday();
+		LocalDateTime dbVersion = selectScheduleVersion(scheduleRequest.getId());
 		// 楽観排他，DB更新日がNULLではない+バージョンが異なる場合
 		if (!screenVersion.equals(dbVersion)) {
 			throw new ExclusiveException("他のユーザが更新しています．カレンダーに戻して，もう一度更新して下さい．");
 		}
 		ScheduleInfoEntity updateSchedule = createSchedule(scheduleRequest);
-		updateSchedule.setVersion(LocalDateTime.now().format(dateFormat));
+		updateSchedule.setUpdateday(LocalDateTime.now());
 		selectScheduleMapper.updateSchedule(updateSchedule);
 	}
 
 	/**
 	 * スケージュール情報を格納する．
+	 * 
 	 * @param scheduleRequest
 	 * @return
 	 */
@@ -191,7 +189,7 @@ public class CalendarService {
 		schedule.setEndtime(scheduleRequest.getEndtime());
 		schedule.setSchedule(scheduleRequest.getSchedule());
 		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
-		schedule.setVersion(scheduleRequest.getVersion());
+		schedule.setUpdateday(scheduleRequest.getUpdateday());
 		return schedule;
 	}
 
@@ -229,6 +227,7 @@ public class CalendarService {
 
 	/**
 	 * 全件検索
+	 * 
 	 * @return 全件検索結果
 	 */
 	public List<ScheduleInfoEntity> selectAll() {
@@ -272,8 +271,8 @@ public class CalendarService {
 	 * @param id
 	 * @return
 	 */
-	public String selectScheduleVersion(Long id) {
-		return selectScheduleMapper.selectScheduleVersion(id);
+	public LocalDateTime selectScheduleVersion(Long id) {
+		return selectScheduleMapper.selectUpdateDay(id);
 	}
 
 	/**

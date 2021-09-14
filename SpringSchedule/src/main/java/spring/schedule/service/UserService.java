@@ -19,9 +19,9 @@ import spring.schedule.entity.UserInfoEntity;
 import spring.schedule.repository.SelectUserMapper;
 
 /**
- * rollbackOn = Exception.class : 例外が発生した場合，ロールバックする．
+ * rollbackOn = Exception.class : 例外が発生した�?�合，ロールバックする?�?
  *
- * @author thinh カレンダー表示画面を作成するService
+ * @author thinh カレンダー表示画面を作�?�するService
  */
 @Service
 @Transactional(rollbackOn = Exception.class)
@@ -38,23 +38,23 @@ public class UserService implements UserDetailsService {
 	}
 
 	/**
-	 * ユーザ名でユーザオブジェクトを生成
+	 * ユーザ名でユーザオブジェクトを生�??
 	 */
 	@Override
 	public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
 		UserInfoEntity user = selectUserMapper.selectUserByUserName(userName);
 		if (user == null) {
-			throw new UsernameNotFoundException("ユーザ名：" + userName + "が見つかりません．");
+			throw new UsernameNotFoundException("ユーザ名�?" + userName + "が見つかりません?�?");
 		}
-		// 権限のリスト
+		// 権限�?�リス�?
 		List<GrantedAuthority> grantList = new ArrayList<GrantedAuthority>();
 		GrantedAuthority authority = new SimpleGrantedAuthority("USER");
 		grantList.add(authority);
 
-		// rawDataのパスワードは渡すことができないので、暗号化
+		// rawDataのパスワード�?�渡すことができな�?ので、暗号�?
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-		// UserDetailsはインタフェースなのでUserクラスのコンストラクタで生成したユーザオブジェクトをキャスト
+		// UserDetailsはインタフェースなのでUserクラスのコンストラクタで生�?�したユーザオブジェクトをキャス�?
 		UserDetails userDetails = (UserDetails) new User(user.getUsername(), encoder.encode(user.getPass()), grantList);
 
 		return userDetails;

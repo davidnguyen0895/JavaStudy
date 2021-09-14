@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>スケジュール管理</title>
 <link href="/css/list.css" rel="stylesheet"></link>
@@ -32,7 +31,6 @@
 		<thead>
 			<tr>
 				<th>ID</th>
-				<!-- <th>ユーザID</th> -->
 				<th>スケジュール日付</th>
 				<th>開始時間</th>
 				<th>終了時間</th>
@@ -49,7 +47,7 @@
 				<td><p th:text="${#temporals.format(data.endtime,'HH:mm')}">終了時間</p></td>
 				<td><p th:text="${data.schedule}">スケジュール内容ID</p></td>
 				<td><p th:text="${data.schedulememo}">メモ</p></td>
-				<td><p th:text="${data.version}">更新日</p></td>
+				<td><p th:text="${#temporals.format(data.updateday,'yyyy/MM/dd HH:mm:ss')}">更新日</p></td>
 			</tr>
 		</tbody>
 	</table>
@@ -68,7 +66,7 @@
 			endtime=*{#temporals.format(data.endtime,'HH:mm')},
 			schedule=*{data.schedule},
 			schedulememo=*{data.schedulememo},
-			version=*{data.version}
+			version=*{#temporals.format(data.updateday,'yyyy/MM/dd HH:mm:ss')}
 			)}">
 			<button>更新</button>
 		</a>

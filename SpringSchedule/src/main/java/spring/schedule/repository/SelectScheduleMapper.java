@@ -1,6 +1,7 @@
 package spring.schedule.repository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -31,7 +32,8 @@ public interface SelectScheduleMapper {
 	List<ScheduleInfoEntity> selectByDate(LocalDate scheduledate);
 
 	/**
-	 *	IDでスケージュール情報を検索する
+	 * IDでスケージュール情報を検索する
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -39,6 +41,7 @@ public interface SelectScheduleMapper {
 
 	/**
 	 * IDでスケージュール情報を検索する
+	 * 
 	 * @param scheduleRequest
 	 * @return
 	 */
@@ -57,7 +60,7 @@ public interface SelectScheduleMapper {
 	 *
 	 * @return
 	 */
-	String selectScheduleVersion(Long id);
+	LocalDateTime selectUpdateDay(Long id);
 
 	/**
 	 * スケージュール情報を登録する

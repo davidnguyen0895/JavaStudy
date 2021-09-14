@@ -6,6 +6,9 @@ package spring.schedule.constants;
  *
  */
 public final class Constants {
+	private Constants() {
+		//コンストラクタ
+	}
 	//ホームページ画面
 	public static final String RETURN_INDEX = "index";
 	//return用定数 スケジュール情報の新規登録画面
@@ -34,6 +37,8 @@ public final class Constants {
 	public static final String ACTION_UPDATE = "update";
 	//【操作】参照
 	public static final String ACTION_SEARCH = "search";
-	//今日の日付
-	public static final java.time.LocalDate TODAY = java.time.LocalDate.now();
+	//
+	public static final String ATTRIBUTE_DAYENTITY = "dayEntity";
+	//
+	public static final String ATTRIBUTE_SCHEDULE = "schedule";
 }

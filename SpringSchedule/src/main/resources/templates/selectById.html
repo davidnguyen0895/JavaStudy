@@ -55,8 +55,8 @@
 				<td th:text="*{schedulememo}"></td>
 			</tr>
 			<tr>
-				<th class="cell_title">バージョン</th>
-				<td th:text="*{version}"></td>
+				<th class="cell_title">更新日</th>
+				<td th:text="${#temporals.format(selectByIdInfo.updateday,'yyyy/MM/dd HH:mm:ss')}"></td>
 			</tr>
 		</table>
 	</div>

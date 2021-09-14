@@ -1,7 +1,7 @@
 package spring.schedule.controller;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,8 +31,7 @@ public class SelectAllUserController {
 	 */
 	@GetMapping(value = "/selectAllUser")
 	public String selectAllUser(Model model) {
-		List<UserInfoEntity> userList = new ArrayList<UserInfoEntity>();
-		userList = userService.selectAllUser();
+		List<UserInfoEntity> userList = userService.selectAllUser();
 		model.addAttribute("userList", userList);
 		return Constants.RETURN_SELECT_ALL_USER;
 	}

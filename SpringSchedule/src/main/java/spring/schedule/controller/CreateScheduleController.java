@@ -3,6 +3,7 @@ package spring.schedule.controller;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,10 +11,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
 import spring.schedule.constants.Constants;
 import spring.schedule.entity.DayEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
@@ -46,7 +49,7 @@ public class CreateScheduleController {
 		schedule.setEndtime(scheduleRequest.getEndtime());
 		schedule.setSchedule(scheduleRequest.getSchedule());
 		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
-		schedule.setVersion(scheduleRequest.getVersion());
+		schedule.setUpdateday(scheduleRequest.getUpdateday());
 		return schedule;
 	}
 
@@ -56,7 +59,7 @@ public class CreateScheduleController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "deleteSchedule", method = RequestMethod.GET)
+	@GetMapping(value = "deleteSchedule")
 	public String deleteSchedule(@RequestParam("id") Long id) {
 		calendarService.deleteSchedule(id);
 		return Constants.REDIRECT_DISPLAY_CALENDAR;
@@ -68,14 +71,14 @@ public class CreateScheduleController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "showScheduleForm", method = RequestMethod.GET)
+	@GetMapping(value = "showScheduleForm")
 	public String showNewScheduleForm(Model model) {
 		// 今月の年と月の値をdayEntityインスタンスに格納する．
 		ScheduleRequest scheduleRequest = new ScheduleRequest();
-		DayEntity dayEntity = createDayEntityObject(Constants.TODAY);
+		DayEntity dayEntity = createDayEntityObject(java.time.LocalDate.now());
 		// modelにdayEntityとScheduleRequestのインスタンスを格納し，スケージュール作成フォームに送信する．
-		model.addAttribute("dayEntity", dayEntity);
-		model.addAttribute("schedule", scheduleRequest);
+		model.addAttribute(Constants.ATTRIBUTE_DAYENTITY, dayEntity);
+		model.addAttribute(Constants.ATTRIBUTE_SCHEDULE, scheduleRequest);
 		return Constants.RETURN_CREATE_SCHEDULE_FORM;
 	}
 
@@ -87,21 +90,21 @@ public class CreateScheduleController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "createSchedule", method = RequestMethod.POST)
+	@GetMapping(value = "createSchedule")
 	public String createNewScheduleForm(@Validated @ModelAttribute ScheduleRequest scheduleRequest,
 			BindingResult result, Model model) {
 		// 日付情報インストタンス
-		DayEntity dayEntity = createDayEntityObject(Constants.TODAY);
+		DayEntity dayEntity = createDayEntityObject(java.time.LocalDate.now());
 		// 入力チェック
 		if (result.hasErrors()) {
-			List<String> errorList = new ArrayList<String>();
+			List<String> errorList = new ArrayList<>();
 			for (ObjectError error : result.getAllErrors()) {
 				errorList.add(error.getDefaultMessage());
 			}
-			model.addAttribute("dayEntity", dayEntity);
+			model.addAttribute(Constants.ATTRIBUTE_DAYENTITY, dayEntity);
 			model.addAttribute("validationError", errorList);
 			// 入力した情報を残す
-			model.addAttribute("schedule", scheduleRequest);
+			model.addAttribute(Constants.ATTRIBUTE_SCHEDULE, scheduleRequest);
 			return Constants.RETURN_CREATE_SCHEDULE_FORM;
 		}
 		// 入力フォーム画面で入力した値をDBに登録する．
@@ -117,8 +120,8 @@ public class CreateScheduleController {
 		dayEntity.setCalendarYear(schedule.getScheduledate().getYear());
 		dayEntity.setCalendarMonth(schedule.getScheduledate().getMonthValue());
 		dayEntity.setAction(Constants.ACTION_REGIST);
-		model.addAttribute("dayEntity", dayEntity);
-		model.addAttribute("schedule", schedule);
+		model.addAttribute(Constants.ATTRIBUTE_DAYENTITY, dayEntity);
+		model.addAttribute(Constants.ATTRIBUTE_SCHEDULE, schedule);
 		return Constants.RETURN_SHOW_SCHEDULE_DETAIL;
 	}
 
@@ -129,15 +132,15 @@ public class CreateScheduleController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "showUpdateScheduleForm", method = RequestMethod.GET)
+	@GetMapping(value = "showUpdateScheduleForm")
 	public String showUpdateScheduleForm(@Validated @ModelAttribute ScheduleRequest scheduleRequest, Model model) {
 		// 今月の年と月の値をdayEntityインスタンスに格納する．
 		DayEntity dayEntity = createDayEntityObject(scheduleRequest.getScheduledate());
 		dayEntity.setCalendarYear(scheduleRequest.getScheduledate().getYear());
 		dayEntity.setCalendarMonth(scheduleRequest.getScheduledate().getMonthValue());
 		// modelにdayEntityとScheduleRequestのインスタンスを格納し，スケージュール作成フォームに送信する．
-		model.addAttribute("dayEntity", dayEntity);
-		model.addAttribute("schedule", scheduleRequest);
+		model.addAttribute(Constants.ATTRIBUTE_DAYENTITY, dayEntity);
+		model.addAttribute(Constants.ATTRIBUTE_SCHEDULE, scheduleRequest);
 		return Constants.RETURN_UPDATE_SCHEDULE_FORM;
 	}
 
@@ -150,22 +153,22 @@ public class CreateScheduleController {
 	 * @return
 	 * @throws ExclusiveException
 	 */
-	@RequestMapping(value = "updateSchedule", method = RequestMethod.POST)
-	public String createUpdateScheduleForm(@Validated @ModelAttribute ScheduleRequest scheduleRequest,
+	@PostMapping(value = "updateSchedule")
+	public String updateSchedule(@Validated @ModelAttribute ScheduleRequest scheduleRequest,
 			BindingResult result, Model model) throws ExclusiveException {
 		DayEntity dayEntity = createDayEntityObject(scheduleRequest.getScheduledate());
 		dayEntity.setCalendarYear(scheduleRequest.getScheduledate().getYear());
 		dayEntity.setCalendarMonth(scheduleRequest.getScheduledate().getMonthValue());
 		// 入力チェック
 		if (result.hasErrors()) {
-			List<String> errorList = new ArrayList<String>();
+			List<String> errorList = new ArrayList<>();
 			for (ObjectError error : result.getAllErrors()) {
 				errorList.add(error.getDefaultMessage());
 			}
-			model.addAttribute("dayEntity", dayEntity);
+			model.addAttribute(Constants.ATTRIBUTE_DAYENTITY, dayEntity);
 			model.addAttribute("validationError", errorList);
 			// 入力した情報を残す
-			model.addAttribute("schedule", scheduleRequest);
+			model.addAttribute(Constants.ATTRIBUTE_SCHEDULE, scheduleRequest);
 			return Constants.RETURN_UPDATE_SCHEDULE_FORM;
 		}
 		calendarService.updateSchedule(scheduleRequest);
@@ -173,8 +176,8 @@ public class CreateScheduleController {
 		ScheduleInfoEntity updateSchedule = calendarService.selectById(scheduleRequest.getId());
 		// カレンダーに戻るボタンのための年と月の値を格納する．
 		dayEntity.setAction(Constants.ACTION_UPDATE);
-		model.addAttribute("dayEntity", dayEntity);
-		model.addAttribute("schedule", updateSchedule);
+		model.addAttribute(Constants.ATTRIBUTE_DAYENTITY, dayEntity);
+		model.addAttribute(Constants.ATTRIBUTE_SCHEDULE, updateSchedule);
 		return Constants.RETURN_SHOW_SCHEDULE_DETAIL;
 	}
 
@@ -203,7 +206,7 @@ public class CreateScheduleController {
 	public String exclusiveExceptionHandler(ExclusiveException ex, Model model) {
 		// カレンダーに戻るボタン用の日付
 		DayEntity dayEntity = createDayEntityObject(LocalDate.now());
-		model.addAttribute("dayEntity", dayEntity);
+		model.addAttribute(Constants.ATTRIBUTE_DAYENTITY, dayEntity);
 		model.addAttribute("errorMessage", ex.getMessage());
 		return Constants.RETURN_ERROR;
 	}

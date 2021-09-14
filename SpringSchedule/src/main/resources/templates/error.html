@@ -13,7 +13,7 @@
 	</div>
 	<!--～～～～～～～～～～ カレンダーに戻るボタン ～～～～～～～～～～-->
 	<div>
-		<p>
+		<p th:if="${dayEntity.getAction() != 'common'}">
 			<a href="displayCalendar.html"
 				th:href="@{/displayCalendar/date(year=*{dayEntity.getCalendarYear()},
 				month=*{dayEntity.getCalendarMonth()})}"><button>カレンダーに戻る</button></a>

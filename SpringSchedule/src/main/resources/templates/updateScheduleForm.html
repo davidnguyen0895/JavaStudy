@@ -41,7 +41,7 @@
 	<form method="POST" th:action="@{/schedule/updateSchedule}" th:object="${schedule}">
 		<p><input type="hidden" th:field="*{id}"></p>
 		<p><input type="hidden" th:field="*{userid}"></p>
-		<p><input type="hidden" th:field="*{version}"></p>
+		<p><input type="hidden" th:field="*{updateday}"></p>
 		<table>
 			<!--～～～～～～～～～～ スケージュール日付 ～～～～～～～～～～-->
 			<tr>

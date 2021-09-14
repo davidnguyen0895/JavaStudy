@@ -15,7 +15,7 @@ import spring.schedule.constants.Constants;
 @Controller
 public class HomePageController {
 	@RequestMapping("/index")
-	private String init(Model model) {
+	public String init(Model model) {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		// Principalからログインユーザの情報を取得
 		String userName = auth.getName();

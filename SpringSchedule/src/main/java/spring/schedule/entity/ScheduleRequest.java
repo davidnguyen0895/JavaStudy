@@ -2,6 +2,7 @@ package spring.schedule.entity;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import javax.validation.constraints.NotNull;
@@ -60,5 +61,6 @@ public class ScheduleRequest implements Serializable {
 	/**
 	 * 更新日
 	 */
-	private String version;
+	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
+	private LocalDateTime updateday;
 }

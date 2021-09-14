@@ -7,8 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import spring.schedule.constants.Constants;
 import spring.schedule.entity.ScheduleInfoEntity;
@@ -46,7 +45,7 @@ public class SelectByIdController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "/selectById", method = RequestMethod.POST)
+	@PostMapping(value = "/selectById")
 	public String selectById(@Validated @ModelAttribute ScheduleRequest scheduleSearchRequest, BindingResult result,
 			Model model) {
 		ScheduleInfoEntity schedule = calendarService.selectById(scheduleSearchRequest);

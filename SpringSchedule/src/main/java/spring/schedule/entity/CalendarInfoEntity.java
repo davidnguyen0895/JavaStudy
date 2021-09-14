@@ -2,7 +2,9 @@ package spring.schedule.entity;
 
 import java.io.Serializable;
 import java.util.List;
+
 import org.joda.time.LocalDate;
+
 import lombok.Data;
 
 /**
@@ -39,11 +41,11 @@ public class CalendarInfoEntity implements Serializable {
 	 */
 	private int monthOfPrevMonth;
 	/**
-	 *
+	 * 今月の年
 	 */
 	private int currentYear;
 	/**
-	 *
+	 * 今月の月
 	 */
 	private int currentMonth;
 }

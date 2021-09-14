@@ -6,32 +6,15 @@
 	namespace="spring.schedule.repository.SelectScheduleMapper">
 	<select id="selectAll"
 		resultType="spring.schedule.entity.ScheduleInfoEntity">
-		SELECT s.id AS id
-		, s.userid AS userid
-		, s.scheduledate AS
-		scheduledate
-		, s.starttime AS starttime
-		, s.endtime AS endtime
-		,s.schedule AS schedule
-		, s.schedulememo AS schedulememo
-		, s.version AS
-		version
+		SELECT 
+		*
 		FROM
 		java_study.schedule s
 	</select>
 	<select id="selectById"
 		resultType="spring.schedule.entity.ScheduleInfoEntity">
 		SELECT
-		s.id AS id
-		, s.userid AS userid
-		, s.scheduledate AS
-		scheduledate
-		, s.starttime AS starttime
-		, s.endtime AS endtime
-		,s.schedule AS schedule
-		, s.schedulememo AS schedulememo
-		, s.version AS
-		version
+		*
 		FROM
 		java_study.schedule s
 		where
@@ -40,16 +23,7 @@
 	<select id="selectByDate"
 		resultType="spring.schedule.entity.ScheduleInfoEntity">
 		SELECT
-		s.id AS id
-		, s.userid AS userid
-		, s.scheduledate AS
-		scheduledate
-		,s.starttime AS starttime
-		, s.endtime AS endtime
-		,s.schedule AS schedule
-		, s.schedulememo AS schedulememo
-		, s.version AS
-		version
+		*
 		FROM
 		java_study.schedule s WHERE
 		s.scheduledate = #{scheduledate}
@@ -57,17 +31,7 @@
 	<select id="selectByUserId"
 		resultType="spring.schedule.entity.ScheduleInfoEntity">
 		SELECT
-		s.id AS id
-		, s.userid AS userid
-		, s.scheduledate AS
-		scheduledate
-		, s.starttime AS starttime
-		, s.endtime AS endtime
-		,
-		s.schedule AS schedule
-		, s.schedulememo AS schedulememo
-		, s.version AS
-		version
+		*
 		FROM
 		java_study.schedule s
 		WHERE
@@ -75,10 +39,9 @@
 		AND
 		s.scheduledate = #{scheduledate}
 	</select>
-	<select id="selectScheduleVersion" resultType="String">
+	<select id="selectUpdateDay" resultType="String">
 		SELECT
-		s.version as
-		version
+		s.updateday as updateday
 		FROM
 		java_study.schedule s
 		WHERE
@@ -111,8 +74,8 @@
 		endtime = #{endtime},
 		schedule = #{schedule},
 		schedulememo = #{schedulememo},
-		version =
-		#{version}
+		updateday =
+		#{updateday}
 		WHERE id = #{id}
 	</update>
 </mapper>

@@ -62,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// ユーザー名「user」、パスワード「pass」が入力されたらログイン可能とする
 		// パスワードエンコーダーを利用しないようにするため、パスワードの先頭に{noop}を
 		// 指定している
-		auth.inMemoryAuthentication().withUser("user").password("{noop}pass").roles("USER");
+		auth.inMemoryAuthentication().withUser("username").password("{noop}password").roles("USER");
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().anyRequest().authenticated().and().formLogin().loginPage("/login") // ログインページはコントローラを経由しないのでViewNameとの紐付けが必要
 				.loginProcessingUrl("/sign_in") // フォームのSubmitURL、このURLへリクエストが送られると認証処理が実行される
 				.usernameParameter("username") // リクエストパラメータのusername属性を明示
-				.passwordParameter("password")// リクエストパラメータのpassword属性を明示
+				.passwordParameter("pass")// リクエストパラメータのpassword属性を明示
 				.successForwardUrl("/index").failureUrl("/login?error").permitAll().and().exceptionHandling()
 				.accessDeniedPage("/error").and().logout().logoutUrl("/logout").logoutSuccessUrl("/login?logout")
 				.permitAll();
