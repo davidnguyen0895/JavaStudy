@@ -7,13 +7,13 @@
 <meta charset="utf-8" />
 </head>
 <body>
-	<!--～～～～～～～～～～ ホームページ画面に戻る ～～～～～～～～～～-->
+	<!--～～～～～～～～～～ ホームページに戻るボタン ～～～～～～～～～～-->
 	<div>
 		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
 	</div>
 	<!--～～～～～～～～～～ カレンダーに戻るボタン ～～～～～～～～～～-->
 	<div>
-		<p th:if="${dayEntity.getAction() != 'common'}">
+		<p>
 			<a href="displayCalendar.html"
 				th:href="@{/displayCalendar/date(year=*{dayEntity.getCalendarYear()},
 				month=*{dayEntity.getCalendarMonth()})}"><button>カレンダーに戻る</button></a>
@@ -22,5 +22,8 @@
 
 	<h1 align="center">【エラー】</h1>
 	<h3 style="color: red;" th:text="${errorMessage}"></h3>
+
+	<h1 align="center">【エラー詳細】</h1>
+	<h5 style="color: red;" th:text="${stackContent}"></h5>
 </body>
 </html>

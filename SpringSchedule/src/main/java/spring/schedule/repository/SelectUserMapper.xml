@@ -7,31 +7,31 @@
 		resultType="spring.schedule.entity.UserInfoEntity">
 		SELECT
 		u.id as id
-		, u.username
+		, u.user as user
 		, u.pass as pass
 		, u.roll as roll
 		FROM
-		java_study.usertable u
+		java_study_db.usertable u
 	</select>
 	<select id="selectUserId"
 		resultType="spring.schedule.entity.UserInfoEntity">
 		SELECT
 		u.id as id
 		FROM
-		java_study.usertable u
+		java_study_db.usertable u
 		WHERE
-		u.username = #{username}
+		u.user = #{user}
 	</select>
 		<select id="selectUserByUserName"
 		resultType="spring.schedule.entity.UserInfoEntity">
 		SELECT
 		u.id as id
-		, u.username
+		, u.user as user
 		, u.pass as pass
 		, u.roll as roll
 		FROM
-		java_study.usertable u
+		java_study_db.usertable u
 		WHERE
-		u.username = #{username}
+		u.user = #{user}
 	</select>
 </mapper>

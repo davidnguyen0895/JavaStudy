@@ -15,9 +15,10 @@
 	<div th:if="${param.error}" style="color: red; text-align: center;">※ユーザー名またはパスワードが正しくありません。</div>
 	<form th:action="@{/sign_in}" th:method="post">
 		<div style="text-align: center;">
-			<label>ユーザ名</label>&nbsp;&nbsp;&nbsp;&nbsp; <input id="username"
+			<label>ユーザ名</label>&nbsp;&nbsp;&nbsp;
+			<input id="username"
 				type="text" name="username"> <br> <label>パスワード</label>
-			<input id=pass type="password" name="pass">
+			<input id="password" type="password" name="password">
 		</div>
 		<br>
 		<div style="text-align: center;">

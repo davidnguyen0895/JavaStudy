@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 body {
-	width: 99%;
+	width: 90%;
 }
 
 table {
@@ -49,8 +49,8 @@ p {
 }
 
 .transparency {
-    color: #000;
-    color: rgba(0, 0, 0, 0.5);
-    font-size: 16pt;
-    font-family: Arial, sans-serif;
+	color: #000;
+	color: rgba(0, 0, 0, 0.5);
+	font-size: 16pt;
+	font-family: Arial, sans-serif;
 }

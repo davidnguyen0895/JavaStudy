@@ -7,7 +7,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import spring.schedule.constants.Constants;
 import spring.schedule.entity.ScheduleInfoEntity;
@@ -27,25 +28,23 @@ public class SelectByIdController {
 	CalendarService calendarService;
 
 	/**
-	 * IDでスケージュール情報を検索する画面
 	 *
 	 * @param model
 	 * @return
 	 */
 	@GetMapping(value = "/selectById")
 	public String displaySelectById(Model model) {
-		return Constants.RETURN_SELECT_BY_ID;
+		return "selectById";
 	}
 
 	/**
-	 * IDでスケージュール情報を検索する
 	 *
 	 * @param scheduleSearchRequest
 	 * @param result
 	 * @param model
-	 * @return
+	 * @return スケジュール情報一覧画面
 	 */
-	@PostMapping(value = "/selectById")
+	@RequestMapping(value = "/selectById", method = RequestMethod.POST)
 	public String selectById(@Validated @ModelAttribute ScheduleRequest scheduleSearchRequest, BindingResult result,
 			Model model) {
 		ScheduleInfoEntity schedule = calendarService.selectById(scheduleSearchRequest);

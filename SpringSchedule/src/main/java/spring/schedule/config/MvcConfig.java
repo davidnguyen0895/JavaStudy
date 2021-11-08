@@ -15,7 +15,6 @@ public class MvcConfig implements WebMvcConfigurer {
 	/**
 	 * 「/login」というURLからloginForm.htmlを呼び出す
 	 */
-	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
 		registry.addViewController("/login").setViewName("loginForm");
 	}

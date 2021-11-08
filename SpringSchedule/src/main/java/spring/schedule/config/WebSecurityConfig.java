@@ -59,10 +59,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-		// ユーザー名「user」、パスワード「pass」が入力されたらログイン可能とする
-		// パスワードエンコーダーを利用しないようにするため、パスワードの先頭に{noop}を
-		// 指定している
-		auth.inMemoryAuthentication().withUser("username").password("{noop}password").roles("USER");
 	}
 
 	/**
@@ -73,10 +69,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests().anyRequest().authenticated().and().formLogin().loginPage("/login") // ログインページはコントローラを経由しないのでViewNameとの紐付けが必要
+		http.authorizeRequests().antMatchers("/index").permitAll()
+				// .antMatchers("/selectAll").hasRole("ADMIN")
+				.anyRequest().authenticated().and().formLogin().loginPage("/login") // ログインページはコントローラを経由しないのでViewNameとの紐付けが必要
 				.loginProcessingUrl("/sign_in") // フォームのSubmitURL、このURLへリクエストが送られると認証処理が実行される
 				.usernameParameter("username") // リクエストパラメータのusername属性を明示
-				.passwordParameter("pass")// リクエストパラメータのpassword属性を明示
+				.passwordParameter("password")// リクエストパラメータのpassword属性を明示
 				.successForwardUrl("/index").failureUrl("/login?error").permitAll().and().exceptionHandling()
 				.accessDeniedPage("/error").and().logout().logoutUrl("/logout").logoutSuccessUrl("/login?logout")
 				.permitAll();

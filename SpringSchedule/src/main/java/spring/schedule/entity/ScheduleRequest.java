@@ -62,5 +62,5 @@ public class ScheduleRequest implements Serializable {
 	 * 更新日
 	 */
 	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
-	private LocalDateTime updateday;
+	private LocalDateTime updatedate;
 }

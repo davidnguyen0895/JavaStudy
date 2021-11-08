@@ -9,7 +9,7 @@ import lombok.Data;
 
 /**
  * カレンダー情報を格納するクラス
- *
+ * 
  * @author thinh
  *
  */
@@ -41,11 +41,11 @@ public class CalendarInfoEntity implements Serializable {
 	 */
 	private int monthOfPrevMonth;
 	/**
-	 * 今月の年
+	 *
 	 */
 	private int currentYear;
 	/**
-	 * 今月の月
+	 *
 	 */
 	private int currentMonth;
 }

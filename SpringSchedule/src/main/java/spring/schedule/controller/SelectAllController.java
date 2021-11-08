@@ -1,5 +1,6 @@
 package spring.schedule.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,14 @@ public class SelectAllController {
 
 	/**
 	 * ユーザー情報一覧画面を表示
-	 *
+	 * 
 	 * @param model Model
 	 * @return ユーザー情報一覧画面
 	 */
 	@GetMapping(value = "/selectAll")
 	public String selectAll(Model model) {
-		 List<ScheduleInfoEntity> scheduleList = calendarService.selectAll();
+		List<ScheduleInfoEntity> scheduleList = new ArrayList<ScheduleInfoEntity>();
+		scheduleList = calendarService.selectAll();
 		model.addAttribute("scheduleList", scheduleList);
 		return Constants.RETURN_SELECT_ALL;
 	}

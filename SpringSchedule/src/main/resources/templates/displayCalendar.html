@@ -6,12 +6,14 @@
 <title>スケジュール管理</title>
 </head>
 <body>
-<!--～～～～～～～～～～ ホームページに戻るボタン～～～～～～～～～～-->
+	<!--～～～～～～～～～～ ホームページに戻るボタン～～～～～～～～～～-->
 	<div>
 		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
 		<!--～～～～～～～～～～ スケジュール新規登録ボタン～～～～～～～～～～-->
-		<a href="createScheduleForm.html" th:href="@{'/schedule/showScheduleForm'}">
-		<button>スケジュール新規登録</button></a>
+		<a href="createScheduleForm.html"
+			th:href="@{'/schedule/showScheduleForm'}">
+			<button>スケジュール新規登録</button>
+		</a>
 	</div>
 	<!--～～～～～～～～～～ カレンダー表示 ～～～～～～～～～～-->
 	<div th:object="${calendarInfo}">
@@ -25,8 +27,8 @@
 			<a href="displayCalendar.html"
 				th:href="@{/displayCalendar/date(year=*{currentYear},
 				month=*{currentMonth})}">
-				<button>今月</button></a><br>
-			<span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span><br>
+				<button>今月</button>
+			</a><br> <span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span><br>
 
 		</p>
 		<table border=1>
@@ -40,16 +42,15 @@
 				<th>土</th>
 			</tr>
 			<tr th:each="week : *{calendar}">
-				<td th:each="day : ${week}">
-				<span th:text="${day.getDay().getDayOfMonth()}"></span>
-				<!--～～～～～～～～～～スケージュール情報IDが存在する場合，それをスケージュール詳細画面
+				<td th:each="day : ${week}"><span
+					th:text="${day.getDay().getDayOfMonth()}"></span> <!--～～～～～～～～～～スケージュール情報IDが存在する場合，それをスケージュール詳細画面
 				に渡し，スケージュール情報を取得する．～～～～～～～～～～-->
 					<div th:each="id : ${day.getIdList()}">
-						<a href="showScheduleDetail.html" th:href="@{/displayCalendar/schedule(id=${id})}">
-						<img src="/images/calendar.png" />
+						<a href="showScheduleDetail.html"
+							th:href="@{/displayCalendar/schedule(id=${id})}"> <img
+							src="/images/calendar.png" />
 						</a>
-					</div>
-					</td>
+					</div></td>
 			</tr>
 		</table>
 	</div>

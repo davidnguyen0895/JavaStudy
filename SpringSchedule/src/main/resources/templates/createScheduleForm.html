@@ -10,7 +10,8 @@
 <!--～～～～～～～～～～ jQuery UI ～～～～～～～～～～-->
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <!--～～～～～～～～～～ css ～～～～～～～～～～-->
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/black-tie/jquery-ui.css">
+<link rel="stylesheet"
+	href="https://code.jquery.com/ui/1.12.1/themes/black-tie/jquery-ui.css">
 
 <script>
 	$(function() {
@@ -21,11 +22,11 @@
 </script>
 </head>
 <body>
-<!--～～～～～～～～～～ ホームページに戻るボタン ～～～～～～～～～～-->
+	<!--～～～～～～～～～～ ホームページに戻るボタン ～～～～～～～～～～-->
 	<div>
 		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
 	</div>
-<!--～～～～～～～～～～ カレンダーに戻るボタン ～～～～～～～～～～-->
+	<!--～～～～～～～～～～ カレンダーに戻るボタン ～～～～～～～～～～-->
 	<div>
 		<p>
 			<a href="displayCalendar.html"
@@ -33,34 +34,32 @@
 				month=*{dayEntity.getCalendarMonth()})}"><button>カレンダーに戻る</button></a>
 		</p>
 	</div>
-<!--～～～～～～～～～～ スケージュール情報を新規登録フォーム ～～～～～～～～～～-->
-	<h4>スケージュール情報を新規登録フォーム</h4>
-		<div th:if="${validationError}" th:each="error : ${validationError}">
-			<p style="color: red;" th:text="${error}"></p>
-		</div>
-	<form method="POST" th:action="@{/schedule/createSchedule}" th:object="${schedule}">
+	<!--～～～～～～～～～～ スケージュール情報を新規登録フォーム ～～～～～～～～～～-->
+	<h4 align="center">スケージュール情報を新規登録フォーム</h4>
+	<div th:if="${validationError}" th:each="error : ${validationError}">
+		<p style="color: red;" th:text="${error}"></p>
+	</div>
+	<form method="POST" th:action="@{/schedule/createSchedule}"
+		th:object="${schedule}">
 		<table>
-		<!--～～～～～～～～～～ スケージュール日付 ～～～～～～～～～～-->
+			<!--～～～～～～～～～～ スケージュール日付 ～～～～～～～～～～-->
 			<tr>
 				<th class="cell_title">スケージュール日付</th>
 				<th class="cell_required"></th>
-			<td><input type="text" th:field="*{scheduledate}" id="datepicker"></td>
+				<td><input type="text" th:field="*{scheduledate}"
+					id="datepicker"></td>
 			</tr>
 			<!--～～～～～～～～～～ 開始時間 ～～～～～～～～～～-->
 			<tr>
 				<th class="cell_title">開始時間</th>
 				<th class="cell_required"></th>
-				<td>
-					<input type="time" th:field="*{starttime}">
-				</td>
+				<td><input type="time" th:field="*{starttime}"></td>
 			</tr>
 			<!--～～～～～～～～～～ 終了時間 ～～～～～～～～～～-->
 			<tr>
 				<th class="cell_title">終了時間</th>
 				<th class="cell_required"></th>
-				<td>
-					<input type="time" th:field="*{endtime}">
-				</td>
+				<td><input type="time" th:field="*{endtime}"></td>
 			</tr>
 			<!--～～～～～～～～～～ スケジュール内容 ～～～～～～～～～～-->
 			<tr>

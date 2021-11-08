@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.springframework.data.annotation.Version;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Data;
@@ -18,14 +19,14 @@ import lombok.Data;
 /*スケジュール情報Entity*/
 @Entity
 @Data
-@Table(name="schedule")
-public class ScheduleInfoEntity implements Serializable{
+@Table(name = "schedule")
+public class ScheduleInfoEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/**
 	 * ID
 	 */
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
 	 * ユーザID
@@ -34,17 +35,14 @@ public class ScheduleInfoEntity implements Serializable{
 	/**
 	 * スケジュール日付
 	 */
-	@DateTimeFormat(pattern = "yyyy/MM/dd")
 	private LocalDate scheduledate;
 	/**
 	 * 開始時間
 	 */
-	@DateTimeFormat(pattern = "HH:mm:ss")
 	private LocalTime starttime;
 	/**
 	 * 終了時間
 	 */
-	@DateTimeFormat(pattern = "HH:mm:ss")
 	private LocalTime endtime;
 	/**
 	 * スケジュール内容
@@ -55,8 +53,9 @@ public class ScheduleInfoEntity implements Serializable{
 	 */
 	private String schedulememo;
 	/**
-	 * スケジュール更新日
+	 * 更新日
 	 */
 	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
-	private LocalDateTime updateday;
+	@Version
+	private LocalDateTime updatedate;
 }

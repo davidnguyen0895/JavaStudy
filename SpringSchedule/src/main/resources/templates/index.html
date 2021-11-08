@@ -13,6 +13,9 @@
 		<p>様</p>
 	</div>
 	<div>
+<!-- 		<form method="post" th:action="@{/logout}">
+			<input type="submit" value="ログアウト">
+		</form> -->
 		<form name="logoutForm" th:hidden="true" method="post"
 			th:action="@{/logout}">
 			<input type="submit" value="ログアウト" />

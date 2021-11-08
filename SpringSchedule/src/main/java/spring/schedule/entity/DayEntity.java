@@ -1,13 +1,15 @@
 package spring.schedule.entity;
 
 import java.io.Serializable;
-import org.joda.time.LocalDate;
 import java.util.List;
+
+import org.joda.time.LocalDate;
+
 import lombok.Data;
 
 /**
  * 日付情報を格納するためのEntity
- *
+ * 
  * @author thinh
  *
  */

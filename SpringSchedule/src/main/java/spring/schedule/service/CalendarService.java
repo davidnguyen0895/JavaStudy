@@ -1,6 +1,5 @@
 package spring.schedule.service;
 
-import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import spring.schedule.constants.Constants;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
@@ -24,13 +24,14 @@ import spring.schedule.repository.SelectUserMapper;
 
 /**
  * rollbackOn = Exception.class : 例外が発生した場合，ロールバックする．
- *
+ * 
  * @author thinh カレンダー表示画面を作成するService
  */
 @Service
+//@Slf4j
 public class CalendarService {
 	// 週
-	private static final int WEEKNUM = 6;
+	private final int weekNum = 6;
 	/**
 	 * スケージュール情報を参照するためのMapperインストタンス
 	 */
@@ -44,7 +45,7 @@ public class CalendarService {
 
 	/**
 	 * カレンダーを表示するための情報を作成するメソッド．
-	 *
+	 * 
 	 * @param year
 	 * @param month
 	 * @return
@@ -73,7 +74,7 @@ public class CalendarService {
 		// 先月の日付を取得
 		org.joda.time.LocalDate prevMonth = lastDayOfMonth.minusMonths(1);
 
-		for (int week = 1; week <= WEEKNUM; week++) {
+		for (int week = 1; week <= weekNum; week++) {
 			generateWeekList(firstDayOfCalendar, calendar, firstDayOfWeek, lastDayOfWeek, userId);
 			firstDayOfWeek = firstDayOfWeek + 7;
 			lastDayOfWeek = lastDayOfWeek + 7;
@@ -92,9 +93,9 @@ public class CalendarService {
 		// 先月の月を格納する．
 		calendarInfo.setMonthOfPrevMonth(prevMonth.getMonthOfYear());
 		// 今年を格納
-		calendarInfo.setCurrentYear(java.time.LocalDate.now().getYear());
+		calendarInfo.setCurrentYear(Constants.TODAY.getYear());
 		// 今月を格納
-		calendarInfo.setCurrentMonth(java.time.LocalDate.now().getMonthValue());
+		calendarInfo.setCurrentMonth(Constants.TODAY.getMonthValue());
 
 		// カレンダー情報を返す
 		return calendarInfo;
@@ -102,7 +103,7 @@ public class CalendarService {
 
 	/**
 	 * １週間の日付リストを作成する．
-	 *
+	 * 
 	 * @param firstDayOfCalendar
 	 * @param calendar
 	 * @param firstDayOfWeek
@@ -111,20 +112,18 @@ public class CalendarService {
 	 */
 	private void generateWeekList(org.joda.time.LocalDate firstDayOfCalendar, List<List<DayEntity>> calendar,
 			int firstDayOfWeek, int lastDayOfWeek, Long userId) {
-		List<DayEntity> weekList = new ArrayList<>();
+		List<DayEntity> weekList = new ArrayList<DayEntity>();
 		for (int i = firstDayOfWeek; i <= lastDayOfWeek; i++) {
 			// IDリストインストタンス
-			List<Long> idList = new ArrayList<>();
+			List<Long> idList = new ArrayList<Long>();
 			// 日付情報インストタンス
 			DayEntity day = new DayEntity();
 			// カレンダーの最初日付をその週の最初日付と最終日付でインクリメントする．
 			org.joda.time.LocalDate scheduledate = firstDayOfCalendar.plusDays(i);
 			// 日付データを日付情報インストタンスに格納する．
 			day.setDay(scheduledate);
-			// 当月の月を格納する
+			// 当月の月を設定する
 			day.setCalendarMonth(scheduledate.getMonthOfYear());
-			// 当月の年を格納する
-			day.setCalendarYear(scheduledate.getYear());
 			// 日付データを用いてスケージュール情報リストを参照する．
 			List<ScheduleInfoEntity> scheduleList = selectByUserId(userId, scheduledate.toString());
 			// スケージュール情報リストを日付情報インストタンスに格納する．
@@ -142,42 +141,64 @@ public class CalendarService {
 	}
 
 	/**
-	 * 新規登録スケジュール情報をDBに登録する
-	 *
+	 * スケジュールを登録する。
+	 * 
 	 * @param scheduleRequest
-	 * @throws ParseException
 	 */
 	public void insertNewSchedule(ScheduleRequest scheduleRequest) {
-		ScheduleInfoEntity schedule = createSchedule(scheduleRequest);
+		ScheduleInfoEntity schedule = createScheduleFromRequest(scheduleRequest);
 		selectScheduleMapper.insertNewSchedule(schedule);
 	}
 
 	/**
-	 * スケージュール情報を更新
-	 *
+	 * スケージュール情報を更新する。
+	 * 
 	 * @param scheduleRequest
 	 * @throws ExclusiveException
 	 */
 	@Transactional(rollbackOn = ExclusiveException.class)
 	public void updateSchedule(ScheduleRequest scheduleRequest) throws ExclusiveException {
-		LocalDateTime screenVersion = scheduleRequest.getUpdateday();
-		LocalDateTime dbVersion = selectScheduleVersion(scheduleRequest.getId());
-		// 楽観排他，DB更新日がNULLではない+バージョンが異なる場合
-		if (!screenVersion.equals(dbVersion)) {
-			throw new ExclusiveException("他のユーザが更新しています．カレンダーに戻して，もう一度更新して下さい．");
+		LocalDateTime screenUpdateDate = scheduleRequest.getUpdatedate();
+		if (screenUpdateDate == null) {
+			ScheduleInfoEntity updateSchedule = createScheduleFromRequest(scheduleRequest);
+			selectScheduleMapper.updateSchedule(updateSchedule);
+		} else {
+			ScheduleInfoEntity dbScheduleInfo = new ScheduleInfoEntity();
+			dbScheduleInfo = selectScheduleMapper.selectScheduleUpdatedate(scheduleRequest.getId());
+			LocalDateTime dbUpdateDate = dbScheduleInfo.getUpdatedate();
+			// 楽観排他，更新日が異なる場合
+			if (!screenUpdateDate.equals(dbUpdateDate)) {
+				ExclusiveException exclusiveException = new ExclusiveException();
+				exclusiveException.setCalendarYear(scheduleRequest.getScheduledate().getYear());
+				exclusiveException.setCalendarMonth(scheduleRequest.getScheduledate().getMonthValue());
+				// メッセージ情報を代入
+				// logBackXML設定
+				// logファイル分ける
+				throw exclusiveException;
+			}
+			ScheduleInfoEntity updateSchedule = createScheduleFromRequest(scheduleRequest);
+			updateSchedule.setUpdatedate(LocalDateTime.now());
+			selectScheduleMapper.updateSchedule(updateSchedule);
 		}
-		ScheduleInfoEntity updateSchedule = createSchedule(scheduleRequest);
-		updateSchedule.setUpdateday(LocalDateTime.now());
-		selectScheduleMapper.updateSchedule(updateSchedule);
+
 	}
 
 	/**
-	 * スケージュール情報を格納する．
+	 * ケージュール情報を削除する
+	 * 
+	 * @param scheduleSearchRequest
+	 */
+	public void deleteSchedule(Long id) {
+		selectScheduleMapper.deleteSchedule(id);
+	}
+
+	/**
+	 * スケージュール情報リクエストデータ
 	 * 
 	 * @param scheduleRequest
 	 * @return
 	 */
-	private ScheduleInfoEntity createSchedule(ScheduleRequest scheduleRequest) {
+	public ScheduleInfoEntity createScheduleFromRequest(ScheduleRequest scheduleRequest) {
 		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		// ログインユーザの情報を取得
@@ -189,13 +210,13 @@ public class CalendarService {
 		schedule.setEndtime(scheduleRequest.getEndtime());
 		schedule.setSchedule(scheduleRequest.getSchedule());
 		schedule.setSchedulememo(scheduleRequest.getSchedulememo());
-		schedule.setUpdateday(scheduleRequest.getUpdateday());
+		schedule.setUpdatedate(scheduleRequest.getUpdatedate());
 		return schedule;
 	}
 
 	/**
 	 * ユーザIDを取得する．
-	 *
+	 * 
 	 * @param userName
 	 * @return
 	 */
@@ -217,7 +238,7 @@ public class CalendarService {
 
 	/**
 	 * スケージュール情報をIDで取得
-	 *
+	 * 
 	 * @param id
 	 * @return
 	 */
@@ -226,8 +247,7 @@ public class CalendarService {
 	}
 
 	/**
-	 * 全件検索
-	 * 
+	 *
 	 * @return 全件検索結果
 	 */
 	public List<ScheduleInfoEntity> selectAll() {
@@ -236,7 +256,7 @@ public class CalendarService {
 
 	/**
 	 * 日付情報でスケージュール情報を参照する．
-	 *
+	 * 
 	 * @param scheduledate
 	 * @return
 	 */
@@ -246,7 +266,7 @@ public class CalendarService {
 
 	/**
 	 * ユーザIDと日付でスケージュール情報を取得する
-	 *
+	 * 
 	 * @param userId
 	 * @param scheduledate
 	 * @return
@@ -257,7 +277,7 @@ public class CalendarService {
 
 	/**
 	 * ユーザ名でユーザIDを取得
-	 *
+	 * 
 	 * @param userName
 	 * @return
 	 */
@@ -267,20 +287,11 @@ public class CalendarService {
 
 	/**
 	 * スケジュール更新日を取得
-	 *
+	 * 
 	 * @param id
 	 * @return
 	 */
-	public LocalDateTime selectScheduleVersion(Long id) {
-		return selectScheduleMapper.selectUpdateDay(id);
-	}
-
-	/**
-	 * IDでスケージュール情報を削除する
-	 *
-	 * @param id
-	 */
-	public void deleteSchedule(Long id) {
-		selectScheduleMapper.deleteSchedule(id);
+	public ScheduleInfoEntity selectScheduleUpdatedate(Long id) {
+		return selectScheduleMapper.selectScheduleUpdatedate(id);
 	}
 }

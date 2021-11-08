@@ -1,7 +1,6 @@
 package spring.schedule.repository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -11,7 +10,7 @@ import spring.schedule.entity.ScheduleRequest;
 
 /**
  * スケージュール情報を参照するためのMapper
- *
+ * 
  * @author thinh
  *
  */
@@ -25,30 +24,28 @@ public interface SelectScheduleMapper {
 
 	/**
 	 * 日付で参照したスケジュールの情報
-	 *
+	 * 
 	 * @param scheduledate
 	 * @return
 	 */
 	List<ScheduleInfoEntity> selectByDate(LocalDate scheduledate);
 
 	/**
-	 * IDでスケージュール情報を検索する
+	 * カレンダー表示画面
 	 * 
 	 * @param id
-	 * @return
+	 * @return IDで参照したスケジュールの情報
 	 */
 	ScheduleInfoEntity selectById(Long id);
 
 	/**
-	 * IDでスケージュール情報を検索する
-	 * 
+	 *
 	 * @param scheduleRequest
 	 * @return
 	 */
 	ScheduleInfoEntity selectById(ScheduleRequest scheduleRequest);
 
 	/**
-	 * ユーザIDでスケージュール情報を検索する
 	 *
 	 * @param userId
 	 * @return
@@ -56,29 +53,28 @@ public interface SelectScheduleMapper {
 	List<ScheduleInfoEntity> selectByUserId(Long userId, String scheduledate);
 
 	/**
-	 * スケジュール更新日を取得する．
 	 *
 	 * @return
 	 */
-	LocalDateTime selectUpdateDay(Long id);
+	ScheduleInfoEntity selectScheduleUpdatedate(Long id);
 
 	/**
 	 * スケージュール情報を登録する
-	 *
+	 * 
 	 * @param newSchedule
 	 */
 	void insertNewSchedule(ScheduleInfoEntity newSchedule);
 
 	/**
-	 * スケージュール情報を更新する
-	 *
-	 * @param id
+	 * 更新
+	 * 
+	 * @param updateSchedule
 	 */
 	void updateSchedule(ScheduleInfoEntity updateSchedule);
 
 	/**
 	 * IDでスケージュール情報を削除する．
-	 *
+	 * 
 	 * @param id
 	 */
 	void deleteSchedule(Long id);

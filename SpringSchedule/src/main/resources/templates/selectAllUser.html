@@ -23,7 +23,7 @@
 		<tbody>
 			<tr th:each="user : ${userList}" th:object="${user}">
 				<td class="center" th:text="*{id}"></td>
-				<td class="center" th:text="*{username}"></td>
+				<td class="center" th:text="*{user}"></td>
 				<td class="center" th:text="*{pass}"></td>
 				<td class="center" th:text="*{roll}"></td>
 			</tr>
