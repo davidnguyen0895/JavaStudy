@@ -1,9 +1,16 @@
 package spring.schedule.service;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -11,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import spring.schedule.constants.Constants;
 import spring.schedule.entity.CalendarInfoEntity;
@@ -43,6 +53,26 @@ public class CalendarService {
 	@Autowired
 	private SelectUserMapper selectUserMapper;
 
+	private final String API_KEY = "254ca69e129ef9485cb3df5f70b55caa";
+	private final String LOCATION = "Tokyo,jp";
+	private final String UNIT = "metric";
+	private final String LANGUAGE = "ja";
+
+	private final String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" + LOCATION + "&units=" + UNIT
+			+ "&lang=" + LANGUAGE + "&APPID=" + API_KEY;
+
+	/**
+	 * Gsonデータをマップに変換
+	 * 
+	 * @param str
+	 * @return
+	 */
+	public static Map<String, Object> jsonToMap(String str) {
+		Map<String, Object> map = new Gson().fromJson(str, new TypeToken<HashMap<String, Object>>() {
+		}.getType());
+		return map;
+	}
+
 	/**
 	 * カレンダーを表示するための情報を作成するメソッド．
 	 * 
@@ -51,6 +81,34 @@ public class CalendarService {
 	 * @return
 	 */
 	public CalendarInfoEntity generateCalendarInfo(int year, int month) {
+		try {
+			StringBuilder result = new StringBuilder();
+			// {@code String}から{@code URL}オブジェクトを生成する。
+			URL url = new URL(urlString);
+			URLConnection conn = url.openConnection();
+			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			// Cannot invoke "java.util.Map.get(Object)" because "resMap" is null
+			String line;
+			while ((line = rd.readLine()) != null) {
+				result.append(line);
+			}
+			rd.close();
+			System.out.println(result);
+
+			Map<String, Object> resMap = jsonToMap(result.toString());
+			Map<String, Object> mainMap = jsonToMap(resMap.get("main").toString());
+			Map<String, Object> windMap = jsonToMap(resMap.get("wind").toString());
+
+			System.out.println("温度 :" + mainMap.get("temp"));
+			System.out.println("湿度 :" + mainMap.get("humidity"));
+			System.out.println("風速 :" + windMap.get("speed"));
+
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		} finally {
+
+		}
+
 		int firstDayOfWeek = 0;
 		int lastDayOfWeek = 6;
 		// カレンダー情報を格納Model
@@ -79,6 +137,7 @@ public class CalendarService {
 			firstDayOfWeek = firstDayOfWeek + 7;
 			lastDayOfWeek = lastDayOfWeek + 7;
 		}
+
 		// それぞれの週の日付を作成し，リストに格納する．
 		// calendarInfoインストタンスに2重リストcalendarを格納する．
 		calendarInfo.setCalendar(calendar);
