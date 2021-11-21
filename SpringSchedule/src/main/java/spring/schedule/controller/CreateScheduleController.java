@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import spring.schedule.common.Ulitities;
 import spring.schedule.constants.Constants;
 import spring.schedule.entity.DayEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
@@ -32,36 +31,11 @@ import spring.schedule.service.CalendarService;
 @RequestMapping(value = "schedule")
 @Controller
 public class CreateScheduleController {
-	private static final Logger logger = LoggerFactory.getLogger(CreateScheduleController.class);
 	/**
 	 * カレンダー作成Service
 	 */
 	@Autowired
 	CalendarService calendarService;
-
-	/**
-	 * スケジュール情報を削除するメソッド
-	 * 
-	 * @param id
-	 * @return
-	 */
-
-	@RequestMapping(value = "deleteSchedule", method = RequestMethod.GET)
-	public String deleteSchedule(@Validated @ModelAttribute ScheduleRequest scheduleRequest, Model model) {
-		DayEntity dayEntity = createDayEntityObject(scheduleRequest.getScheduledate());
-		dayEntity.setCalendarYear(scheduleRequest.getScheduledate().getYear());
-		dayEntity.setCalendarMonth(scheduleRequest.getScheduledate().getMonthValue());
-		ScheduleInfoEntity scheduleInfo = calendarService.selectById(scheduleRequest.getId());
-
-		if (scheduleInfo == null) {
-			model.addAttribute("dayEntity", dayEntity);
-			model.addAttribute(Constants.ERROR_MESSAGE, "スケジュールが既に削除されています。");
-			return Constants.RETURN_SHOW_SCHEDULE_DETAIL;
-		}
-		calendarService.deleteSchedule(scheduleInfo.getId());
-		return Constants.REDIRECT_DISPLAY_CALENDAR;
-	}
-
 	/**
 	 * スケージュール情報を登録フォーム
 	 * 
@@ -80,7 +54,6 @@ public class CreateScheduleController {
 		model.addAttribute("schedule", scheduleRequest);
 		return Constants.RETURN_CREATE_SCHEDULE_FORM;
 	}
-
 	/**
 	 * スケジュール情報を登録するメソッド
 	 * 
@@ -109,11 +82,17 @@ public class CreateScheduleController {
 		// 入力フォーム画面で入力した値をDBに登録する．
 		scheduleRequest.setUpdatedate(LocalDateTime.now());
 		calendarService.insertNewSchedule(scheduleRequest);
-		ScheduleInfoEntity schedule = calendarService.createScheduleFromRequest(scheduleRequest);
+		ScheduleInfoEntity schedule = calendarService.createScheduleFromRequest(scheduleRequest, Constants.ACTION_REGIST);
 		// 日付データを用いてスケージュール情報リストを参照する．
 		dayEntity.setCalendarYear(schedule.getScheduledate().getYear());
 		dayEntity.setCalendarMonth(schedule.getScheduledate().getMonthValue());
 		dayEntity.setAction(Constants.ACTION_REGIST);
+		//操作制限：自分のスケジュール以外は更新不可。
+		if (!schedule.getUsername().equals(Ulitities.getLoginUserName())) {
+			schedule.setChangeAllowedFlg(false);
+		} else {
+			schedule.setChangeAllowedFlg(true);
+		}
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", schedule);
 		return Constants.RETURN_SHOW_SCHEDULE_DETAIL;
@@ -137,7 +116,6 @@ public class CreateScheduleController {
 		model.addAttribute("schedule", scheduleRequest);
 		return Constants.RETURN_UPDATE_SCHEDULE_FORM;
 	}
-
 	/**
 	 * スケジュール情報を更新するメソッド
 	 * 
@@ -170,24 +148,41 @@ public class CreateScheduleController {
 		calendarService.updateSchedule(scheduleRequest);
 		// 更新したスケジュール情報を取得
 		ScheduleInfoEntity updateSchedule = calendarService.selectById(scheduleRequest.getId());
-
-		StringBuilder updateScheduleInfo = new StringBuilder();
-		updateScheduleInfo.append("ID : " + updateSchedule.getId());
-		updateScheduleInfo.append("日付 : " + updateSchedule.getScheduledate());
-		updateScheduleInfo.append("開始時間 : " + updateSchedule.getStarttime());
-		updateScheduleInfo.append("終了時間 : " + updateSchedule.getId());
-		updateScheduleInfo.append("内容 : " + updateSchedule.getSchedule());
-		updateScheduleInfo.append("メモ : " + updateSchedule.getSchedulememo());
-
-		logger.info(updateSchedule.toString());
-
 		// カレンダーに戻るボタンのための年と月の値を格納する．
 		dayEntity.setAction(Constants.ACTION_UPDATE);
+		//操作制限：自分のスケジュール以外は更新不可。
+		if (!updateSchedule.getUsername().equals(Ulitities.getLoginUserName())) {
+			updateSchedule.setChangeAllowedFlg(false);
+		} else {
+			updateSchedule.setChangeAllowedFlg(true);
+		}
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", updateSchedule);
 		return Constants.RETURN_SHOW_SCHEDULE_DETAIL;
 	}
 
+	
+	/**
+	 * スケジュール情報を削除するメソッド
+	 * @param scheduleRequest
+	 * @param model
+	 * @return	実行結果
+	 */
+	@RequestMapping(value = "deleteSchedule", method = RequestMethod.GET)
+	public String deleteSchedule(@Validated @ModelAttribute ScheduleRequest scheduleRequest, Model model) {
+		DayEntity dayEntity = createDayEntityObject(scheduleRequest.getScheduledate());
+		dayEntity.setCalendarYear(scheduleRequest.getScheduledate().getYear());
+		dayEntity.setCalendarMonth(scheduleRequest.getScheduledate().getMonthValue());
+		ScheduleInfoEntity scheduleInfo = calendarService.selectById(scheduleRequest.getId());
+
+		if (scheduleInfo == null) {
+			model.addAttribute("dayEntity", dayEntity);
+			model.addAttribute(Constants.ERROR_MESSAGE, "スケジュールが既に削除されています。");
+			return Constants.RETURN_SHOW_SCHEDULE_DETAIL;
+		}
+		calendarService.deleteSchedule(scheduleInfo.getId());
+		return Constants.REDIRECT_DISPLAY_CALENDAR;
+	}
 	/**
 	 * 今日の日付オブジェクトを作成
 	 * 

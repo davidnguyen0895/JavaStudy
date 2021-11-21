@@ -13,9 +13,6 @@
 		<p>様</p>
 	</div>
 	<div>
-<!-- 		<form method="post" th:action="@{/logout}">
-			<input type="submit" value="ログアウト">
-		</form> -->
 		<form name="logoutForm" th:hidden="true" method="post"
 			th:action="@{/logout}">
 			<input type="submit" value="ログアウト" />
@@ -28,12 +25,13 @@
 	</div>
 	<div align="center">
 		<a th:href="@{selectAll}"><button>全件検索</button></a>
+		<div align="center">
+			<a th:href="@{selectAllUser}"><button>ユーザー情報全件検索</button></a>
+		</div>
 	</div>
 	<div align="center">
 		<a th:href="@{displayCalendar}"><button>カレンダー表示画面</button></a>
 	</div>
-	<div align="center">
-		<a th:href="@{selectAllUser}"><button>ユーザー情報全件検索</button></a>
-	</div>
+
 </body>
 </html>

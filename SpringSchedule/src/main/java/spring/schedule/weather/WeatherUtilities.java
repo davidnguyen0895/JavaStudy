@@ -8,25 +8,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class WeatherUtilities {
 
-	private static final String lat = "35.6895";
-	private static final String lon = "139.6917";
-	private static final String API_KEY = "254ca69e129ef9485cb3df5f70b55caa";
 	private static final String API_BASE = "https://api.openweathermap.org/data/2.5/onecall";
 	private static final String UNITS = "metric";
 
@@ -34,11 +22,11 @@ public class WeatherUtilities {
 	 * APIリクエストリンクを取得
 	 * 
 	 * @return APIリクエストリンク
-	 */ 
-	public static String getApiRequest() {
+	 */
+	public static String getApiRequest(String lat, String lon, String apiKey) {
 		StringBuilder sb = new StringBuilder(API_BASE);
 		sb.append(String.format("?lat=%s&lon=%s&exclude=current,minutely,hourly,alerts&appid=%s&units=%s&lang=ja", lat,
-				lon, API_KEY, UNITS));
+				lon, apiKey, UNITS));
 		return sb.toString();
 	}
 
@@ -101,55 +89,5 @@ public class WeatherUtilities {
 		}
 
 		return stream;
-	}
-
-	/**
-	 * 
-	 * @param object
-	 * @return
-	 * @throws JSONException
-	 */
-	public static Map<String, Object> convertJsonObjToMap(JSONObject object) throws JSONException {
-		Map<String, Object> map = new HashMap<String, Object>();
-
-		if (object != JSONObject.NULL) {
-			Iterator<String> keysItr = object.keys();
-			while (keysItr.hasNext()) {
-				String key = keysItr.next();
-				Object value = object.get(key);
-
-				if (value instanceof JSONArray) {
-					value = convertJsonArrayToList((JSONArray) value);
-				}
-
-				else if (value instanceof JSONObject) {
-					value = convertJsonObjToMap((JSONObject) value);
-				}
-				map.put(key, value);
-			}
-		}
-		return map;
-	}
-
-	/**
-	 * 
-	 * @param array
-	 * @return
-	 * @throws JSONException
-	 */
-	public static List<Object> convertJsonArrayToList(JSONArray array) throws JSONException {
-		List<Object> list = new ArrayList<Object>();
-		for (int i = 0; i < array.length(); i++) {
-			Object value = array.get(i);
-			if (value instanceof JSONArray) {
-				value = convertJsonArrayToList((JSONArray) value);
-			}
-
-			else if (value instanceof JSONObject) {
-				value = convertJsonObjToMap((JSONObject) value);
-			}
-			list.add(value);
-		}
-		return list;
 	}
 }

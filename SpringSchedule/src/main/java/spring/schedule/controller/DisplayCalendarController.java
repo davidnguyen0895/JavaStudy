@@ -9,6 +9,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import spring.schedule.common.Ulitities;
 import spring.schedule.constants.Constants;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
@@ -38,7 +39,7 @@ public class DisplayCalendarController {
 	 * @throws JSONException
 	 */
 	@RequestMapping
-	public String today(Model model) throws JSONException, IOException {
+	public String today(Model model) {
 		org.joda.time.LocalDate today = new org.joda.time.LocalDate();
 		return date(today.getYear(), today.getMonthOfYear(), model);
 	}
@@ -54,8 +55,7 @@ public class DisplayCalendarController {
 	 * @throws JSONException
 	 */
 	@RequestMapping(value = "date")
-	public String date(@RequestParam("year") int year, @RequestParam("month") int month, Model model)
-			throws JSONException, IOException {
+	public String date(@RequestParam("year") int year, @RequestParam("month") int month, Model model) {
 		// カレンダーを格納するインストタンス
 		CalendarInfoEntity calendarInfo = calendarService.generateCalendarInfo(year, month);
 		model.addAttribute("calendarInfo", calendarInfo);
@@ -78,6 +78,12 @@ public class DisplayCalendarController {
 		dayEntity.setCalendarYear(schedule.getScheduledate().getYear());
 		dayEntity.setCalendarMonth(schedule.getScheduledate().getMonthValue());
 		dayEntity.setAction(Constants.ACTION_SEARCH);
+		//操作制限：自分のスケジュール以外は更新不可。
+		if (!schedule.getUsername().equals(Ulitities.getLoginUserName())) {
+			schedule.setChangeAllowedFlg(false);
+		} else {
+			schedule.setChangeAllowedFlg(true);
+		}
 		// modelに格納してhtmlに渡す
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", schedule);

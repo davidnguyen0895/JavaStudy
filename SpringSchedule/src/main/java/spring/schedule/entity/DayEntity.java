@@ -17,14 +17,6 @@ import lombok.Data;
 public class DayEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	/**
-	 * ID
-	 */
-	private Long id;
-	/**
-	 * IDリスト
-	 */
-	private List<Long> idList;
-	/**
 	 * カレンダーの日付
 	 */
 	private LocalDate day;

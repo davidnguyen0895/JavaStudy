@@ -42,20 +42,16 @@
 				<th>土</th>
 			</tr>
 			<tr th:each="week : *{calendar}">
-				<td th:each="day : ${week}"><span
-					th:text="${day.getDay().getDayOfMonth()}"></span> <!--～～～～～～～～～～スケージュール情報IDが存在する場合，それをスケージュール詳細画面
-				に渡し，スケージュール情報を取得する．～～～～～～～～～～-->
-					<div th:each="id : ${day.getIdList()}">
+				<td th:each="day : ${week}">
+				<th:block th:text="${day.getDay().getDayOfMonth()}"></th:block> 
+				<img th:src="@{${day.getWeatherIconLink() != null ? day.getWeatherIconLink() : ''}}"/>
+					<div th:each="schedule : ${day.getScheduleList()}">
 						<a href="showScheduleDetail.html"
-							th:href="@{/displayCalendar/schedule(id=${id})}"> <img
-							src="/images/calendar.png" />
+							th:href="@{/displayCalendar/schedule(id=${schedule.getId()})}"> 
+							<!-- <img src="/images/calendar.png" /> -->
+							<small th:text="${schedule.getUsername() != null ? schedule.getUsername() : ''}"></small> 
 						</a>
 					</div>
-
-					<div>
-						<img th:src="@{${day.getWeatherIconLink() != null ? day.getWeatherIconLink() : ''}}" />
-					</div>
-					
 					</td>
 			</tr>
 		</table>

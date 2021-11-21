@@ -78,7 +78,6 @@ public class ExceptionAdvisor {
 			stackContent.append("メソッド名" + stack.getMethodName());
 			stackContent.append(lineCd);
 		}
-		model.addAttribute("stackContent", stackContent.toString());
 		log.error(ex.getMessage(), ex);
 
 		// カレンダーに戻るボタン用の日付
@@ -86,6 +85,7 @@ public class ExceptionAdvisor {
 		DayEntity dayEntity = new DayEntity();
 		dayEntity.setCalendarYear(ex.getCalendarYear());
 		dayEntity.setCalendarMonth(ex.getCalendarMonth());
+		model.addAttribute("stackContent", stackContent.toString());
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute(Constants.ERROR_MESSAGE, "\"他のユーザが更新しています。カレンダー表示画面に戻って再度更新してください。");
 		return Constants.RETURN_ERROR;

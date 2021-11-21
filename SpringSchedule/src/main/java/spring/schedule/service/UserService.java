@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import spring.schedule.entity.UserInfoEntity;
-import spring.schedule.repository.SelectUserMapper;
+import spring.schedule.mapper.SelectUserMapper;
 
 /**
  * rollbackOn = Exception.class : 例外が発生した場合，ロールバックする．

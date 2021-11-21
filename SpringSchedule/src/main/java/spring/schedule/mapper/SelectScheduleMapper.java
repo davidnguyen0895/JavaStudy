@@ -1,6 +1,5 @@
-package spring.schedule.repository;
+package spring.schedule.mapper;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -28,7 +27,7 @@ public interface SelectScheduleMapper {
 	 * @param scheduledate
 	 * @return
 	 */
-	List<ScheduleInfoEntity> selectByDate(LocalDate scheduledate);
+	List<ScheduleInfoEntity> selectByDate(String scheduledate);
 
 	/**
 	 * カレンダー表示画面
@@ -51,7 +50,8 @@ public interface SelectScheduleMapper {
 	 * @return
 	 */
 	List<ScheduleInfoEntity> selectByUserId(Long userId, String scheduledate);
-
+	
+	Long selectLatestId();
 	/**
 	 *
 	 * @return

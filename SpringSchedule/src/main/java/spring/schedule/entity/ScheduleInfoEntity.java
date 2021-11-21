@@ -33,6 +33,10 @@ public class ScheduleInfoEntity implements Serializable {
 	 */
 	private Long userid;
 	/**
+	 * ユーザ名
+	 */
+	private String username;
+	/**
 	 * スケジュール日付
 	 */
 	private LocalDate scheduledate;
@@ -58,4 +62,8 @@ public class ScheduleInfoEntity implements Serializable {
 	@DateTimeFormat(pattern = "yyyy/MM/dd HH:mm:ss")
 	@Version
 	private LocalDateTime updatedate;
+	/**
+	 * 変更許可フラグ
+	 */
+	private Boolean changeAllowedFlg;
 }

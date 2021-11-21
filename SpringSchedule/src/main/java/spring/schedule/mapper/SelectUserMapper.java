@@ -1,4 +1,4 @@
-package spring.schedule.repository;
+package spring.schedule.mapper;
 
 import java.util.List;
 
