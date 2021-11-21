@@ -44,4 +44,8 @@ public class DayEntity implements Serializable {
 	 * 操作名
 	 */
 	private String action;
+	/**
+	 * 天気アイコン
+	 */
+	private String weatherIconLink;
 }

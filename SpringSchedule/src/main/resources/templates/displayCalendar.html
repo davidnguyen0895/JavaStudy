@@ -50,7 +50,13 @@
 							th:href="@{/displayCalendar/schedule(id=${id})}"> <img
 							src="/images/calendar.png" />
 						</a>
-					</div></td>
+					</div>
+
+					<div>
+						<img th:src="@{${day.getWeatherIconLink() != null ? day.getWeatherIconLink() : ''}}" />
+					</div>
+					
+					</td>
 			</tr>
 		</table>
 	</div>

@@ -1,28 +1,25 @@
 package spring.schedule.service;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import org.joda.time.format.DateTimeFormat;
+import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-import spring.schedule.constants.Constants;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
@@ -31,6 +28,10 @@ import spring.schedule.entity.UserInfoEntity;
 import spring.schedule.exception.ExclusiveException;
 import spring.schedule.repository.SelectScheduleMapper;
 import spring.schedule.repository.SelectUserMapper;
+import spring.schedule.weather.Daily;
+import spring.schedule.weather.MainJsonData;
+import spring.schedule.weather.Weather;
+import spring.schedule.weather.WeatherUtilities;
 
 /**
  * rollbackOn = Exception.class : 例外が発生した場合，ロールバックする．
@@ -38,7 +39,6 @@ import spring.schedule.repository.SelectUserMapper;
  * @author thinh カレンダー表示画面を作成するService
  */
 @Service
-//@Slf4j
 public class CalendarService {
 	// 週
 	private final int weekNum = 6;
@@ -53,61 +53,19 @@ public class CalendarService {
 	@Autowired
 	private SelectUserMapper selectUserMapper;
 
-	private final String API_KEY = "254ca69e129ef9485cb3df5f70b55caa";
-	private final String LOCATION = "Tokyo,jp";
-	private final String UNIT = "metric";
-	private final String LANGUAGE = "ja";
-
-	private final String urlString = "http://api.openweathermap.org/data/2.5/weather?q=" + LOCATION + "&units=" + UNIT
-			+ "&lang=" + LANGUAGE + "&APPID=" + API_KEY;
-
-	/**
-	 * Gsonデータをマップに変換
-	 * 
-	 * @param str
-	 * @return
-	 */
-	public static Map<String, Object> jsonToMap(String str) {
-		Map<String, Object> map = new Gson().fromJson(str, new TypeToken<HashMap<String, Object>>() {
-		}.getType());
-		return map;
-	}
-
 	/**
 	 * カレンダーを表示するための情報を作成するメソッド．
 	 * 
 	 * @param year
 	 * @param month
 	 * @return
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
+	 * @throws JSONException
+	 * @throws IOException
 	 */
-	public CalendarInfoEntity generateCalendarInfo(int year, int month) {
-		try {
-			StringBuilder result = new StringBuilder();
-			// {@code String}から{@code URL}オブジェクトを生成する。
-			URL url = new URL(urlString);
-			URLConnection conn = url.openConnection();
-			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			// Cannot invoke "java.util.Map.get(Object)" because "resMap" is null
-			String line;
-			while ((line = rd.readLine()) != null) {
-				result.append(line);
-			}
-			rd.close();
-			System.out.println(result);
-
-			Map<String, Object> resMap = jsonToMap(result.toString());
-			Map<String, Object> mainMap = jsonToMap(resMap.get("main").toString());
-			Map<String, Object> windMap = jsonToMap(resMap.get("wind").toString());
-
-			System.out.println("温度 :" + mainMap.get("temp"));
-			System.out.println("湿度 :" + mainMap.get("humidity"));
-			System.out.println("風速 :" + windMap.get("speed"));
-
-		} catch (IOException e) {
-			System.out.println(e.getMessage());
-		} finally {
-
-		}
+	public CalendarInfoEntity generateCalendarInfo(int year, int month)
+			throws JsonMappingException, JsonProcessingException {
 
 		int firstDayOfWeek = 0;
 		int lastDayOfWeek = 6;
@@ -152,9 +110,9 @@ public class CalendarService {
 		// 先月の月を格納する．
 		calendarInfo.setMonthOfPrevMonth(prevMonth.getMonthOfYear());
 		// 今年を格納
-		calendarInfo.setCurrentYear(Constants.TODAY.getYear());
+		calendarInfo.setCurrentYear(LocalDate.now().getYear());
 		// 今月を格納
-		calendarInfo.setCurrentMonth(Constants.TODAY.getMonthValue());
+		calendarInfo.setCurrentMonth(LocalDate.now().getMonthValue());
 
 		// カレンダー情報を返す
 		return calendarInfo;
@@ -168,9 +126,49 @@ public class CalendarService {
 	 * @param firstDayOfWeek
 	 * @param lastDayOfWeek
 	 * @param userId
+	 * @throws JsonProcessingException
+	 * @throws JsonMappingException
 	 */
 	private void generateWeekList(org.joda.time.LocalDate firstDayOfCalendar, List<List<DayEntity>> calendar,
-			int firstDayOfWeek, int lastDayOfWeek, Long userId) {
+			int firstDayOfWeek, int lastDayOfWeek, Long userId) throws JsonMappingException, JsonProcessingException {
+
+		List<org.joda.time.LocalDate> targetWeatherDateList = new ArrayList<org.joda.time.LocalDate>();
+		List<String> iconList = new ArrayList<String>();
+
+		// APIリクエスURLトを取得
+		String apiRequest = WeatherUtilities.getApiRequest();
+		// httpデータを取得
+		String httpData = WeatherUtilities.getHTTPData(apiRequest);
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		// Jsonオブジェクトのデータを取得
+		MainJsonData mainJsonData = mapper.readValue(httpData, MainJsonData.class);
+
+		// dailyリストを取得
+		List<Daily> daily = mainJsonData.getDaily();
+		for (Daily dailyData : daily) {
+			long unixDate = dailyData.getDt();
+			String strDate = WeatherUtilities.convertUnixTimeToDate(unixDate);
+
+			org.joda.time.LocalDate localDate = org.joda.time.LocalDate.parse(strDate,
+					DateTimeFormat.forPattern("yyyy/MM/dd"));
+
+			targetWeatherDateList.add(localDate);
+
+			List<Weather> weather = dailyData.getWeather();
+			for (Weather weatherData : weather) {
+				String icon = weatherData.getIcon();
+				iconList.add(icon);
+			}
+		}
+
+		HashMap<org.joda.time.LocalDate, String> weatherMap = new HashMap<>();
+
+		for (int i = 0; i < targetWeatherDateList.size(); i++) {
+			weatherMap.put(targetWeatherDateList.get(i), iconList.get(i));
+		}
+
 		List<DayEntity> weekList = new ArrayList<DayEntity>();
 		for (int i = firstDayOfWeek; i <= lastDayOfWeek; i++) {
 			// IDリストインストタンス
@@ -179,6 +177,14 @@ public class CalendarService {
 			DayEntity day = new DayEntity();
 			// カレンダーの最初日付をその週の最初日付と最終日付でインクリメントする．
 			org.joda.time.LocalDate scheduledate = firstDayOfCalendar.plusDays(i);
+
+			String iconStr = weatherMap.get(scheduledate);
+
+			// 天気のアイコンを取得
+			if (iconStr != null) {
+				String weatherIconLink = WeatherUtilities.getIconImage(iconStr);
+				day.setWeatherIconLink(weatherIconLink);
+			}
 			// 日付データを日付情報インストタンスに格納する．
 			day.setDay(scheduledate);
 			// 当月の月を設定する

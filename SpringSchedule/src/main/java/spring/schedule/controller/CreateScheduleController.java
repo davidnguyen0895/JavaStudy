@@ -1,5 +1,6 @@
 package spring.schedule.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,9 +72,9 @@ public class CreateScheduleController {
 	public String showNewScheduleForm(Model model) {
 		// 今月の年と月の値をdayEntityインスタンスに格納する．
 		ScheduleRequest scheduleRequest = new ScheduleRequest();
-		DayEntity dayEntity = createDayEntityObject(Constants.TODAY);
-		dayEntity.setCalendarYear(Constants.TODAY.getYear());
-		dayEntity.setCalendarMonth(Constants.TODAY.getMonthValue());
+		DayEntity dayEntity = createDayEntityObject(LocalDate.now());
+		dayEntity.setCalendarYear(LocalDate.now().getYear());
+		dayEntity.setCalendarMonth(LocalDate.now().getMonthValue());
 		// modelにdayEntityとScheduleRequestのインスタンスを格納し，スケージュール作成フォームに送信する．
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", scheduleRequest);
@@ -92,7 +93,7 @@ public class CreateScheduleController {
 	public String createNewScheduleForm(@Validated @ModelAttribute ScheduleRequest scheduleRequest,
 			BindingResult result, Model model) {
 		// 日付情報インストタンス
-		DayEntity dayEntity = createDayEntityObject(Constants.TODAY);
+		DayEntity dayEntity = createDayEntityObject(LocalDate.now());
 		// 入力チェック
 		if (result.hasErrors()) {
 			List<String> errorList = new ArrayList<String>();

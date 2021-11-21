@@ -39,8 +39,6 @@ public final class Constants {
 	public static final String ACTION_DELETE = "delete";
 	/** 【操作】参照 */
 	public static final String ACTION_SEARCH = "search";
-	/** 今日の日付 */
-	public static final java.time.LocalDate TODAY = java.time.LocalDate.now();
 	/** 改行文字 */
 	public static final String SYSTEM_PROPETY_LINE_SEPARATOR = "line.separator";
 }
