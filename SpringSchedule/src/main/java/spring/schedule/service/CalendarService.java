@@ -8,13 +8,10 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import spring.schedule.common.Ulitities;
 import spring.schedule.constants.Constants;
@@ -26,9 +23,6 @@ import spring.schedule.entity.UserInfoEntity;
 import spring.schedule.exception.ExclusiveException;
 import spring.schedule.mapper.SelectScheduleMapper;
 import spring.schedule.mapper.SelectUserMapper;
-import spring.schedule.weather.Daily;
-import spring.schedule.weather.MainJsonData;
-import spring.schedule.weather.Weather;
 import spring.schedule.weather.WeatherUtilities;
 
 /**
@@ -55,7 +49,7 @@ public class CalendarService {
 	 */
 	@Autowired
 	private SelectUserMapper selectUserMapper;
-
+	
 	/**
 	 * カレンダーを表示するための情報を作成するメソッド．
 	 * 
@@ -78,7 +72,11 @@ public class CalendarService {
 		// minusDays(1)による最初の日付を日曜日に指定する．
 		org.joda.time.LocalDate firstDayOfCalendar = firstDayOfMonth.dayOfWeek().withMinimumValue().minusDays(1);
 		// ユーザIDを取得
-		Long userId = getUserId(Ulitities.getLoginUserName());
+		//Long userId = getUserId(Ulitities.getLoginUserName());
+		//ユーザリストを取得
+		List<UserInfoEntity> userList = selectUserMapper.selectAllUser();
+		//ユーザリストを格納
+		calendarInfo.setUserList(userList);
 		// 来月の日付を取得
 		org.joda.time.LocalDate nextMonth = firstDayOfMonth.plusMonths(1);
 		// 先月の日付を取得
@@ -86,13 +84,13 @@ public class CalendarService {
 
 		HashMap<org.joda.time.LocalDate, String> weatherMap = null;
 		try {
-			weatherMap = createWeatherHashMap(lat, lon, apiKey);
+			weatherMap = WeatherUtilities.createWeatherHashMap(lat, lon, apiKey);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 
 		for (int week = 1; week <= weekNum; week++) {
-			generateWeekList(firstDayOfCalendar, calendar, firstDayOfWeek, lastDayOfWeek, userId, weatherMap);
+			generateWeekList(firstDayOfCalendar, calendar, firstDayOfWeek, lastDayOfWeek, weatherMap);
 			firstDayOfWeek = firstDayOfWeek + 7;
 			lastDayOfWeek = lastDayOfWeek + 7;
 		}
@@ -119,53 +117,7 @@ public class CalendarService {
 		return calendarInfo;
 	}
 
-	/**
-	 * 天気Hashmapデータを作成。
-	 * 
-	 * @param lat    			地理座標(緯度)経度
-	 * @param lon    			地理座標(経度)
-	 * @param apiKey 			APIキー
-	 * @return 					天気Hashmapデータ
-	 * @throws 					JsonMappingException
-	 * @throws 					JsonProcessingException
-	 */
-	private HashMap<org.joda.time.LocalDate, String> createWeatherHashMap(String lat, String lon, String apiKey)
-			throws JsonMappingException, JsonProcessingException {
-		
-		//天気情報取得対象の日付リスト
-		List<org.joda.time.LocalDate> targetWeatherDateList = new ArrayList<org.joda.time.LocalDate>();
-		//天気アイコンの文字リスト
-		List<String> iconList = new ArrayList<String>();
-
-		// dailyリストを取得
-		List<Daily> daily = new ObjectMapper()
-				.readValue(WeatherUtilities.getHTTPData(WeatherUtilities.getApiRequest(lat, lon, apiKey)),
-						MainJsonData.class).getDaily();
-		
-		//dailyリストから日付を取得
-		for (Daily dailyData : daily) {
-
-			targetWeatherDateList
-					.add(org.joda.time.LocalDate.parse(WeatherUtilities.convertUnixTimeToDate(dailyData.getDt()),
-							DateTimeFormat.forPattern("yyyy/MM/dd")));
-			
-			//dailyDataから天気情報を取得
-			List<Weather> weather = dailyData.getWeather();
-			
-			//天気アイコンを取得
-			for (Weather weatherData : weather) {
-				iconList.add(weatherData.getIcon());
-			}
-		}
-		
-		//	日付とアイコン情報をHashmapに格納
-		HashMap<org.joda.time.LocalDate, String> weatherMap = new HashMap<>();
-
-		for (int i = 0; i < targetWeatherDateList.size(); i++) {
-			weatherMap.put(targetWeatherDateList.get(i), iconList.get(i));
-		}
-		return weatherMap;
-	}
+	
 
 	/**
 	 * １週間の日付リストを作成する．
@@ -178,7 +130,7 @@ public class CalendarService {
 	 * @param weatherMap
 	 */
 	private void generateWeekList(org.joda.time.LocalDate firstDayOfCalendar, List<List<DayEntity>> calendar,
-			int firstDayOfWeek, int lastDayOfWeek, Long userId, HashMap<org.joda.time.LocalDate, String> weatherMap) {
+			int firstDayOfWeek, int lastDayOfWeek, HashMap<org.joda.time.LocalDate, String> weatherMap) {
 
 		List<DayEntity> weekList = new ArrayList<DayEntity>();
 		for (int i = firstDayOfWeek; i <= lastDayOfWeek; i++) {

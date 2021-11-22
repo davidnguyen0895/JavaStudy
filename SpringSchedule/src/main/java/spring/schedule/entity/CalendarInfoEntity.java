@@ -41,11 +41,15 @@ public class CalendarInfoEntity implements Serializable {
 	 */
 	private int monthOfPrevMonth;
 	/**
-	 *
+	 * 現在の年
 	 */
 	private int currentYear;
 	/**
-	 *
+	 * 現在の月
 	 */
 	private int currentMonth;
+	/**
+	 * //ユーザリスト
+	 */
+	private List<UserInfoEntity> userList;
 }

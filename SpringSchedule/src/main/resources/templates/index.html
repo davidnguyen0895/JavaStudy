@@ -8,16 +8,15 @@
 </head>
 <body>
 	<div>
-		<p align="left">ようこそ</p>
-		<p align="left" th:text="${username}"></p>
-		<p>様</p>
-	</div>
-	<div>
 		<form name="logoutForm" th:hidden="true" method="post"
 			th:action="@{/logout}">
 			<input type="submit" value="ログアウト" />
 		</form>
 		<a href="javascript: logoutForm.submit();"><button>ログアウト</button></a>
+		<p align="center" th:text="'ようこそ、' + ${username} + '様' "></p>
+	</div>
+	<div align="center">
+
 	</div>
 	<h1 align="center">スケジュール管理</h1>
 	<div align="center">

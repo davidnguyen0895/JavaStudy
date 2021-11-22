@@ -29,9 +29,23 @@
 				month=*{currentMonth})}">
 				<button>今月</button>
 			</a><br> <span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span><br>
-
 		</p>
-		<table border=1>
+		<div>
+		
+		<span>ユーザ選択 : </span>
+<!-- 		<form th:action="@{/selectUserSchedule}" th:method="get"> -->
+			<select th:field="*{userList}" id="selectedUser">
+				<option value="all">全員</option>
+				<option th:each="user : ${calendarInfo.userList}" 
+						th:value="${user.getId()}"
+						th:utext="${user.getUser()}">
+					</option>
+			</select>
+<!-- 			<button type="submit">Submit post</button>
+			</form> -->
+			
+		</div>
+		<table border=1 style="width: 100%">
 			<tr>
 				<th>日</th>
 				<th>月</th>
@@ -44,12 +58,13 @@
 			<tr th:each="week : *{calendar}">
 				<td th:each="day : ${week}">
 				<th:block th:text="${day.getDay().getDayOfMonth()}"></th:block> 
-				<img th:src="@{${day.getWeatherIconLink() != null ? day.getWeatherIconLink() : ''}}"/>
+				<img style="width: 40%" th:src="@{${day.getWeatherIconLink() != null ? day.getWeatherIconLink() : ''}}"/>
 					<div th:each="schedule : ${day.getScheduleList()}">
 						<a href="showScheduleDetail.html"
 							th:href="@{/displayCalendar/schedule(id=${schedule.getId()})}"> 
 							<!-- <img src="/images/calendar.png" /> -->
-							<small th:text="${schedule.getUsername() != null ? schedule.getUsername() : ''}"></small> 
+							<small th:text="${schedule.getUsername() != null ? schedule.getUsername() + ':' + 
+							schedule.getSchedule().substring(0,3) + '...' : ''}"></small> 
 						</a>
 					</div>
 					</td>

@@ -29,7 +29,6 @@ public class DisplayCalendarController {
 	 */
 	@Autowired
 	CalendarService calendarService;
-
 	/**
 	 * 本日の日付を取得 org.joda.time.LocalDate
 	 * 
@@ -61,6 +60,17 @@ public class DisplayCalendarController {
 		model.addAttribute("calendarInfo", calendarInfo);
 		return Constants.RETURN_DISPLAY_CALENDAR;
 	}
+	
+//	@RequestMapping(value = "selectUserSchedule")
+//	public String selectUserSchedule(			
+//			@RequestParam("selectedOption") String selectedOption,
+//			@RequestParam("year") int year, 
+//			@RequestParam("month") int month, Model model) {
+//		// カレンダーを格納するインストタンス
+//		CalendarInfoEntity calendarInfo = calendarService.generateCalendarInfo(year, month);
+//		model.addAttribute("calendarInfo", calendarInfo);
+//		return Constants.RETURN_DISPLAY_CALENDAR;
+//	}
 
 	/**
 	 * スケージュール詳細を表示する。
