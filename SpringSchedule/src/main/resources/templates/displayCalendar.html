@@ -17,35 +17,33 @@
 	</div>
 	<!--～～～～～～～～～～ カレンダー表示 ～～～～～～～～～～-->
 	<div th:object="${calendarInfo}">
-		<p>
+	<small>全ユーザのスケジュール</small><br>
 			<a href="displayCalendar.html"
-				th:href="@{/displayCalendar/date(year=*{yearOfPrevMonth},
+				th:href="@{/displayCalendar/allUser(year=*{yearOfPrevMonth},
 				month=*{monthOfPrevMonth})}"><button>&larr;先月</button></a>
 			<a href="displayCalendar.html"
-				th:href="@{/displayCalendar/date(year=*{yearOfNextMonth},
+				th:href="@{/displayCalendar/allUser(year=*{yearOfNextMonth},
 				month=*{monthOfNextMonth})}"><button>来月&rarr;</button></a>
 			<a href="displayCalendar.html"
-				th:href="@{/displayCalendar/date(year=*{currentYear},
+				th:href="@{/displayCalendar/allUser(year=*{currentYear},
 				month=*{currentMonth})}">
 				<button>今月</button>
-			</a><br> <span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span><br>
-		</p>
-		<div>
-		
-		<span>ユーザ選択 : </span>
-<!-- 		<form th:action="@{/selectUserSchedule}" th:method="get"> -->
-			<select th:field="*{userList}" id="selectedUser">
-				<option value="all">全員</option>
-				<option th:each="user : ${calendarInfo.userList}" 
-						th:value="${user.getId()}"
-						th:utext="${user.getUser()}">
-					</option>
-			</select>
-<!-- 			<button type="submit">Submit post</button>
-			</form> -->
+			</a><br>
 			
-		</div>
-		<table border=1 style="width: 100%">
+	<small>ログインユーザのスケジュール</small><br>
+			<a href="displayCalendar.html"
+				th:href="@{/displayCalendar/loginUser(year=*{yearOfPrevMonth},
+				month=*{monthOfPrevMonth})}"><button>&larr;先月</button></a>
+			<a href="displayCalendar.html"
+				th:href="@{/displayCalendar/loginUser(year=*{yearOfNextMonth},
+				month=*{monthOfNextMonth})}"><button>来月&rarr;</button></a>
+			<a href="displayCalendar.html"
+				th:href="@{/displayCalendar/loginUser(year=*{currentYear},
+				month=*{currentMonth})}">
+				<button>今月</button>
+			</a><br> <span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span><br> 
+			
+		<table border=1 style="width: 110%">
 			<tr>
 				<th>日</th>
 				<th>月</th>
@@ -58,7 +56,8 @@
 			<tr th:each="week : *{calendar}">
 				<td th:each="day : ${week}">
 				<th:block th:text="${day.getDay().getDayOfMonth()}"></th:block> 
-				<img style="width: 40%" th:src="@{${day.getWeatherIconLink() != null ? day.getWeatherIconLink() : ''}}"/>
+				<img style="width: 35%" th:src="@{${day.getWeatherIcon() != null ? day.getWeatherIcon() : ''}}"/>
+				<small th:text="${day.getWeatherDescription()}"></small>
 					<div th:each="schedule : ${day.getScheduleList()}">
 						<a href="showScheduleDetail.html"
 							th:href="@{/displayCalendar/schedule(id=${schedule.getId()})}"> 

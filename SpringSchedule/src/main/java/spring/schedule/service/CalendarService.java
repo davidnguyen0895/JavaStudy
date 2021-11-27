@@ -3,7 +3,6 @@ package spring.schedule.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -23,6 +22,7 @@ import spring.schedule.entity.UserInfoEntity;
 import spring.schedule.exception.ExclusiveException;
 import spring.schedule.mapper.SelectScheduleMapper;
 import spring.schedule.mapper.SelectUserMapper;
+import spring.schedule.weather.WeatherData;
 import spring.schedule.weather.WeatherUtilities;
 
 /**
@@ -49,7 +49,7 @@ public class CalendarService {
 	 */
 	@Autowired
 	private SelectUserMapper selectUserMapper;
-	
+
 	/**
 	 * カレンダーを表示するための情報を作成するメソッド．
 	 * 
@@ -57,7 +57,7 @@ public class CalendarService {
 	 * @param month
 	 * @return カレンダーを表示するための情報
 	 */
-	public CalendarInfoEntity generateCalendarInfo(int year, int month) {
+	public CalendarInfoEntity generateCalendarInfo(int year, int month, String userName) {
 
 		int firstDayOfWeek = 0;
 		int lastDayOfWeek = 6;
@@ -71,26 +71,20 @@ public class CalendarService {
 		// カレンダーの一日目
 		// minusDays(1)による最初の日付を日曜日に指定する．
 		org.joda.time.LocalDate firstDayOfCalendar = firstDayOfMonth.dayOfWeek().withMinimumValue().minusDays(1);
-		// ユーザIDを取得
-		//Long userId = getUserId(Ulitities.getLoginUserName());
-		//ユーザリストを取得
-		List<UserInfoEntity> userList = selectUserMapper.selectAllUser();
-		//ユーザリストを格納
-		calendarInfo.setUserList(userList);
 		// 来月の日付を取得
 		org.joda.time.LocalDate nextMonth = firstDayOfMonth.plusMonths(1);
 		// 先月の日付を取得
 		org.joda.time.LocalDate prevMonth = lastDayOfMonth.minusMonths(1);
 
-		HashMap<org.joda.time.LocalDate, String> weatherMap = null;
+		WeatherData weatherData = null;
 		try {
-			weatherMap = WeatherUtilities.createWeatherHashMap(lat, lon, apiKey);
+			weatherData = WeatherUtilities.createWeatherData(lat, lon, apiKey);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 
 		for (int week = 1; week <= weekNum; week++) {
-			generateWeekList(firstDayOfCalendar, calendar, firstDayOfWeek, lastDayOfWeek, weatherMap);
+			generateWeekList(firstDayOfCalendar, calendar, firstDayOfWeek, lastDayOfWeek, getUserId(userName), weatherData);
 			firstDayOfWeek = firstDayOfWeek + 7;
 			lastDayOfWeek = lastDayOfWeek + 7;
 		}
@@ -117,8 +111,6 @@ public class CalendarService {
 		return calendarInfo;
 	}
 
-	
-
 	/**
 	 * １週間の日付リストを作成する．
 	 * 
@@ -127,10 +119,10 @@ public class CalendarService {
 	 * @param firstDayOfWeek
 	 * @param lastDayOfWeek
 	 * @param userId
-	 * @param weatherMap
+	 * @param weatherData
 	 */
 	private void generateWeekList(org.joda.time.LocalDate firstDayOfCalendar, List<List<DayEntity>> calendar,
-			int firstDayOfWeek, int lastDayOfWeek, HashMap<org.joda.time.LocalDate, String> weatherMap) {
+			int firstDayOfWeek, int lastDayOfWeek, Long userId, WeatherData weatherData) {
 
 		List<DayEntity> weekList = new ArrayList<DayEntity>();
 		for (int i = firstDayOfWeek; i <= lastDayOfWeek; i++) {
@@ -140,16 +132,30 @@ public class CalendarService {
 			org.joda.time.LocalDate scheduledate = firstDayOfCalendar.plusDays(i);
 
 			// 日付を引数として、天気のアイコンを取得しDayEntityに格納する
-			if (weatherMap.get(scheduledate) != null) {
-				day.setWeatherIconLink(WeatherUtilities.getIconImage(weatherMap.get(scheduledate)));
+			if (weatherData.getIconMap().get(scheduledate) != null) {
+				day.setWeatherIcon(WeatherUtilities.getIconImage(weatherData.getIconMap().get(scheduledate)));
+			}
+
+			// 日付を引数として、天気詳細を取得しDayEntityに格納する
+			if (weatherData.getDescriptionMap().get(scheduledate) != null) {
+				day.setWeatherDescription(weatherData.getDescriptionMap().get(scheduledate));
 			}
 
 			// 日付データを日付情報インストタンスに格納する．
 			day.setDay(scheduledate);
 			// 当月の月を設定する
 			day.setCalendarMonth(scheduledate.getMonthOfYear());
-			// 日付データを用いてスケージュール情報リストを参照する．
-			List<ScheduleInfoEntity> scheduleList = selectByDate(scheduledate.toString());
+			
+			List<ScheduleInfoEntity> scheduleList = null;
+			
+			if(userId != null) {
+				// 日付データを用いてスケージュール情報リストを参照する．
+				scheduleList = selectByUserId(userId, scheduledate.toString());
+			}else {
+				// 日付データを用いてスケージュール情報リストを参照する．
+				scheduleList = selectByDate(scheduledate.toString());
+			}
+
 			// スケージュール情報リストを日付情報インストタンスに格納する．
 			day.setScheduleList(scheduleList);
 			// 日付情報インストタンスを週の日付リストに格納する．
@@ -209,15 +215,15 @@ public class CalendarService {
 	/**
 	 * スケージュール情報リクエストデータを作成
 	 * 
-	 * @param 	scheduleRequest
-	 * @return	スケージュール情報リクエストデータ
+	 * @param scheduleRequest
+	 * @return スケージュール情報リクエストデータ
 	 */
 	public ScheduleInfoEntity createScheduleFromRequest(ScheduleRequest scheduleRequest, String action) {
 		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
-		
-		if(action.equals(Constants.ACTION_REGIST)){
+
+		if (action.equals(Constants.ACTION_REGIST)) {
 			schedule.setId(selectScheduleMapper.selectLatestId());
-		}else {
+		} else {
 			schedule.setId(scheduleRequest.getId());
 		}
 		schedule.setUserid(getUserId(Ulitities.getLoginUserName()));
@@ -238,6 +244,9 @@ public class CalendarService {
 	 * @return ユーザID
 	 */
 	public Long getUserId(String userName) {
+		if(userName.equals("") || userName == null) {
+			return null;
+		}
 		UserInfoEntity userInfo = selectUserMapper.selectUserId(userName);
 		return userInfo.getId();
 	}
@@ -305,7 +314,7 @@ public class CalendarService {
 	/**
 	 * スケジュール更新日を取得
 	 * 
-	 * @param id 
+	 * @param id
 	 * @return スケジュール更新日
 	 */
 	public ScheduleInfoEntity selectScheduleUpdatedate(Long id) {

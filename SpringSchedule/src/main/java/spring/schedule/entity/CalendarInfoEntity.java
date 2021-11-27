@@ -49,7 +49,7 @@ public class CalendarInfoEntity implements Serializable {
 	 */
 	private int currentMonth;
 	/**
-	 * //ユーザリスト
+	 * ログインユーザ
 	 */
-	private List<UserInfoEntity> userList;
+	private String loginUser;
 }

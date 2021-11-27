@@ -1,8 +1,5 @@
 package spring.schedule.controller;
 
-import java.io.IOException;
-
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,18 +26,17 @@ public class DisplayCalendarController {
 	 */
 	@Autowired
 	CalendarService calendarService;
+
 	/**
 	 * 本日の日付を取得 org.joda.time.LocalDate
 	 * 
 	 * @param model
 	 * @return 本日の日付
-	 * @throws IOException
-	 * @throws JSONException
 	 */
 	@RequestMapping
 	public String today(Model model) {
 		org.joda.time.LocalDate today = new org.joda.time.LocalDate();
-		return date(today.getYear(), today.getMonthOfYear(), model);
+		return allUser(today.getYear(), today.getMonthOfYear(), model);
 	}
 
 	/**
@@ -50,27 +46,28 @@ public class DisplayCalendarController {
 	 * @param month
 	 * @param model
 	 * @return
-	 * @throws IOException
-	 * @throws JSONException
 	 */
-	@RequestMapping(value = "date")
-	public String date(@RequestParam("year") int year, @RequestParam("month") int month, Model model) {
+	@RequestMapping(value = "allUser")
+	public String allUser(@RequestParam("year") int year, @RequestParam("month") int month, Model model) {
 		// カレンダーを格納するインストタンス
-		CalendarInfoEntity calendarInfo = calendarService.generateCalendarInfo(year, month);
+		CalendarInfoEntity calendarInfo = calendarService.generateCalendarInfo(year, month, "");
 		model.addAttribute("calendarInfo", calendarInfo);
 		return Constants.RETURN_DISPLAY_CALENDAR;
 	}
-	
-//	@RequestMapping(value = "selectUserSchedule")
-//	public String selectUserSchedule(			
-//			@RequestParam("selectedOption") String selectedOption,
-//			@RequestParam("year") int year, 
-//			@RequestParam("month") int month, Model model) {
-//		// カレンダーを格納するインストタンス
-//		CalendarInfoEntity calendarInfo = calendarService.generateCalendarInfo(year, month);
-//		model.addAttribute("calendarInfo", calendarInfo);
-//		return Constants.RETURN_DISPLAY_CALENDAR;
-//	}
+	/**
+	 * カレンダー表示するための情報を格納して画面に渡す．
+	 * @param year
+	 * @param month
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "loginUser")
+	public String loginUser(@RequestParam("year") int year, @RequestParam("month") int month, Model model) {
+		// カレンダーを格納するインストタンス
+		CalendarInfoEntity calendarInfo = calendarService.generateCalendarInfo(year, month, Ulitities.getLoginUserName());
+		model.addAttribute("calendarInfo", calendarInfo);
+		return Constants.RETURN_DISPLAY_CALENDAR;
+	}
 
 	/**
 	 * スケージュール詳細を表示する。
@@ -88,7 +85,7 @@ public class DisplayCalendarController {
 		dayEntity.setCalendarYear(schedule.getScheduledate().getYear());
 		dayEntity.setCalendarMonth(schedule.getScheduledate().getMonthValue());
 		dayEntity.setAction(Constants.ACTION_SEARCH);
-		//操作制限：自分のスケジュール以外は更新不可。
+		// 操作制限：自分のスケジュール以外は更新不可。
 		if (!schedule.getUsername().equals(Ulitities.getLoginUserName())) {
 			schedule.setChangeAllowedFlg(false);
 		} else {

@@ -37,13 +37,17 @@ public class WeatherUtilities {
 	 * @throws JsonMappingException
 	 * @throws JsonProcessingException
 	 */
-	public static HashMap<org.joda.time.LocalDate, String> createWeatherHashMap(String lat, String lon, String apiKey)
+	public static WeatherData createWeatherData(String lat, String lon, String apiKey)
 			throws JsonMappingException, JsonProcessingException {
 
 		// 天気情報取得対象の日付リスト
 		List<org.joda.time.LocalDate> targetWeatherDateList = new ArrayList<org.joda.time.LocalDate>();
 		// 天気アイコンの文字リスト
 		List<String> iconList = new ArrayList<String>();
+		// 天気の詳細情報
+		List<String> descriptionList = new ArrayList<String>();
+
+		WeatherData weatherData = new WeatherData();
 
 		// dailyリストを取得
 		List<Daily> daily = new ObjectMapper()
@@ -59,18 +63,25 @@ public class WeatherUtilities {
 			List<Weather> weather = dailyData.getWeather();
 
 			// 天気アイコンを取得
-			for (Weather weatherData : weather) {
-				iconList.add(weatherData.getIcon());
+			for (Weather data : weather) {
+				iconList.add(data.getIcon());
+				descriptionList.add(data.getDescription());
 			}
 		}
 
 		// 日付とアイコン情報をHashmapに格納
-		HashMap<org.joda.time.LocalDate, String> weatherMap = new HashMap<>();
+		HashMap<org.joda.time.LocalDate, String> iconMap = new HashMap<>();
+		// 日付と天気詳細情報をHashmapに格納
+		HashMap<org.joda.time.LocalDate, String> descriptionMap = new HashMap<>();
 
 		for (int i = 0; i < targetWeatherDateList.size(); i++) {
-			weatherMap.put(targetWeatherDateList.get(i), iconList.get(i));
+			iconMap.put(targetWeatherDateList.get(i), iconList.get(i));
+			descriptionMap.put(targetWeatherDateList.get(i), descriptionList.get(i));
 		}
-		return weatherMap;
+		weatherData.setIconMap(iconMap);
+		weatherData.setDescriptionMap(descriptionMap);
+
+		return weatherData;
 	}
 
 	/**

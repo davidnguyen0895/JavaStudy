@@ -40,8 +40,7 @@ public class UserService implements UserDetailsService {
 		}
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		userInfo.setPass(encoder.encode(userInfo.getPassword()));
-		// Collection<? extends GrantedAuthority> authorities =
-		// userInfo.getAuthorities();
+
 		// UserInfoEntityを返す
 		return userInfo;
 	}
