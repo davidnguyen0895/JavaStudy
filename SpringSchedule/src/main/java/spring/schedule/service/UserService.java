@@ -29,12 +29,12 @@ public class UserService implements UserDetailsService {
 	 * @return 全件検索結果
 	 */
 	public List<UserInfoEntity> selectAllUser() {
-		return selectUserMapper.selectAllUser();
+		return this.selectUserMapper.selectAllUser();
 	}
 
 	@Override
 	public UserInfoEntity loadUserByUsername(String userName) throws UsernameNotFoundException {
-		UserInfoEntity userInfo = selectUserMapper.selectUserByUserName(userName);
+		UserInfoEntity userInfo = this.selectUserMapper.selectUserByUserName(userName);
 		if (userInfo == null) {
 			throw new UsernameNotFoundException("ユーザ名：" + userName + "が見つかりません．");
 		}

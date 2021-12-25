@@ -32,8 +32,8 @@ public class SelectAllController {
 	 */
 	@GetMapping(value = "/selectAll")
 	public String selectAll(Model model) {
-		List<ScheduleInfoEntity> scheduleList = new ArrayList<ScheduleInfoEntity>();
-		scheduleList = calendarService.selectAll();
+		List<ScheduleInfoEntity> scheduleList = new ArrayList<>();
+		scheduleList = this.calendarService.selectAll();
 		model.addAttribute("scheduleList", scheduleList);
 		return Constants.RETURN_SELECT_ALL;
 	}

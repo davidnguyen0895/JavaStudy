@@ -37,13 +37,13 @@ public class ExceptionAdvisor {
 		StringBuilder stackContent = new StringBuilder();
 		for (StackTraceElement stack : ex.getStackTrace()) {
 			stackContent.append("クラス名：" + stack.getClassName());
-			stackContent.append(lineCd);
+			stackContent.append(this.lineCd);
 			stackContent.append("ファイル名：" + stack.getFileName());
-			stackContent.append(lineCd);
+			stackContent.append(this.lineCd);
 			stackContent.append("行目：" + stack.getLineNumber());
-			stackContent.append(lineCd);
+			stackContent.append(this.lineCd);
 			stackContent.append("メソッド名" + stack.getMethodName());
-			stackContent.append(lineCd);
+			stackContent.append(this.lineCd);
 		}
 		log.error(ex.getMessage(), ex);
 		// 日付情報をexに格納する。
@@ -70,13 +70,13 @@ public class ExceptionAdvisor {
 		StringBuilder stackContent = new StringBuilder();
 		for (StackTraceElement stack : ex.getStackTrace()) {
 			stackContent.append("クラス名：" + stack.getClassName());
-			stackContent.append(lineCd);
+			stackContent.append(this.lineCd);
 			stackContent.append("ファイル名：" + stack.getFileName());
-			stackContent.append(lineCd);
+			stackContent.append(this.lineCd);
 			stackContent.append("行目：" + stack.getLineNumber());
-			stackContent.append(lineCd);
+			stackContent.append(this.lineCd);
 			stackContent.append("メソッド名" + stack.getMethodName());
-			stackContent.append(lineCd);
+			stackContent.append(this.lineCd);
 		}
 		log.error(ex.getMessage(), ex);
 

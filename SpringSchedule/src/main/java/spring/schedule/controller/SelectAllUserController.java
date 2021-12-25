@@ -32,8 +32,8 @@ public class SelectAllUserController {
 	 */
 	@GetMapping(value = "/selectAllUser")
 	public String selectAllUser(Model model) {
-		List<UserInfoEntity> userList = new ArrayList<UserInfoEntity>();
-		userList = userService.selectAllUser();
+		List<UserInfoEntity> userList = new ArrayList<>();
+		userList = this.userService.selectAllUser();
 		model.addAttribute("userList", userList);
 		return Constants.RETURN_SELECT_ALL_USER;
 	}

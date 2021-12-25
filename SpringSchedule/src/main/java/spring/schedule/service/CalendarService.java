@@ -63,7 +63,7 @@ public class CalendarService {
 		int lastDayOfWeek = 6;
 		// カレンダー情報を格納Model
 		CalendarInfoEntity calendarInfo = new CalendarInfoEntity();
-		List<List<DayEntity>> calendar = new ArrayList<List<DayEntity>>();
+		List<List<DayEntity>> calendar = new ArrayList<>();
 		// 当月の１日
 		org.joda.time.LocalDate firstDayOfMonth = new org.joda.time.LocalDate(year, month, 1);
 		// 当月の最後の日
@@ -78,13 +78,14 @@ public class CalendarService {
 
 		WeatherData weatherData = null;
 		try {
-			weatherData = WeatherUtilities.createWeatherData(lat, lon, apiKey);
+			weatherData = WeatherUtilities.createWeatherData(this.lat, this.lon, this.apiKey);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
 
-		for (int week = 1; week <= weekNum; week++) {
-			generateWeekList(firstDayOfCalendar, calendar, firstDayOfWeek, lastDayOfWeek, getUserId(userName), weatherData);
+		for (int week = 1; week <= this.weekNum; week++) {
+			generateWeekList(firstDayOfCalendar, calendar, firstDayOfWeek, lastDayOfWeek, getUserId(userName),
+					weatherData);
 			firstDayOfWeek = firstDayOfWeek + 7;
 			lastDayOfWeek = lastDayOfWeek + 7;
 		}
@@ -124,7 +125,7 @@ public class CalendarService {
 	private void generateWeekList(org.joda.time.LocalDate firstDayOfCalendar, List<List<DayEntity>> calendar,
 			int firstDayOfWeek, int lastDayOfWeek, Long userId, WeatherData weatherData) {
 
-		List<DayEntity> weekList = new ArrayList<DayEntity>();
+		List<DayEntity> weekList = new ArrayList<>();
 		for (int i = firstDayOfWeek; i <= lastDayOfWeek; i++) {
 			// 日付情報インストタンス
 			DayEntity day = new DayEntity();
@@ -145,13 +146,13 @@ public class CalendarService {
 			day.setDay(scheduledate);
 			// 当月の月を設定する
 			day.setCalendarMonth(scheduledate.getMonthOfYear());
-			
+
 			List<ScheduleInfoEntity> scheduleList = null;
-			
-			if(userId != null) {
+
+			if (userId != null) {
 				// 日付データを用いてスケージュール情報リストを参照する．
 				scheduleList = selectByUserId(userId, scheduledate.toString());
-			}else {
+			} else {
 				// 日付データを用いてスケージュール情報リストを参照する．
 				scheduleList = selectByDate(scheduledate.toString());
 			}
@@ -171,7 +172,7 @@ public class CalendarService {
 	 */
 	public void insertNewSchedule(ScheduleRequest scheduleRequest) {
 		ScheduleInfoEntity schedule = createScheduleFromRequest(scheduleRequest, Constants.ACTION_REGIST);
-		selectScheduleMapper.insertNewSchedule(schedule);
+		this.selectScheduleMapper.insertNewSchedule(schedule);
 	}
 
 	/**
@@ -184,10 +185,10 @@ public class CalendarService {
 	public void updateSchedule(ScheduleRequest scheduleRequest) throws ExclusiveException {
 		if (scheduleRequest.getUpdatedate() == null) {
 			ScheduleInfoEntity updateSchedule = createScheduleFromRequest(scheduleRequest, Constants.ACTION_UPDATE);
-			selectScheduleMapper.updateSchedule(updateSchedule);
+			this.selectScheduleMapper.updateSchedule(updateSchedule);
 		} else {
 			ScheduleInfoEntity dbScheduleInfo = new ScheduleInfoEntity();
-			dbScheduleInfo = selectScheduleMapper.selectScheduleUpdatedate(scheduleRequest.getId());
+			dbScheduleInfo = this.selectScheduleMapper.selectScheduleUpdatedate(scheduleRequest.getId());
 			LocalDateTime dbUpdateDate = dbScheduleInfo.getUpdatedate();
 			// 楽観排他，更新日が異なる場合
 			if (!scheduleRequest.getUpdatedate().equals(dbUpdateDate)) {
@@ -198,7 +199,7 @@ public class CalendarService {
 			}
 			ScheduleInfoEntity updateSchedule = createScheduleFromRequest(scheduleRequest, Constants.ACTION_UPDATE);
 			updateSchedule.setUpdatedate(LocalDateTime.now());
-			selectScheduleMapper.updateSchedule(updateSchedule);
+			this.selectScheduleMapper.updateSchedule(updateSchedule);
 		}
 
 	}
@@ -209,7 +210,7 @@ public class CalendarService {
 	 * @param id
 	 */
 	public void deleteSchedule(Long id) {
-		selectScheduleMapper.deleteSchedule(id);
+		this.selectScheduleMapper.deleteSchedule(id);
 	}
 
 	/**
@@ -222,7 +223,7 @@ public class CalendarService {
 		ScheduleInfoEntity schedule = new ScheduleInfoEntity();
 
 		if (action.equals(Constants.ACTION_REGIST)) {
-			schedule.setId(selectScheduleMapper.selectLatestId());
+			schedule.setId(this.selectScheduleMapper.selectLatestId());
 		} else {
 			schedule.setId(scheduleRequest.getId());
 		}
@@ -244,10 +245,10 @@ public class CalendarService {
 	 * @return ユーザID
 	 */
 	public Long getUserId(String userName) {
-		if(userName.equals("") || userName == null) {
+		if (userName.equals(Constants.EMPTY)) {
 			return null;
 		}
-		UserInfoEntity userInfo = selectUserMapper.selectUserId(userName);
+		UserInfoEntity userInfo = this.selectUserMapper.selectUserId(userName);
 		return userInfo.getId();
 	}
 
@@ -259,7 +260,7 @@ public class CalendarService {
 	 * @return IDで検索結果
 	 */
 	public ScheduleInfoEntity selectById(ScheduleRequest scheduleSearchRequest) {
-		return selectScheduleMapper.selectById(scheduleSearchRequest);
+		return this.selectScheduleMapper.selectById(scheduleSearchRequest);
 	}
 
 	/**
@@ -269,7 +270,7 @@ public class CalendarService {
 	 * @return スケージュール情報
 	 */
 	public ScheduleInfoEntity selectById(Long id) {
-		return selectScheduleMapper.selectById(id);
+		return this.selectScheduleMapper.selectById(id);
 	}
 
 	/**
@@ -277,7 +278,7 @@ public class CalendarService {
 	 * @return 全件検索結果
 	 */
 	public List<ScheduleInfoEntity> selectAll() {
-		return selectScheduleMapper.selectAll();
+		return this.selectScheduleMapper.selectAll();
 	}
 
 	/**
@@ -287,7 +288,7 @@ public class CalendarService {
 	 * @return 日付情報でスケージュール情報
 	 */
 	public List<ScheduleInfoEntity> selectByDate(String scheduledate) {
-		return selectScheduleMapper.selectByDate(scheduledate);
+		return this.selectScheduleMapper.selectByDate(scheduledate);
 	}
 
 	/**
@@ -298,7 +299,7 @@ public class CalendarService {
 	 * @return ユーザIDと日付でスケージュール情報
 	 */
 	public List<ScheduleInfoEntity> selectByUserId(Long userId, String scheduledate) {
-		return selectScheduleMapper.selectByUserId(userId, scheduledate);
+		return this.selectScheduleMapper.selectByUserId(userId, scheduledate);
 	}
 
 	/**
@@ -308,7 +309,7 @@ public class CalendarService {
 	 * @return ユーザ名でユーザID
 	 */
 	public UserInfoEntity selectUserId(String userName) {
-		return selectUserMapper.selectUserId(userName);
+		return this.selectUserMapper.selectUserId(userName);
 	}
 
 	/**
@@ -318,6 +319,6 @@ public class CalendarService {
 	 * @return スケジュール更新日
 	 */
 	public ScheduleInfoEntity selectScheduleUpdatedate(Long id) {
-		return selectScheduleMapper.selectScheduleUpdatedate(id);
+		return this.selectScheduleMapper.selectScheduleUpdatedate(id);
 	}
 }

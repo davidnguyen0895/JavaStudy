@@ -31,6 +31,8 @@ public final class Constants {
 	public static final String ERROR_MESSAGE = "errorMessage";
 	/** スペース */
 	public static final String SPACE = " ";
+	/** 空文字 */
+	public static final String EMPTY = "";
 	/** 【操作】登録 */
 	public static final String ACTION_REGIST = "regist";
 	/** 【操作】更新 */

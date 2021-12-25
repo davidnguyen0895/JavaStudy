@@ -13,6 +13,10 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class ExclusiveException extends RollBackException {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * 日付の年(カレンダー表示画面に戻る用)
 	 */
 	private int calendarYear;

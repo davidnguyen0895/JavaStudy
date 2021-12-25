@@ -50,12 +50,14 @@ public class DisplayCalendarController {
 	@RequestMapping(value = "allUser")
 	public String allUser(@RequestParam("year") int year, @RequestParam("month") int month, Model model) {
 		// カレンダーを格納するインストタンス
-		CalendarInfoEntity calendarInfo = calendarService.generateCalendarInfo(year, month, "");
+		CalendarInfoEntity calendarInfo = this.calendarService.generateCalendarInfo(year, month, Constants.EMPTY);
 		model.addAttribute("calendarInfo", calendarInfo);
 		return Constants.RETURN_DISPLAY_CALENDAR;
 	}
+
 	/**
 	 * カレンダー表示するための情報を格納して画面に渡す．
+	 * 
 	 * @param year
 	 * @param month
 	 * @param model
@@ -64,7 +66,8 @@ public class DisplayCalendarController {
 	@RequestMapping(value = "loginUser")
 	public String loginUser(@RequestParam("year") int year, @RequestParam("month") int month, Model model) {
 		// カレンダーを格納するインストタンス
-		CalendarInfoEntity calendarInfo = calendarService.generateCalendarInfo(year, month, Ulitities.getLoginUserName());
+		CalendarInfoEntity calendarInfo = this.calendarService.generateCalendarInfo(year, month,
+				Ulitities.getLoginUserName());
 		model.addAttribute("calendarInfo", calendarInfo);
 		return Constants.RETURN_DISPLAY_CALENDAR;
 	}
@@ -76,10 +79,11 @@ public class DisplayCalendarController {
 	 * @param model
 	 * @return
 	 */
+	@SuppressWarnings("boxing")
 	@RequestMapping(value = "schedule")
 	public String showScheduleDetail(@RequestParam("id") Long id, Model model) {
 		// リクエストデータのID情報を用いてスケージュール情報を参照する．
-		ScheduleInfoEntity schedule = calendarService.selectById(id);
+		ScheduleInfoEntity schedule = this.calendarService.selectById(id);
 		// カレンダー表示画面に戻るための年と月のデータをdayEntityインストタンスに格納する．
 		DayEntity dayEntity = new DayEntity();
 		dayEntity.setCalendarYear(schedule.getScheduledate().getYear());

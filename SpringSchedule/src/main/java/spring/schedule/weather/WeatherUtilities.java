@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.extern.slf4j.Slf4j;
+import spring.schedule.constants.Constants;
 
 @Slf4j
 public class WeatherUtilities {
@@ -41,11 +42,11 @@ public class WeatherUtilities {
 			throws JsonMappingException, JsonProcessingException {
 
 		// 天気情報取得対象の日付リスト
-		List<org.joda.time.LocalDate> targetWeatherDateList = new ArrayList<org.joda.time.LocalDate>();
+		List<org.joda.time.LocalDate> targetWeatherDateList = new ArrayList<>();
 		// 天気アイコンの文字リスト
-		List<String> iconList = new ArrayList<String>();
+		List<String> iconList = new ArrayList<>();
 		// 天気の詳細情報
-		List<String> descriptionList = new ArrayList<String>();
+		List<String> descriptionList = new ArrayList<>();
 
 		WeatherData weatherData = new WeatherData();
 
@@ -105,7 +106,7 @@ public class WeatherUtilities {
 	private static String convertUnixTimeToDate(long unixTimeStamp) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date date = new Date();
-		date.setTime((long) unixTimeStamp * 1000);
+		date.setTime(unixTimeStamp * 1000);
 		return dateFormat.format(date);
 	}
 
@@ -128,7 +129,7 @@ public class WeatherUtilities {
 	 * @return URL情報
 	 */
 	private static String getHTTPData(String urlString) {
-		String stream = "";
+		String stream = Constants.EMPTY;
 		try {
 			URL url = new URL(urlString);
 			HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();

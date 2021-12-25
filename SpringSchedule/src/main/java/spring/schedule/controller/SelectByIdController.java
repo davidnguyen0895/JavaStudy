@@ -33,7 +33,7 @@ public class SelectByIdController {
 	 * @return
 	 */
 	@GetMapping(value = "/selectById")
-	public String displaySelectById(Model model) {
+	public static String displaySelectById(Model model) {
 		return "selectById";
 	}
 
@@ -47,7 +47,7 @@ public class SelectByIdController {
 	@RequestMapping(value = "/selectById", method = RequestMethod.POST)
 	public String selectById(@Validated @ModelAttribute ScheduleRequest scheduleSearchRequest, BindingResult result,
 			Model model) {
-		ScheduleInfoEntity schedule = calendarService.selectById(scheduleSearchRequest);
+		ScheduleInfoEntity schedule = this.calendarService.selectById(scheduleSearchRequest);
 		model.addAttribute("selectByIdInfo", schedule);/* Modelに格納してhtmlに渡す */
 		return Constants.RETURN_SELECT_BY_ID;
 	}

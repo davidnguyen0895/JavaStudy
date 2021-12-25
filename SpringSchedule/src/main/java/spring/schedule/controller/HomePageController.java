@@ -16,7 +16,7 @@ import spring.schedule.constants.Constants;
 @Controller
 public class HomePageController {
 	@RequestMapping("/index")
-	private String init(Model model) {
+	private static String init(Model model) {
 		log.info(Ulitities.getLoginUserName() + "さんがログインしました。");
 		model.addAttribute("username", Ulitities.getLoginUserName());
 		return Constants.RETURN_INDEX;

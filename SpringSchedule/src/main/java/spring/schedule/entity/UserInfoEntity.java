@@ -1,6 +1,5 @@
 package spring.schedule.entity;
 
-import java.io.Serializable;
 import java.util.Collection;
 
 import javax.persistence.Entity;
@@ -19,7 +18,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "usertable")
-public class UserInfoEntity implements Serializable, UserDetails {
+public class UserInfoEntity implements UserDetails {
 	private static final long serialVersionUID = 1L;
 	/**
 	 * ユーザID
@@ -43,17 +42,17 @@ public class UserInfoEntity implements Serializable, UserDetails {
 	// 権限をCollectionで返す。
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return AuthorityUtils.createAuthorityList(String.valueOf(role));
+		return AuthorityUtils.createAuthorityList(String.valueOf(this.role));
 	}
 
 	@Override
 	public String getPassword() {
-		return pass;
+		return this.pass;
 	}
 
 	@Override
 	public String getUsername() {
-		return user;
+		return this.user;
 	}
 
 	@Override

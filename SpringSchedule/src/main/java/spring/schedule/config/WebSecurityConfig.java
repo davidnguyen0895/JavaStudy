@@ -28,7 +28,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	// フォームの値と比較するDBから取得したパスワードは暗号化されているのでフォームの値も暗号化するために利用
 	@Bean
-	public BCryptPasswordEncoder passwordEncoder() {
+	public static BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 
@@ -58,7 +58,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	 */
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+		auth.userDetailsService(this.userDetailsService).passwordEncoder(passwordEncoder());
 	}
 
 	/**
