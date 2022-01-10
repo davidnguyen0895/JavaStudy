@@ -1,5 +1,7 @@
 package spring.schedule.controller;
 
+import java.io.IOException;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import spring.schedule.constants.Constants;
 import spring.schedule.entity.CalendarInfoEntity;
 import spring.schedule.entity.DayEntity;
 import spring.schedule.entity.ScheduleInfoEntity;
+import spring.schedule.exception.JsonProcessingException;
 import spring.schedule.service.CalendarService;
 
 /**
@@ -39,9 +42,10 @@ public class DisplayCalendarController {
 	 * 
 	 * @param model
 	 * @return 本日の日付
+	 * @throws IOException
 	 */
 	@RequestMapping
-	public String today(Model model) {
+	public String today(Model model) throws IOException {
 		org.joda.time.LocalDate today = new org.joda.time.LocalDate();
 		return createCalendar(today.getYear(), today.getMonthOfYear(), model);
 	}
@@ -53,10 +57,12 @@ public class DisplayCalendarController {
 	 * @param month
 	 * @param model
 	 * @return
+	 * @throws IOException
 	 */
 	@SuppressWarnings("boxing")
 	@RequestMapping(value = "createCalendar")
-	public String createCalendar(@RequestParam("year") int year, @RequestParam("month") int month, Model model) {
+	public String createCalendar(@RequestParam("year") int year, @RequestParam("month") int month, Model model)
+			throws IOException {
 		if (this.session.getAttribute("userName") != null) {
 			this.userName = String.valueOf(this.session.getAttribute("userName"));
 		}
@@ -78,9 +84,12 @@ public class DisplayCalendarController {
 	 * @param displayMode
 	 * @param model
 	 * @return
+	 * @throws NumberFormatException
+	 * @throws IOException
 	 */
 	@RequestMapping(value = "setSessionAttribute")
-	public String setSessionAttribute(@RequestParam("displayMode") String displayMode, Model model) {
+	public String setSessionAttribute(@RequestParam("displayMode") String displayMode, Model model)
+			throws NumberFormatException, JsonProcessingException, IOException {
 		if (displayMode.equals("loginUser")) {
 			this.session.setAttribute("userName", Ulitities.getLoginUserName());
 			this.userName = String.valueOf(this.session.getAttribute("userName"));
@@ -94,11 +103,12 @@ public class DisplayCalendarController {
 		DayEntity dayEntity = new DayEntity();
 		dayEntity.setCalendarYear(currentYear);
 		dayEntity.setCalendarMonth(currentMonth);
-		model.addAttribute("dayEntity", dayEntity);
 
 		CalendarInfoEntity calendarInfo = this.calendarService.generateCalendarInfo(
 				Integer.parseInt(String.valueOf(this.session.getAttribute("currentYear"))),
 				Integer.parseInt(String.valueOf(this.session.getAttribute("currentMonth"))), this.userName);
+
+		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("calendarInfo", calendarInfo);
 		return Constants.RETURN_DISPLAY_CALENDAR;
 	}

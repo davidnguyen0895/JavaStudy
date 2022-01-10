@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import spring.schedule.constants.Constants;
 import spring.schedule.entity.DayEntity;
 import spring.schedule.exception.ExclusiveException;
+import spring.schedule.exception.JsonProcessingException;
 
 /**
  * ControllerAdviceでアノテーションされたクラスは クラスパススキャンによって自動検出されます。
@@ -33,26 +34,15 @@ public class ExceptionAdvisor {
 	 */
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(Exception.class)
-	public String handleException(Exception ex, Model model) {
-		StringBuilder stackContent = new StringBuilder();
-		for (StackTraceElement stack : ex.getStackTrace()) {
-			stackContent.append("クラス名：" + stack.getClassName());
-			stackContent.append(this.lineCd);
-			stackContent.append("ファイル名：" + stack.getFileName());
-			stackContent.append(this.lineCd);
-			stackContent.append("行目：" + stack.getLineNumber());
-			stackContent.append(this.lineCd);
-			stackContent.append("メソッド名" + stack.getMethodName());
-			stackContent.append(this.lineCd);
-		}
+	public static String handleException(Exception ex, Model model) {
 		log.error(ex.getMessage(), ex);
 		// 日付情報をexに格納する。
 		DayEntity dayEntity = new DayEntity();
 		dayEntity.setCalendarYear(LocalDate.now().getYear());
 		dayEntity.setCalendarMonth(LocalDate.now().getMonthOfYear());
+		model.addAttribute("exceptionMessage", ex.getMessage());
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute(Constants.ERROR_MESSAGE, "\"予期せぬエラーが発生しました。");
-		model.addAttribute("stackContent", stackContent.toString());
 		return Constants.RETURN_ERROR;
 	}
 
@@ -65,29 +55,39 @@ public class ExceptionAdvisor {
 	 */
 	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 	@ExceptionHandler(ExclusiveException.class)
-	// メソッド名を分ける
-	public String handleExclusiveException(ExclusiveException ex, Model model) {
-		StringBuilder stackContent = new StringBuilder();
-		for (StackTraceElement stack : ex.getStackTrace()) {
-			stackContent.append("クラス名：" + stack.getClassName());
-			stackContent.append(this.lineCd);
-			stackContent.append("ファイル名：" + stack.getFileName());
-			stackContent.append(this.lineCd);
-			stackContent.append("行目：" + stack.getLineNumber());
-			stackContent.append(this.lineCd);
-			stackContent.append("メソッド名" + stack.getMethodName());
-			stackContent.append(this.lineCd);
-		}
+	public static String handleExclusiveException(ExclusiveException ex, Model model) {
 		log.error(ex.getMessage(), ex);
 
 		// カレンダーに戻るボタン用の日付
 		// 日付情報をexに格納する。
 		DayEntity dayEntity = new DayEntity();
-		dayEntity.setCalendarYear(ex.getCalendarYear());
-		dayEntity.setCalendarMonth(ex.getCalendarMonth());
-		model.addAttribute("stackContent", stackContent.toString());
+		dayEntity.setCalendarYear(LocalDate.now().getYear());
+		dayEntity.setCalendarMonth(LocalDate.now().getMonthOfYear());
+		model.addAttribute("exceptionMessage", ex.getMessage());
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute(Constants.ERROR_MESSAGE, "\"他のユーザが更新しています。カレンダー表示画面に戻って再度更新してください。");
+		return Constants.RETURN_ERROR;
+	}
+
+	/**
+	 * 
+	 * @param ex
+	 * @param model
+	 * @return
+	 */
+	@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler(JsonProcessingException.class)
+	public static String handleJsonProcessingException(JsonProcessingException ex, Model model) {
+		log.error(ex.getMessage(), ex);
+
+		// カレンダーに戻るボタン用の日付
+		// 日付情報をexに格納する。
+		DayEntity dayEntity = new DayEntity();
+		dayEntity.setCalendarYear(LocalDate.now().getYear());
+		dayEntity.setCalendarMonth(LocalDate.now().getMonthOfYear());
+		model.addAttribute("exceptionMessage", ex.getMessage());
+		model.addAttribute("dayEntity", dayEntity);
+		model.addAttribute(Constants.ERROR_MESSAGE, "Json変換処理が失敗しました。");
 		return Constants.RETURN_ERROR;
 	}
 }

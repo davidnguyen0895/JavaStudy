@@ -32,14 +32,13 @@
 			<button>今月</button>
 		</a><br> 
 		
-		<span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span><br> 
-				
 		<a href="displayCalendar.html"
-			th:href="@{/displayCalendar/setSessionAttribute(displayMode='allUser')}"><button>全員のスケジュールを表示</button></a>
-
+			th:href="@{/displayCalendar/setSessionAttribute(displayMode='allUser')}"><button>全員のスケジュールを表示</button></a> 
 		<a href="displayCalendar.html"
 			th:href="@{/displayCalendar/setSessionAttribute(displayMode='loginUser')}"><button>個人のスケジュールを表示</button></a>
-			
+		<br>
+		<span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span><br> 
+
 		<table border=1 style="width: 110%">
 			<tr>
 				<th>日</th>
@@ -60,7 +59,7 @@
 							th:href="@{/displayCalendar/schedule(id=${schedule.getId()})}"> 
 							<!-- <img src="/images/calendar.png" /> -->
 							<small th:text="${schedule.getUsername() != null ? schedule.getUsername() + ':' + 
-							schedule.getSchedule().substring(0,3) + '...' : ''}"></small> 
+							schedule.getSchedule() : ''}"></small> 
 						</a>
 					</div>
 					</td>

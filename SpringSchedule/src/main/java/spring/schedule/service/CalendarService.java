@@ -1,5 +1,6 @@
 package spring.schedule.service;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -9,8 +10,6 @@ import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 import spring.schedule.common.Ulitities;
 import spring.schedule.constants.Constants;
@@ -56,8 +55,10 @@ public class CalendarService {
 	 * @param year
 	 * @param month
 	 * @return カレンダーを表示するための情報
+	 * @throws IOException 
 	 */
-	public CalendarInfoEntity generateCalendarInfo(int year, int month, String userName) {
+	public CalendarInfoEntity generateCalendarInfo(int year, int month, String userName)
+			throws IOException {
 
 		int firstDayOfWeek = 0;
 		int lastDayOfWeek = 6;
@@ -77,11 +78,8 @@ public class CalendarService {
 		org.joda.time.LocalDate prevMonth = lastDayOfMonth.minusMonths(1);
 
 		WeatherData weatherData = null;
-		try {
-			weatherData = WeatherUtilities.createWeatherData(this.lat, this.lon, this.apiKey);
-		} catch (JsonProcessingException e) {
-			e.printStackTrace();
-		}
+
+		weatherData = WeatherUtilities.createWeatherData(this.lat, this.lon, this.apiKey);
 
 		for (int week = 1; week <= this.weekNum; week++) {
 			generateWeekList(firstDayOfCalendar, calendar, firstDayOfWeek, lastDayOfWeek, getUserId(userName),

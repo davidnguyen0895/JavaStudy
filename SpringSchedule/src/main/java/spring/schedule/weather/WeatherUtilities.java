@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,14 +14,10 @@ import java.util.List;
 
 import org.joda.time.format.DateTimeFormat;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import lombok.extern.slf4j.Slf4j;
 import spring.schedule.constants.Constants;
 
-@Slf4j
 public class WeatherUtilities {
 
 	private static final String API_BASE = "https://api.openweathermap.org/data/2.5/onecall";
@@ -35,11 +30,9 @@ public class WeatherUtilities {
 	 * @param lon    地理座標(経度)
 	 * @param apiKey APIキー
 	 * @return 天気Hashmapデータ
-	 * @throws JsonMappingException
-	 * @throws JsonProcessingException
+	 * @throws IOException
 	 */
-	public static WeatherData createWeatherData(String lat, String lon, String apiKey)
-			throws JsonMappingException, JsonProcessingException {
+	public static WeatherData createWeatherData(String lat, String lon, String apiKey) throws IOException {
 
 		// 天気情報取得対象の日付リスト
 		List<org.joda.time.LocalDate> targetWeatherDateList = new ArrayList<>();
@@ -127,29 +120,22 @@ public class WeatherUtilities {
 	 * 
 	 * @param urlString
 	 * @return URL情報
+	 * @throws IOException
 	 */
-	private static String getHTTPData(String urlString) {
+	private static String getHTTPData(String urlString) throws IOException {
 		String stream = Constants.EMPTY;
-		try {
-			URL url = new URL(urlString);
-			HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
-			if (httpURLConnection.getResponseCode() == 200) {
-				BufferedReader r = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
-				StringBuilder sb = new StringBuilder();
-				String line;
-				while ((line = r.readLine()) != null)
-					sb.append(line);
-				stream = sb.toString();
-				httpURLConnection.disconnect();
-			}
+		URL url = new URL(urlString);
+		HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
-		} catch (MalformedURLException e) {
-			log.error(e.getMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
-			log.error(e.getMessage());
-			e.printStackTrace();
+		if (httpURLConnection.getResponseCode() == 200) {
+			BufferedReader r = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+			StringBuilder sb = new StringBuilder();
+			String line;
+			while ((line = r.readLine()) != null)
+				sb.append(line);
+			stream = sb.toString();
+			httpURLConnection.disconnect();
 		}
 
 		return stream;
