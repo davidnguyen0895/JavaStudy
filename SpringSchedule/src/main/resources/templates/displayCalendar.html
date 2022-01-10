@@ -9,39 +9,36 @@
 	<!--～～～～～～～～～～ ホームページに戻るボタン～～～～～～～～～～-->
 	<div>
 		<a th:href="@{'/index'}"><button>ホームページに戻る</button></a>
-		<!--～～～～～～～～～～ スケジュール新規登録ボタン～～～～～～～～～～-->
-		<a href="createScheduleForm.html"
-			th:href="@{'/schedule/showScheduleForm'}">
-			<button>スケジュール新規登録</button>
-		</a>
+			<!--～～～～～～～～～～ スケジュール新規登録ボタン～～～～～～～～～～-->
+	<a href="createScheduleForm.html"
+		th:href="@{/schedule/showNewScheduleForm(year=*{dayEntity.getCalendarYear()},
+				month=*{dayEntity.getCalendarMonth()})}">
+		<button>スケジュール新規登録</button>
+	</a>
 	</div>
+
 	<!--～～～～～～～～～～ カレンダー表示 ～～～～～～～～～～-->
 	<div th:object="${calendarInfo}">
-	<small>全ユーザのスケジュール</small><br>
-			<a href="displayCalendar.html"
-				th:href="@{/displayCalendar/allUser(year=*{yearOfPrevMonth},
-				month=*{monthOfPrevMonth})}"><button>&larr;先月</button></a>
-			<a href="displayCalendar.html"
-				th:href="@{/displayCalendar/allUser(year=*{yearOfNextMonth},
-				month=*{monthOfNextMonth})}"><button>来月&rarr;</button></a>
-			<a href="displayCalendar.html"
-				th:href="@{/displayCalendar/allUser(year=*{currentYear},
+
+		<a href="displayCalendar.html"
+			th:href="@{/displayCalendar/createCalendar(year=*{yearOfPrevMonth},
+				month=*{monthOfPrevMonth})}"><button>&larr;先月</button></a> <a
+			href="displayCalendar.html"
+			th:href="@{/displayCalendar/createCalendar(year=*{yearOfNextMonth},
+				month=*{monthOfNextMonth})}"><button>来月&rarr;</button></a> <a
+			href="displayCalendar.html"
+			th:href="@{/displayCalendar/createCalendar(year=*{currentYear},
 				month=*{currentMonth})}">
-				<button>今月</button>
-			</a><br>
-			
-	<small>ログインユーザのスケジュール</small><br>
-			<a href="displayCalendar.html"
-				th:href="@{/displayCalendar/loginUser(year=*{yearOfPrevMonth},
-				month=*{monthOfPrevMonth})}"><button>&larr;先月</button></a>
-			<a href="displayCalendar.html"
-				th:href="@{/displayCalendar/loginUser(year=*{yearOfNextMonth},
-				month=*{monthOfNextMonth})}"><button>来月&rarr;</button></a>
-			<a href="displayCalendar.html"
-				th:href="@{/displayCalendar/loginUser(year=*{currentYear},
-				month=*{currentMonth})}">
-				<button>今月</button>
-			</a><br> <span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span><br> 
+			<button>今月</button>
+		</a><br> 
+		
+		<span th:text="*{firstDayOfMonth.toString('yyyy年M月')}"></span><br> 
+				
+		<a href="displayCalendar.html"
+			th:href="@{/displayCalendar/setSessionAttribute(displayMode='allUser')}"><button>全員のスケジュールを表示</button></a>
+
+		<a href="displayCalendar.html"
+			th:href="@{/displayCalendar/setSessionAttribute(displayMode='loginUser')}"><button>個人のスケジュールを表示</button></a>
 			
 		<table border=1 style="width: 110%">
 			<tr>

@@ -14,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import spring.schedule.common.Ulitities;
 import spring.schedule.constants.Constants;
@@ -39,17 +40,19 @@ public class CreateScheduleController {
 
 	/**
 	 * スケージュール情報を登録フォーム
-	 * 
+	 * @param year
+	 * @param month
 	 * @param model
-	 * @return
+	 * @return RETURN_CREATE_SCHEDULE_FORM
 	 */
-	@RequestMapping(value = "showScheduleForm", method = RequestMethod.GET)
-	public static String showNewScheduleForm(Model model) {
+	@RequestMapping(value = "showNewScheduleForm", method = RequestMethod.GET)
+	public static String showNewScheduleForm(@RequestParam("year") int year, @RequestParam("month") int month,
+			Model model) {
 		// 今月の年と月の値をdayEntityインスタンスに格納する．
 		ScheduleRequest scheduleRequest = new ScheduleRequest();
-		DayEntity dayEntity = createDayEntityObject(LocalDate.now());
-		dayEntity.setCalendarYear(LocalDate.now().getYear());
-		dayEntity.setCalendarMonth(LocalDate.now().getMonthValue());
+		DayEntity dayEntity = new DayEntity();
+		dayEntity.setCalendarYear(year);
+		dayEntity.setCalendarMonth(month);
 		// modelにdayEntityとScheduleRequestのインスタンスを格納し，スケージュール作成フォームに送信する．
 		model.addAttribute("dayEntity", dayEntity);
 		model.addAttribute("schedule", scheduleRequest);

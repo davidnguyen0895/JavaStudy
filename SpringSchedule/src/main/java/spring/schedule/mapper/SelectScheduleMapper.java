@@ -50,8 +50,9 @@ public interface SelectScheduleMapper {
 	 * @return
 	 */
 	List<ScheduleInfoEntity> selectByUserId(Long userId, String scheduledate);
-	
+
 	Long selectLatestId();
+
 	/**
 	 *
 	 * @return

@@ -6,6 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 public class Ulitities {
 	/**
 	 * ログインユーザ名を取得
+	 * 
 	 * @return
 	 */
 	public static String getLoginUserName() {

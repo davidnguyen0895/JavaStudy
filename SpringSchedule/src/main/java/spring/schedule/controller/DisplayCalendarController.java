@@ -1,5 +1,7 @@
 package spring.schedule.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +29,11 @@ public class DisplayCalendarController {
 	@Autowired
 	CalendarService calendarService;
 
+	@Autowired
+	HttpSession session;
+
+	String userName = Constants.EMPTY;
+
 	/**
 	 * 本日の日付を取得 org.joda.time.LocalDate
 	 * 
@@ -36,7 +43,7 @@ public class DisplayCalendarController {
 	@RequestMapping
 	public String today(Model model) {
 		org.joda.time.LocalDate today = new org.joda.time.LocalDate();
-		return allUser(today.getYear(), today.getMonthOfYear(), model);
+		return createCalendar(today.getYear(), today.getMonthOfYear(), model);
 	}
 
 	/**
@@ -47,27 +54,51 @@ public class DisplayCalendarController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "allUser")
-	public String allUser(@RequestParam("year") int year, @RequestParam("month") int month, Model model) {
+	@SuppressWarnings("boxing")
+	@RequestMapping(value = "createCalendar")
+	public String createCalendar(@RequestParam("year") int year, @RequestParam("month") int month, Model model) {
+		if (this.session.getAttribute("userName") != null) {
+			this.userName = String.valueOf(this.session.getAttribute("userName"));
+		}
+		this.session.setAttribute("currentYear", year);
+		this.session.setAttribute("currentMonth", month);
+		DayEntity dayEntity = new DayEntity();
+		dayEntity.setCalendarYear(year);
+		dayEntity.setCalendarMonth(month);
+		model.addAttribute("dayEntity", dayEntity);
 		// カレンダーを格納するインストタンス
-		CalendarInfoEntity calendarInfo = this.calendarService.generateCalendarInfo(year, month, Constants.EMPTY);
+		CalendarInfoEntity calendarInfo = this.calendarService.generateCalendarInfo(year, month, this.userName);
 		model.addAttribute("calendarInfo", calendarInfo);
 		return Constants.RETURN_DISPLAY_CALENDAR;
 	}
 
 	/**
-	 * カレンダー表示するための情報を格納して画面に渡す．
+	 * セッションに変数を格納する。
 	 * 
-	 * @param year
-	 * @param month
+	 * @param displayMode
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value = "loginUser")
-	public String loginUser(@RequestParam("year") int year, @RequestParam("month") int month, Model model) {
-		// カレンダーを格納するインストタンス
-		CalendarInfoEntity calendarInfo = this.calendarService.generateCalendarInfo(year, month,
-				Ulitities.getLoginUserName());
+	@RequestMapping(value = "setSessionAttribute")
+	public String setSessionAttribute(@RequestParam("displayMode") String displayMode, Model model) {
+		if (displayMode.equals("loginUser")) {
+			this.session.setAttribute("userName", Ulitities.getLoginUserName());
+			this.userName = String.valueOf(this.session.getAttribute("userName"));
+		}
+		if (displayMode.equals("allUser")) {
+			this.session.setAttribute("userName", Constants.EMPTY);
+			this.userName = Constants.EMPTY;
+		}
+		int currentYear = Integer.parseInt(String.valueOf(this.session.getAttribute("currentYear")));
+		int currentMonth = Integer.parseInt(String.valueOf(this.session.getAttribute("currentMonth")));
+		DayEntity dayEntity = new DayEntity();
+		dayEntity.setCalendarYear(currentYear);
+		dayEntity.setCalendarMonth(currentMonth);
+		model.addAttribute("dayEntity", dayEntity);
+
+		CalendarInfoEntity calendarInfo = this.calendarService.generateCalendarInfo(
+				Integer.parseInt(String.valueOf(this.session.getAttribute("currentYear"))),
+				Integer.parseInt(String.valueOf(this.session.getAttribute("currentMonth"))), this.userName);
 		model.addAttribute("calendarInfo", calendarInfo);
 		return Constants.RETURN_DISPLAY_CALENDAR;
 	}
